@@ -141,7 +141,7 @@ package_install() {
 
 configure() {
   # Copy nginx configuration from local
-  cp "${DIR}/php7.1-upstream.conf" "/etc/nginx/upstreams/php56.conf"
+  cp "${DIR}/php7.1-upstream.conf" "/etc/nginx/upstreams/php71.conf"
 
   # Copy php-fpm configuration from local
   cp "${DIR}/php7.1-fpm.conf" "/etc/php/7.1/fpm/php-fpm.conf"
