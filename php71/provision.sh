@@ -31,6 +31,7 @@ apt_package_check_list=(
   # Extra PHP modules that we find useful
   php7.1-imagick
   php7.1-memcache
+  php7.1-memcached
   php7.1-bcmath
   php7.1-curl
   php7.1-gd
