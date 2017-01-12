@@ -31,6 +31,7 @@ apt_package_check_list=(
   # Extra PHP modules that we find useful
   php5.6-imagick
   php5.6-memcache
+  php5.6-memcached
   php5.6-bcmath
   php5.6-curl
   php5.6-gd
