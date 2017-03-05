@@ -29,9 +29,11 @@ apt_package_check_list=(
   php5.6-dev
 
   # Extra PHP modules that we find useful
-  php5.6-imagick
-  php5.6-memcache
-  php5.6-memcached
+  php-imagick
+  php-memcache
+  php-memcached
+  php-ssh2
+  php-xdebug
   php5.6-bcmath
   php5.6-curl
   php5.6-gd
@@ -41,8 +43,6 @@ apt_package_check_list=(
   php5.6-imap
   php5.6-json
   php5.6-soap
-  php5.6-ssh2
-  php5.6-xdebug
   php5.6-xml
   php5.6-zip
 )
