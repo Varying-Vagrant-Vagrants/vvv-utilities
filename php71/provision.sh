@@ -29,9 +29,11 @@ apt_package_check_list=(
   php7.1-dev
 
   # Extra PHP modules that we find useful
-  php7.1-imagick
-  php7.1-memcache
-  php7.1-memcached
+  php-imagick
+  php-memcache
+  php-memcached
+  php-ssh2
+  php-xdebug
   php7.1-bcmath
   php7.1-curl
   php7.1-gd
@@ -41,8 +43,6 @@ apt_package_check_list=(
   php7.1-imap
   php7.1-json
   php7.1-soap
-  php7.1-ssh2
-  php7.1-xdebug
   php7.1-xml
   php7.1-zip
 )
