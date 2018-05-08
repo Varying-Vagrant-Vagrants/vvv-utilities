@@ -13,7 +13,7 @@ if [ ! -d ${CA_DIR} ];then
 
     openssl genrsa \
         -out ${CA_DIR}/ca.key \
-        2048
+        2048 &>/dev/null
 
     openssl req \
         -x509 -new \
@@ -22,7 +22,7 @@ if [ ! -d ${CA_DIR} ];then
         -sha256 \
         -days 3650 \
         -out ${CA_DIR}/ca.crt \
-        -subj "/CN=VVV INTERNAL CA"
+        -subj "/CN=VVV INTERNAL CA" &>/dev/null
 fi
 
 CERT_DIR="${CERTIFICATES_DIR}/default"
@@ -47,13 +47,13 @@ EOF
 
 openssl genrsa \
     -out ${CERT_DIR}/dev.key \
-    2048
+    2048 &>/dev/null
 
 openssl req \
     -new \
     -key ${CERT_DIR}/dev.key \
     -out ${CERT_DIR}/dev.csr \
-    -subj "/CN=vvv.test"
+    -subj "/CN=vvv.test"  &>/dev/null
 
 openssl x509 \
     -req \
@@ -64,7 +64,7 @@ openssl x509 \
     -out ${CERT_DIR}/dev.crt \
     -days 3650 \
     -sha256 \
-    -extfile ${CERT_DIR}/openssl.conf
+    -extfile ${CERT_DIR}/openssl.conf  &>/dev/null
 
 rm -rf /etc/nginx/server-2.1.0.crt
 rm -rf /etc/nginx/server-2.1.0.key
@@ -114,13 +114,13 @@ EOF
 
     openssl genrsa \
         -out ${CERT_DIR}/dev.key \
-        2048
+        2048 &>/dev/null
 
     openssl req \
         -new \
         -key ${CERT_DIR}/dev.key \
         -out ${CERT_DIR}/dev.csr \
-        -subj "/CN=${COMMON_NAME}"
+        -subj "/CN=${COMMON_NAME}" &>/dev/null
 
     openssl x509 \
         -req \
@@ -131,5 +131,5 @@ EOF
         -out ${CERT_DIR}/dev.crt \
         -days 3650 \
         -sha256 \
-        -extfile ${CERT_DIR}/openssl.conf
+        -extfile ${CERT_DIR}/openssl.conf &>/dev/null
 done
