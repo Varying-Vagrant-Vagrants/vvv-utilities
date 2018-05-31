@@ -3,7 +3,7 @@
 DIR=`dirname $0`
 
 # phpMyAdmin
-echo -e "Install/Update phpMyAdmin..."
+echo -e "Installing/Updating phpMyAdmin..."
 cd "${DIR}"
 composer update --no-autoloader
 

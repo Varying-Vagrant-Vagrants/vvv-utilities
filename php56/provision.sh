@@ -150,12 +150,14 @@ configure() {
   cp "${DIR}/php5.6-custom.ini" "/etc/php/5.6/fpm/conf.d/php-custom.ini"
   cp "/srv/config/php-config/opcache.ini" "/etc/php/5.6/fpm/conf.d/opcache.ini"
   cp "/srv/config/php-config/xdebug.ini" "/etc/php/5.6/mods-available/xdebug.ini"
+  cp "/srv/config/php-config/mailcatcher.ini" "/etc/php/5.6/mods-available/mailcatcher.ini"
 
   echo " * Copied ${DIR}/php5.6-fpm.conf                   to /etc/php/5.6/fpm/php-fpm.conf"
   echo " * Copied ${DIR}/php5.6-www.conf                   to /etc/php/5.6/fpm/pool.d/www.conf"
   echo " * Copied ${DIR}/php5.6-custom.ini                 to /etc/php/5.6/fpm/conf.d/php-custom.ini"
   echo " * Copied /srv/config/php-config/opcache.ini       to /etc/php/5.6/fpm/conf.d/opcache.ini"
   echo " * Copied /srv/config/php-config/xdebug.ini        to /etc/php/5.6/mods-available/xdebug.ini"
+  echo " * Copied /srv/config/php-config/mailcatcher.ini   to /etc/php/5.6/mods-available/mailcatcher.ini"
 
   service php5.6-fpm restart
 }

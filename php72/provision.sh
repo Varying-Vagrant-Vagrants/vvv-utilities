@@ -16,17 +16,17 @@ apt_package_install_list=()
 # status before adding them to the apt_package_install_list array.
 apt_package_check_list=(
 
-  # PHP7.1
+  # PHP7.2
   #
-  # Our base packages for php7.1. As long as php7.1-fpm and php7.1-cli are
-  # installed, there is no need to install the general php7.1 package, which
+  # Our base packages for php7.2. As long as php7.2-fpm and php7.2-cli are
+  # installed, there is no need to install the general php7.2 package, which
   # can sometimes install apache as a requirement.
-  php7.1-fpm
-  php7.1-cli
+  php7.2-fpm
+  php7.2-cli
 
   # Common and dev packages for php
-  php7.1-common
-  php7.1-dev
+  php7.2-common
+  php7.2-dev
 
   # Extra PHP modules that we find useful
   php-imagick
@@ -34,17 +34,16 @@ apt_package_check_list=(
   php-memcached
   php-ssh2
   php-xdebug
-  php7.1-bcmath
-  php7.1-curl
-  php7.1-gd
-  php7.1-mbstring
-  php7.1-mcrypt
-  php7.1-mysql
-  php7.1-imap
-  php7.1-json
-  php7.1-soap
-  php7.1-xml
-  php7.1-zip
+  php7.2-bcmath
+  php7.2-curl
+  php7.2-gd
+  php7.2-mbstring
+  php7.2-mysql
+  php7.2-imap
+  php7.2-json
+  php7.2-soap
+  php7.2-xml
+  php7.2-zip
 )
 
 ### FUNCTIONS
@@ -142,24 +141,24 @@ package_install() {
 
 configure() {
   # Copy nginx configuration from local
-  cp "${DIR}/php7.1-upstream.conf" "/etc/nginx/upstreams/php71.conf"
+  cp "${DIR}/php7.2-upstream.conf" "/etc/nginx/upstreams/php72.conf"
 
   # Copy php-fpm configuration from local
-  cp "${DIR}/php7.1-fpm.conf" "/etc/php/7.1/fpm/php-fpm.conf"
-  cp "${DIR}/php7.1-www.conf" "/etc/php/7.1/fpm/pool.d/www.conf"
-  cp "${DIR}/php7.1-custom.ini" "/etc/php/7.1/fpm/conf.d/php-custom.ini"
-  cp "/srv/config/php-config/opcache.ini" "/etc/php/7.1/fpm/conf.d/opcache.ini"
-  cp "/srv/config/php-config/xdebug.ini" "/etc/php/7.1/mods-available/xdebug.ini"
-  cp "/srv/config/php-config/mailcatcher.ini" "/etc/php/7.1/mods-available/mailcatcher.ini"
+  cp "${DIR}/php7.2-fpm.conf" "/etc/php/7.2/fpm/php-fpm.conf"
+  cp "${DIR}/php7.2-www.conf" "/etc/php/7.2/fpm/pool.d/www.conf"
+  cp "${DIR}/php7.2-custom.ini" "/etc/php/7.2/fpm/conf.d/php-custom.ini"
+  cp "/srv/config/php-config/opcache.ini" "/etc/php/7.2/fpm/conf.d/opcache.ini"
+  cp "/srv/config/php-config/xdebug.ini" "/etc/php/7.2/mods-available/xdebug.ini"
+  cp "/srv/config/php-config/mailcatcher.ini" "/etc/php/7.2/mods-available/mailcatcher.ini"
 
-  echo " * Copied ${DIR}/php7.1-fpm.conf                   to /etc/php/7.1/fpm/php-fpm.conf"
-  echo " * Copied ${DIR}/php7.1-www.conf                   to /etc/php/7.1/fpm/pool.d/www.conf"
-  echo " * Copied ${DIR}/php7.1-custom.ini                 to /etc/php/7.1/fpm/conf.d/php-custom.ini"
-  echo " * Copied /srv/config/php-config/opcache.ini       to /etc/php/7.1/fpm/conf.d/opcache.ini"
-  echo " * Copied /srv/config/php-config/xdebug.ini        to /etc/php/7.1/mods-available/xdebug.ini"
-  echo " * Copied /srv/config/php-config/mailcatcher.ini   to /etc/php/7.1/mods-available/mailcatcher.ini"
+  echo " * Copied ${DIR}/php7.2-fpm.conf                   to /etc/php/7.2/fpm/php-fpm.conf"
+  echo " * Copied ${DIR}/php7.2-www.conf                   to /etc/php/7.2/fpm/pool.d/www.conf"
+  echo " * Copied ${DIR}/php7.2-custom.ini                 to /etc/php/7.2/fpm/conf.d/php-custom.ini"
+  echo " * Copied /srv/config/php-config/opcache.ini       to /etc/php/7.2/fpm/conf.d/opcache.ini"
+  echo " * Copied /srv/config/php-config/xdebug.ini        to /etc/php/7.2/mods-available/xdebug.ini"
+  echo " * Copied /srv/config/php-config/mailcatcher.ini   to /etc/php/7.2/mods-available/mailcatcher.ini"
 
-  service php7.1-fpm restart
+  service php7.2-fpm restart
 }
 
 network_check
