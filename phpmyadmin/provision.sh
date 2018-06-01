@@ -7,7 +7,7 @@ echo "Installing/Updating PHPMyAdmin"
 # clean up any old installs from pre-composer setup
 rm -rf /srv/www/default/database-admin/
 mkdir -p /srv/www/default/database-admin
-cd "/srv/www/default/database-admin"
+cd /srv/www/default/database-admin
 # Install using the phpmyadmin composer repo so that languages are bundled
 composer create-project phpmyadmin/phpmyadmin --repository-url=https://www.phpmyadmin.net/packages.json --no-dev .
 
