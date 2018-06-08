@@ -142,7 +142,7 @@ package_install() {
 
 configure() {
   # Copy nginx configuration from local
-  cp "${DIR}/php7.0-upstream.conf" "/etc/nginx/upstreams/php71.conf"
+  cp "${DIR}/php7.0-upstream.conf" "/etc/nginx/upstreams/php70.conf"
 
   # Copy php-fpm configuration from local
   cp "${DIR}/php7.0-fpm.conf" "/etc/php/7.0/fpm/php-fpm.conf"
@@ -150,14 +150,21 @@ configure() {
   cp "${DIR}/php7.0-custom.ini" "/etc/php/7.0/fpm/conf.d/php-custom.ini"
   cp "/srv/config/php-config/opcache.ini" "/etc/php/7.0/fpm/conf.d/opcache.ini"
   cp "/srv/config/php-config/xdebug.ini" "/etc/php/7.0/mods-available/xdebug.ini"
-  cp "/srv/config/php-config/mailcatcher.ini" "/etc/php/7.0/mods-available/mailcatcher.ini"
+  if [[ -e /srv/config/php-config/mailcatcher.ini ]]; then
+    cp "/srv/config/php-config/mailcatcher.ini" "/etc/php/7.0/mods-available/mailcatcher.ini"
+    echo " * Copied /srv/config/php-config/mailcatcher.ini   to /etc/php/7.0/mods-available/mailcatcher.ini"
+
+  fi
+  if [[ -e /srv/config/php-config/mailhog.ini ]]; then
+    cp "/srv/config/php-config/mailhog.ini" "/etc/php/7.0/mods-available/mailhog.ini"
+    echo " * Copied /srv/config/php-config/mailhog.ini   to /etc/php/7.0/mods-available/mailhog.ini"
+  fi
 
   echo " * Copied ${DIR}/php7.0-fpm.conf                   to /etc/php/7.0/fpm/php-fpm.conf"
   echo " * Copied ${DIR}/php7.0-www.conf                   to /etc/php/7.0/fpm/pool.d/www.conf"
   echo " * Copied ${DIR}/php7.0-custom.ini                 to /etc/php/7.0/fpm/conf.d/php-custom.ini"
   echo " * Copied /srv/config/php-config/opcache.ini       to /etc/php/7.0/fpm/conf.d/opcache.ini"
   echo " * Copied /srv/config/php-config/xdebug.ini        to /etc/php/7.0/mods-available/xdebug.ini"
-  echo " * Copied /srv/config/php-config/mailcatcher.ini   to /etc/php/7.0/mods-available/mailcatcher.ini"
 
   service php7.0-fpm restart
 }
