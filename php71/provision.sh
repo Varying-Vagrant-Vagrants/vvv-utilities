@@ -150,14 +150,21 @@ configure() {
   cp "${DIR}/php7.1-custom.ini" "/etc/php/7.1/fpm/conf.d/php-custom.ini"
   cp "/srv/config/php-config/opcache.ini" "/etc/php/7.1/fpm/conf.d/opcache.ini"
   cp "/srv/config/php-config/xdebug.ini" "/etc/php/7.1/mods-available/xdebug.ini"
-  cp "/srv/config/php-config/mailcatcher.ini" "/etc/php/7.1/mods-available/mailcatcher.ini"
+  if [[ -e /srv/config/php-config/mailcatcher.ini ]]; then
+    cp "/srv/config/php-config/mailcatcher.ini" "/etc/php/7.1/mods-available/mailcatcher.ini"
+    echo " * Copied /srv/config/php-config/mailcatcher.ini   to /etc/php/7.1/mods-available/mailcatcher.ini"
+
+  fi
+  if [[ -e /srv/config/php-config/mailhog.ini ]]; then
+    cp "/srv/config/php-config/mailhog.ini" "/etc/php/7.1/mods-available/mailhog.ini"
+    echo " * Copied /srv/config/php-config/mailhog.ini   to /etc/php/7.1/mods-available/mailhog.ini"
+  fi
 
   echo " * Copied ${DIR}/php7.1-fpm.conf                   to /etc/php/7.1/fpm/php-fpm.conf"
   echo " * Copied ${DIR}/php7.1-www.conf                   to /etc/php/7.1/fpm/pool.d/www.conf"
   echo " * Copied ${DIR}/php7.1-custom.ini                 to /etc/php/7.1/fpm/conf.d/php-custom.ini"
   echo " * Copied /srv/config/php-config/opcache.ini       to /etc/php/7.1/fpm/conf.d/opcache.ini"
   echo " * Copied /srv/config/php-config/xdebug.ini        to /etc/php/7.1/mods-available/xdebug.ini"
-  echo " * Copied /srv/config/php-config/mailcatcher.ini   to /etc/php/7.1/mods-available/mailcatcher.ini"
 
   service php7.1-fpm restart
 }
