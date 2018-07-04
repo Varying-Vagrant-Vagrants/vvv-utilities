@@ -4,6 +4,8 @@ DIR=`dirname $0`
 
 echo "Checking phpMyAdmin"
 
+mkdir -p /srv/www/default/database-admin
+
 # Download phpMyAdmin
 if [[ ! -f /srv/www/default/database-admin/RELEASE-DATE-4.8.1 ]]; then
     echo "Removing older phpMyAdmin install from /srv/www/default/database-admin"
