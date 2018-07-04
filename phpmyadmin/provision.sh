@@ -15,7 +15,7 @@ if [[ ! -f /srv/www/default/database-admin/RELEASE-DATE-4.8.1 ]]; then
     tar -xf phpmyadmin.tar.gz
     echo "Copying phpMyAdmin into place"
     mkdir -p /srv/www/default/database-admin
-    cp -rf /tmp/phpMyAdmin-4.8.1-all-languages/* /srv/www/default/database-admin/*
+    cp -rf /tmp/phpMyAdmin-4.8.1-all-languages/* /srv/www/default/database-admin/
     echo "Cleaning up after phpMyAdmin"
     rm -rf /tmp/phpMyAdmin-4.8.1-all-languages
     rm -f /tmp/phpmyadmin.tar.gz
