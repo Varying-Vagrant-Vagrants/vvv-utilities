@@ -4,8 +4,6 @@ DIR=`dirname $0`
 
 echo "Checking phpMyAdmin"
 
-mkdir -p /srv/www/default/database-admin
-
 # Download phpMyAdmin
 if [[ ! -f /srv/www/default/database-admin/RELEASE-DATE-4.8.1 ]]; then
     echo "Removing older phpMyAdmin install from /srv/www/default/database-admin"
@@ -16,6 +14,7 @@ if [[ ! -f /srv/www/default/database-admin/RELEASE-DATE-4.8.1 ]]; then
     echo "Extracting phpMyAdmin 4.8.1 into /tmp"
     tar -xf phpmyadmin.tar.gz
     echo "Copying phpMyAdmin into place"
+    mkdir -p /srv/www/default/database-admin
     cp -rf /tmp/phpMyAdmin-4.8.1-all-languages/* /srv/www/default/database-admin/*
     echo "Cleaning up after phpMyAdmin"
     rm -rf /tmp/phpMyAdmin-4.8.1-all-languages
