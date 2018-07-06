@@ -33,6 +33,26 @@ restart_php() {
     fi
 }
 
+install_mongodb() {
+    apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14518585931BC711F9BA15703C6
+    echo "deb http://repo.mongodb.org/apt/ubuntu trusty/mongodb-org/3.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list
+    sudo apt update
+    apt-get -y install mongodb-org re2c
+    sudo pecl install mongodb
+    ln -s /usr/lib/php/20151012/mongodb.so /usr/lib/php/20170718/mongodb.so
+    ln -s /usr/lib/php/20160303/mongodb.so /usr/lib/php/20170718/mongodb.so
+    phpenmod mongodb
+    # auto-remove records older than 2592000 seconds (30 days)
+    mongo xhprof --eval 'db.collection.ensureIndex( { "meta.request_ts" : 1 }, { expireAfterSeconds : 2592000 } )'
+    # indexes
+    mongo xhprof --eval  "db.collection.ensureIndex( { 'meta.SERVER.REQUEST_TIME' : -1 } )"
+    mongo xhprof --eval  "db.collection.ensureIndex( { 'profile.main().wt' : -1 } )"
+    mongo xhprof --eval  "db.collection.ensureIndex( { 'profile.main().mu' : -1 } )"
+    mongo xhprof --eval  "db.collection.ensureIndex( { 'profile.main().cpu' : -1 } )"
+    mongo xhprof --eval  "db.collection.ensureIndex( { 'meta.url' : 1 } )"
+    update-rc.d mongodb defaults
+}
+
 echo "Installing Tideways & XHgui"
 if [[ ! -d "/srv/www/default/xhgui" ]]; then
     if [[ -d "/etc/php/5.6/" ]]; then
@@ -59,23 +79,7 @@ if [[ ! -d "/srv/www/default/xhgui" ]]; then
         # For the default php version
         cp "${DIR}/mongodb.ini" "/etc/php/7.2/mods-available/mongodb.ini"
     fi
-    apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14518585931BC711F9BA15703C6
-    echo "deb http://repo.mongodb.org/apt/ubuntu trusty/mongodb-org/3.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list
-    sudo apt update
-    apt-get -y install mongodb-org re2c
-    sudo pecl install mongodb
-    ln -s /usr/lib/php/20151012/mongodb.so /usr/lib/php/20170718/mongodb.so
-    ln -s /usr/lib/php/20160303/mongodb.so /usr/lib/php/20170718/mongodb.so
-    phpenmod mongodb
-    # auto-remove records older than 2592000 seconds (30 days)
-    mongo xhprof --eval 'db.collection.ensureIndex( { "meta.request_ts" : 1 }, { expireAfterSeconds : 2592000 } )'
-    # indexes
-    mongo xhprof --eval  "db.collection.ensureIndex( { 'meta.SERVER.REQUEST_TIME' : -1 } )"
-    mongo xhprof --eval  "db.collection.ensureIndex( { 'profile.main().wt' : -1 } )"
-    mongo xhprof --eval  "db.collection.ensureIndex( { 'profile.main().mu' : -1 } )"
-    mongo xhprof --eval  "db.collection.ensureIndex( { 'profile.main().cpu' : -1 } )"
-    mongo xhprof --eval  "db.collection.ensureIndex( { 'meta.url' : 1 } )"
-    pecl channel-update pecl.php.net
+    install_mongodb
     install_tideways
     phpenmod tideways_xhprof
     echo -e "\nDownloading xhgui, see https://github.com/perftools/xhgui"
@@ -84,7 +88,6 @@ if [[ ! -d "/srv/www/default/xhgui" ]]; then
     php install.php
     cp "${DIR}/config.php" "/srv/www/default/xhgui/config/config.php"
     cp "${DIR}/vvv-header.php" "/srv/www/default/xhgui/config/tideways-header.php"
-    update-rc.d mongodb defaults
     restart_php()
     service mongodb restart
     php7.0 --ri tideways_xhprof
