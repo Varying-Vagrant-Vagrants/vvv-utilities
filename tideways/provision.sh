@@ -21,6 +21,18 @@ install_tideways() {
     done
 }
 
+restart_php() {
+    if [[ -d "/etc/php/7.0/" ]]; then
+        service php7.0-fpm restart
+    fi
+    if [[ -d "/etc/php/7.0/" ]]; then
+        service php7.1-fpm restart
+    fi
+    if [[ -d "/etc/php/7.0/" ]]; then
+        service php7.2-fpm restart
+    fi
+}
+
 echo "Installing Tideways & XHgui"
 if [[ ! -d "/srv/www/default/xhgui" ]]; then
     if [[ -d "/etc/php/5.6/" ]]; then
@@ -71,13 +83,10 @@ if [[ ! -d "/srv/www/default/xhgui" ]]; then
     cd /srv/www/default/xhgui
     php install.php
     cp "${DIR}/config.php" "/srv/www/default/xhgui/config/config.php"
-    cp "${DIR}/vvv-header.php" "/srv/www/default/xhgui/config/vvv-header.php"
-    service nginx restart
-    service php7.0-fpm restart
-    service php7.1-fpm restart
-    service php7.2-fpm restart
+    cp "${DIR}/vvv-header.php" "/srv/www/default/xhgui/config/tideways-header.php"
     update-rc.d mongodb defaults
-    sudo service mongodb restart
+    restart_php()
+    service mongodb restart
     php7.0 --ri tideways_xhprof
     php7.1 --ri tideways_xhprof
     php --ri tideways_xhprof
@@ -91,8 +100,5 @@ else
     install_tideways
     make
     make install
-    service nginx restart
-    service php7.0-fpm restart
-    service php7.1-fpm restart
-    service php7.2-fpm restart
+    restart_php()
 fi
