@@ -21,7 +21,7 @@ return array(
     // Other config
     'profiler.enable' => function() {
         $url = $_SERVER['REQUEST_URI'];
-        if (strpos($url, 'xhgui') === 0) {
+        if (strpos($url, '/xhgui/') === 0) {
             return false;
         }
         return true;
