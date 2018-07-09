@@ -164,7 +164,6 @@ configure() {
   echo " * Copied ${DIR}/php7.2-custom.ini                 to /etc/php/7.2/fpm/conf.d/php-custom.ini"
   echo " * Copied /srv/config/php-config/opcache.ini       to /etc/php/7.2/fpm/conf.d/opcache.ini"
   echo " * Copied /srv/config/php-config/xdebug.ini        to /etc/php/7.2/mods-available/xdebug.ini"
-  echo " * Copied /srv/config/php-config/mailcatcher.ini   to /etc/php/7.2/mods-available/mailcatcher.ini"
 
   service php7.2-fpm restart
 }
