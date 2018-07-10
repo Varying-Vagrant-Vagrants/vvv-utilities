@@ -64,18 +64,18 @@ if [[ ! -d "/srv/www/default/xhgui" ]]; then
         echo "File copied for php 7.0"
         cp "${DIR}/tideways.ini" "/etc/php/7.0/mods-available/tideways_xhprof.ini"
         cp "${DIR}/mongodb.ini" "/etc/php/7.0/mods-available/mongodb.ini"
-        cp "${DIR}/xhgui-php.ini" "/etc/php/7.0/fpm/conf.d/xhgui.ini"
+        cp "${DIR}/xhgui-php.ini" "/etc/php/7.0/mods-available/xhgui.ini"
     fi
     if [[ -d "/etc/php/7.1/" ]]; then
         echo "File copied for php 7.1"
         cp "${DIR}/tideways.ini" "/etc/php/7.1/mods-available/tideways_xhprof.ini"
         cp "${DIR}/mongodb.ini" "/etc/php/7.1/mods-available/mongodb.ini"
-        cp "${DIR}/xhgui-php.ini" "/etc/php/7.1/fpm/conf.d/xhgui.ini"
+        cp "${DIR}/xhgui-php.ini" "/etc/php/7.1/mods-available/xhgui.ini"
     fi
     if [[ -d "/etc/php/7.2/" ]]; then
         echo "File copied for php 7.2"
         cp "${DIR}/tideways.ini" "/etc/php/7.2/mods-available/tideways_xhprof.ini"
-        cp "${DIR}/xhgui-php.ini" "/etc/php/7.2/fpm/conf.d/xhgui.ini"
+        cp "${DIR}/xhgui-php.ini" "/etc/php/7.2/mods-available/xhgui.ini"
         # For the default php version
         cp "${DIR}/mongodb.ini" "/etc/php/7.2/mods-available/mongodb.ini"
     fi
