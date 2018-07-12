@@ -88,6 +88,7 @@ if [[ ! -d "/srv/www/default/xhgui" ]]; then
     php install.php
     cp "${DIR}/config.php" "/srv/www/default/xhgui/config/config.php"
     cp "${DIR}/vvv-header.php" "/srv/www/default/xhgui/config/tideways-header.php"
+    cp "${DIR}/nginx.conf" "/etc/nginx/xhgui.conf"
     restart_php()
     service mongodb restart
     php7.0 --ri tideways_xhprof
