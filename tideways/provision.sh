@@ -89,6 +89,7 @@ if [[ ! -d "/srv/www/default/xhgui" ]]; then
     cp "${DIR}/config.php" "/srv/www/default/xhgui/config/config.php"
     cp "${DIR}/vvv-header.php" "/srv/www/default/xhgui/config/tideways-header.php"
     cp "${DIR}/nginx.conf" "/etc/nginx/custom-sites/xhgui.conf"
+    echo "127.0.0.1 xhgui.vvv.test # vvv-auto" >> "/etc/hosts"
     restart_php()
     service mongodb restart
     php7.0 --ri tideways_xhprof
