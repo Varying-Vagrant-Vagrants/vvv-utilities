@@ -106,4 +106,6 @@ else
     make install
     restart_php()
 fi
-echo "127.0.0.1 xhgui.vvv.test # vvv-auto" >> "/etc/hosts"
+
+echo "* Added xhgui.vvv.test to /etc/hosts"
+echo "127.0.0.1 xhgui.vvv.test # vvv-provision" >> "/etc/hosts"
