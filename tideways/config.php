@@ -3,7 +3,6 @@
 // In config/config.php
 return array(
     'debug' => false,
-    'mode' => 'development',
 
     // Can be either mongodb or file.
     'save.handler' => 'mongodb',
