@@ -51,6 +51,7 @@ install_mongodb() {
     mongo xhprof --eval  "db.collection.ensureIndex( { 'profile.main().cpu' : -1 } )"
     mongo xhprof --eval  "db.collection.ensureIndex( { 'meta.url' : 1 } )"
     update-rc.d mongodb defaults
+    update-rc.d mongodb enable
 }
 
 echo "Installing Tideways & XHgui"
