@@ -25,10 +25,10 @@ restart_php() {
     if [[ -d "/etc/php/7.0/" ]]; then
         service php7.0-fpm restart
     fi
-    if [[ -d "/etc/php/7.0/" ]]; then
+    if [[ -d "/etc/php/7.1/" ]]; then
         service php7.1-fpm restart
     fi
-    if [[ -d "/etc/php/7.0/" ]]; then
+    if [[ -d "/etc/php/7.2/" ]]; then
         service php7.2-fpm restart
     fi
 }
@@ -56,11 +56,6 @@ install_mongodb() {
 
 echo "Installing Tideways & XHgui"
 if [[ ! -d "/srv/www/default/xhgui" ]]; then
-    if [[ -d "/etc/php/5.6/" ]]; then
-        echo "File copied for php 5.6"
-        cp "${DIR}/tideways.ini" "/etc/php/5.6/mods-available/tideways_xhprof.ini"
-        cp "${DIR}/mongodb.ini" "/etc/php/5.6/mods-available/mongodb.ini"
-    fi
     if [[ -d "/etc/php/7.0/" ]]; then
         echo "File copied for php 7.0"
         cp "${DIR}/tideways.ini" "/etc/php/7.0/mods-available/tideways_xhprof.ini"
@@ -92,8 +87,12 @@ if [[ ! -d "/srv/www/default/xhgui" ]]; then
     cp "${DIR}/nginx.conf" "/etc/nginx/custom-sites/xhgui.conf"
     restart_php
     service mongodb restart
-    php7.0 --ri tideways_xhprof
-    php7.1 --ri tideways_xhprof
+    if [[ -d "/etc/php/7.0/" ]]; then
+        php7.0 --ri tideways_xhprof
+    fi
+    if [[ -d "/etc/php/7.0/" ]]; then
+        php7.1 --ri tideways_xhprof
+    fi
     php --ri tideways_xhprof
 else
     echo -e "\nUpdating xhgui..."
