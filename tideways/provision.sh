@@ -37,20 +37,20 @@ restart_php() {
 install_mongodb() {
     apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14518585931BC711F9BA15703C6
     echo "deb http://repo.mongodb.org/apt/ubuntu trusty/mongodb-org/3.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list
-    sudo apt update
+    sudo apt update > /dev/null 2>&1
     apt-get -y install mongodb-org re2c
     sudo pecl install mongodb
     ln -s /usr/lib/php/20151012/mongodb.so /usr/lib/php/20170718/mongodb.so
     ln -s /usr/lib/php/20160303/mongodb.so /usr/lib/php/20170718/mongodb.so
     phpenmod mongodb
     # auto-remove records older than 2592000 seconds (30 days)
-    mongo xhprof --eval 'db.collection.ensureIndex( { "meta.request_ts" : 1 }, { expireAfterSeconds : 2592000 } )'
+    mongo xhprof --eval 'db.collection.ensureIndex( { "meta.request_ts" : 1 }, { expireAfterSeconds : 2592000 } )' > /dev/null 2>&1
     # indexes
-    mongo xhprof --eval  "db.collection.ensureIndex( { 'meta.SERVER.REQUEST_TIME' : -1 } )"
-    mongo xhprof --eval  "db.collection.ensureIndex( { 'profile.main().wt' : -1 } )"
-    mongo xhprof --eval  "db.collection.ensureIndex( { 'profile.main().mu' : -1 } )"
-    mongo xhprof --eval  "db.collection.ensureIndex( { 'profile.main().cpu' : -1 } )"
-    mongo xhprof --eval  "db.collection.ensureIndex( { 'meta.url' : 1 } )"
+    mongo xhprof --eval  "db.collection.ensureIndex( { 'meta.SERVER.REQUEST_TIME' : -1 } )" > /dev/null 2>&1
+    mongo xhprof --eval  "db.collection.ensureIndex( { 'profile.main().wt' : -1 } )" > /dev/null 2>&1
+    mongo xhprof --eval  "db.collection.ensureIndex( { 'profile.main().mu' : -1 } )" > /dev/null 2>&1
+    mongo xhprof --eval  "db.collection.ensureIndex( { 'profile.main().cpu' : -1 } )" > /dev/null 2>&1
+    mongo xhprof --eval  "db.collection.ensureIndex( { 'meta.url' : 1 } )" > /dev/null 2>&1
     update-rc.d mongodb defaults
     update-rc.d mongodb enable
 }
@@ -82,7 +82,7 @@ if [[ ! -d "/srv/www/default/xhgui" ]]; then
     echo -e "\nDownloading xhgui, see https://github.com/perftools/xhgui"
     git clone "https://github.com/perftools/xhgui" "/srv/www/default/xhgui"
     cd /srv/www/default/xhgui
-    php install.php
+    php install.php > /dev/null 2>&1
     cp "${DIR}/vvv-hosts" "/srv/www/default/xhgui/vvv-hosts"
     cp "${DIR}/config.php" "/srv/www/default/xhgui/config/config.php"
     cp "${DIR}/tideways-header.php" "/srv/www/default/xhgui/config/tideways-header.php"
@@ -99,15 +99,14 @@ if [[ ! -d "/srv/www/default/xhgui" ]]; then
 else
     echo -e "\nUpdating xhgui..."
     cd /srv/www/default/xhgui
-    git pull --rebase origin master
+    git pull --rebase origin master > /dev/null 2>&1
     rm -rf /var/local/tideways-php7.0
     rm -rf /var/local/tideways-php7.1
     rm -rf /var/local/tideways-php7.2
     install_tideways
-    make
-    make install
+    make  > /dev/null 2>&1
+    make install  > /dev/null 2>&1
     restart_php
 fi
 
-echo "* Added xhgui.vvv.test to /etc/hosts"
-echo "127.0.0.1 xhgui.vvv.test # vvv-provision" >> "/etc/hosts"
+echo "* Added xhgui.vvv.test domain"
