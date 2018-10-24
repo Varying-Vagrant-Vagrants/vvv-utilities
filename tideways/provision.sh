@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Tideways with XHgui
-DIR=`dirname $0`
+DIR=$(pwd)
 
 install_tideways() {
     # Tideways is only for php =>7.0
@@ -12,15 +12,13 @@ install_tideways() {
         do
         echo "Compiling Tideways for PHP $version"
         cd "/var/local/tideways-php${version}"
-        update-alternatives --set php /usr/bin/php$version
-        update-alternatives --set php-config /usr/bin/php-config$version
-        update-alternatives --set phpize /usr/bin/phpize$version
-        if hash phpize$version 2> /dev/null; then
-            phpize$version
-        fi
-        ./configure --enable-tideways-xhprof --with-php-config=php-config$version
-        make
-        make install
+        update-alternatives --set php /usr/bin/php$version 2> /dev/null
+        update-alternatives --set php-config /usr/bin/php-config$version 2> /dev/null
+        update-alternatives --set phpize /usr/bin/phpize$version 2> /dev/null
+        phpize$version
+        ./configure --enable-tideways-xhprof --with-php-config=php-config$version 2> /dev/null
+        make 2> /dev/null
+        make install 2> /dev/null
     done
 }
 
@@ -94,7 +92,7 @@ if [[ ! -d "/srv/www/default/xhgui" ]]; then
     if [[ -d "/etc/php/7.0/" ]]; then
         php7.0 --ri tideways_xhprof
     fi
-    if [[ -d "/etc/php/7.0/" ]]; then
+    if [[ -d "/etc/php/7.1/" ]]; then
         php7.1 --ri tideways_xhprof
     fi
     php --ri tideways_xhprof
