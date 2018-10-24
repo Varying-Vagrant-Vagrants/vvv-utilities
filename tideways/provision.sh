@@ -10,11 +10,14 @@ install_tideways() {
     cp -r /var/local/tideways-php7.2 /var/local/tideways-php7.1
     for version in 7.0 7.1 7.2
         do
+        echo "Compiling Tideways for PHP $version"
         cd "/var/local/tideways-php${version}"
         update-alternatives --set php /usr/bin/php$version
         update-alternatives --set php-config /usr/bin/php-config$version
         update-alternatives --set phpize /usr/bin/phpize$version
-        phpize$version
+        if hash phpize$version 2> /dev/null; then
+            phpize$version
+        fi
         ./configure --enable-tideways-xhprof --with-php-config=php-config$version
         make
         make install
