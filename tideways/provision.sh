@@ -12,13 +12,13 @@ install_tideways() {
         do
         echo "Compiling Tideways for PHP $version"
         cd "/var/local/tideways-php${version}"
-        update-alternatives --set php /usr/bin/php$version 2> /dev/null
-        update-alternatives --set php-config /usr/bin/php-config$version 2> /dev/null
-        update-alternatives --set phpize /usr/bin/phpize$version 2> /dev/null
+        update-alternatives --set php /usr/bin/php$version > /dev/null 2>&1
+        update-alternatives --set php-config /usr/bin/php-config$version > /dev/null 2>&1
+        update-alternatives --set phpize /usr/bin/phpize$version > /dev/null 2>&1
         phpize$version
-        ./configure --enable-tideways-xhprof --with-php-config=php-config$version 2> /dev/null
-        make 2> /dev/null
-        make install 2> /dev/null
+        ./configure --enable-tideways-xhprof --with-php-config=php-config$version > /dev/null 2>&1
+        make > /dev/null 2>&1
+        make install > /dev/null 2>&1
     done
 }
 
