@@ -82,6 +82,7 @@ if [[ ! -d "/srv/www/default/xhgui" ]]; then
     git clone "https://github.com/perftools/xhgui" "/srv/www/default/xhgui"
     cd /srv/www/default/xhgui
     php install.php
+    cp "${DIR}/vvv-hosts" "/srv/www/default/xhgui/vvv-hosts"
     cp "${DIR}/config.php" "/srv/www/default/xhgui/config/config.php"
     cp "${DIR}/tideways-header.php" "/srv/www/default/xhgui/config/tideways-header.php"
     cp "${DIR}/nginx.conf" "/etc/nginx/custom-utilities/xhgui.conf"
