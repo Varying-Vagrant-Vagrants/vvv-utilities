@@ -4,11 +4,12 @@ DIR=$(pwd)
 
 install_tideways() {
     # Tideways is only for php =>7.0
-    echo "Installing/update Tideways to PHP 7.0, 7.1, 7.2"
+    echo "Installing/update Tideways to PHP 7.0, 7.1, 7.2 7.3"
     git clone "https://github.com/tideways/php-xhprof-extension" "/var/local/tideways-php7.2"
     cp -r /var/local/tideways-php7.2 /var/local/tideways-php7.0
     cp -r /var/local/tideways-php7.2 /var/local/tideways-php7.1
-    for version in 7.0 7.1 7.2
+    cp -r /var/local/tideways-php7.2 /var/local/tideways-php7.3
+    for version in 7.0 7.1 7.2 7.3
         do
         echo "Compiling Tideways for PHP $version"
         cd "/var/local/tideways-php${version}"
@@ -31,6 +32,9 @@ restart_php() {
     fi
     if [[ -d "/etc/php/7.2/" ]]; then
         service php7.2-fpm restart
+    fi
+    if [[ -d "/etc/php/7.3/" ]]; then
+        service php7.3-fpm restart
     fi
 }
 
@@ -76,6 +80,12 @@ if [[ ! -d "/srv/www/default/xhgui" ]]; then
         # For the default php version
         cp "${DIR}/mongodb.ini" "/etc/php/7.2/mods-available/mongodb.ini"
     fi
+    if [[ -d "/etc/php/7.3/" ]]; then
+        echo "File copied for php 7.3"
+        cp "${DIR}/tideways.ini" "/etc/php/7.3/mods-available/tideways_xhprof.ini"
+        cp "${DIR}/mongodb.ini" "/etc/php/7.3/mods-available/mongodb.ini"
+        cp "${DIR}/xhgui-php.ini" "/etc/php/7.3/mods-available/xhgui.ini"
+    fi
     install_mongodb
     install_tideways
     phpenmod tideways_xhprof
@@ -95,6 +105,9 @@ if [[ ! -d "/srv/www/default/xhgui" ]]; then
     if [[ -d "/etc/php/7.1/" ]]; then
         php7.1 --ri tideways_xhprof
     fi
+    if [[ -d "/etc/php/7.3/" ]]; then
+        php7.3 --ri tideways_xhprof
+    fi
     php --ri tideways_xhprof
 else
     echo -e "\nUpdating xhgui..."
@@ -103,10 +116,10 @@ else
     rm -rf /var/local/tideways-php7.0
     rm -rf /var/local/tideways-php7.1
     rm -rf /var/local/tideways-php7.2
+    rm -rf /var/local/tideways-php7.3
     install_tideways
     make  > /dev/null 2>&1
     make install  > /dev/null 2>&1
     restart_php
 fi
 
-echo "* Added xhgui.vvv.test domain"
