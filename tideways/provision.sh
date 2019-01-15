@@ -6,9 +6,9 @@ install_tideways() {
     # Tideways is only for php =>7.0
     echo "Installing/update Tideways to PHP 7.0, 7.1, 7.2 7.3"
     git clone "https://github.com/tideways/php-xhprof-extension" "/var/local/tideways-php7.2"
-    cp -r /var/local/tideways-php7.2 /var/local/tideways-php7.0
-    cp -r /var/local/tideways-php7.2 /var/local/tideways-php7.1
-    cp -r /var/local/tideways-php7.2 /var/local/tideways-php7.3
+    cp -rf /var/local/tideways-php7.2 /var/local/tideways-php7.0
+    cp -rf /var/local/tideways-php7.2 /var/local/tideways-php7.1
+    cp -rf /var/local/tideways-php7.2 /var/local/tideways-php7.3
     for version in 7.0 7.1 7.2 7.3
         do
         echo "Compiling Tideways for PHP $version"
@@ -63,28 +63,28 @@ echo "Installing Tideways & XHgui"
 if [[ ! -d "/srv/www/default/xhgui" ]]; then
     if [[ -d "/etc/php/7.0/" ]]; then
         echo "File copied for php 7.0"
-        cp "${DIR}/tideways.ini" "/etc/php/7.0/mods-available/tideways_xhprof.ini"
-        cp "${DIR}/mongodb.ini" "/etc/php/7.0/mods-available/mongodb.ini"
-        cp "${DIR}/xhgui-php.ini" "/etc/php/7.0/mods-available/xhgui.ini"
+        cp -f "${DIR}/tideways.ini" "/etc/php/7.0/mods-available/tideways_xhprof.ini"
+        cp -f "${DIR}/mongodb.ini" "/etc/php/7.0/mods-available/mongodb.ini"
+        cp -f "${DIR}/xhgui-php.ini" "/etc/php/7.0/mods-available/xhgui.ini"
     fi
     if [[ -d "/etc/php/7.1/" ]]; then
         echo "File copied for php 7.1"
-        cp "${DIR}/tideways.ini" "/etc/php/7.1/mods-available/tideways_xhprof.ini"
-        cp "${DIR}/mongodb.ini" "/etc/php/7.1/mods-available/mongodb.ini"
-        cp "${DIR}/xhgui-php.ini" "/etc/php/7.1/mods-available/xhgui.ini"
+        cp -f "${DIR}/tideways.ini" "/etc/php/7.1/mods-available/tideways_xhprof.ini"
+        cp -f "${DIR}/mongodb.ini" "/etc/php/7.1/mods-available/mongodb.ini"
+        cp -f "${DIR}/xhgui-php.ini" "/etc/php/7.1/mods-available/xhgui.ini"
     fi
     if [[ -d "/etc/php/7.2/" ]]; then
         echo "File copied for php 7.2"
-        cp "${DIR}/tideways.ini" "/etc/php/7.2/mods-available/tideways_xhprof.ini"
-        cp "${DIR}/xhgui-php.ini" "/etc/php/7.2/mods-available/xhgui.ini"
+        cp -f "${DIR}/tideways.ini" "/etc/php/7.2/mods-available/tideways_xhprof.ini"
+        cp -f "${DIR}/xhgui-php.ini" "/etc/php/7.2/mods-available/xhgui.ini"
         # For the default php version
-        cp "${DIR}/mongodb.ini" "/etc/php/7.2/mods-available/mongodb.ini"
+        cp -f "${DIR}/mongodb.ini" "/etc/php/7.2/mods-available/mongodb.ini"
     fi
     if [[ -d "/etc/php/7.3/" ]]; then
         echo "File copied for php 7.3"
-        cp "${DIR}/tideways.ini" "/etc/php/7.3/mods-available/tideways_xhprof.ini"
-        cp "${DIR}/mongodb.ini" "/etc/php/7.3/mods-available/mongodb.ini"
-        cp "${DIR}/xhgui-php.ini" "/etc/php/7.3/mods-available/xhgui.ini"
+        cp -f "${DIR}/tideways.ini" "/etc/php/7.3/mods-available/tideways_xhprof.ini"
+        cp -f "${DIR}/mongodb.ini" "/etc/php/7.3/mods-available/mongodb.ini"
+        cp -f "${DIR}/xhgui-php.ini" "/etc/php/7.3/mods-available/xhgui.ini"
     fi
     install_mongodb
     install_tideways
@@ -93,10 +93,9 @@ if [[ ! -d "/srv/www/default/xhgui" ]]; then
     git clone "https://github.com/perftools/xhgui" "/srv/www/default/xhgui"
     cd /srv/www/default/xhgui
     php install.php > /dev/null 2>&1
-    cp "${DIR}/vvv-hosts" "/srv/www/default/xhgui/vvv-hosts"
-    cp "${DIR}/config.php" "/srv/www/default/xhgui/config/config.php"
-    cp "${DIR}/tideways-header.php" "/srv/www/default/xhgui/config/tideways-header.php"
-    cp "${DIR}/nginx.conf" "/etc/nginx/custom-utilities/xhgui.conf"
+    cp -f "${DIR}/config.php" "/srv/www/default/xhgui/config/config.php"
+    cp -f "${DIR}/tideways-header.php" "/srv/www/default/xhgui/config/tideways-header.php"
+    cp -f "${DIR}/nginx.conf" "/etc/nginx/custom-utilities/xhgui.conf"
     restart_php
     service mongodb restart
     if [[ -d "/etc/php/7.0/" ]]; then
