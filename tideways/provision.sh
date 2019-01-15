@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Tideways with XHgui
-DIR=$(pwd)
+DIR=`dirname $0`
 
 install_tideways() {
     # Tideways is only for php =>7.0
