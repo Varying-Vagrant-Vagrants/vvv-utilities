@@ -48,8 +48,9 @@ install_mongodb() {
     sudo apt update > /dev/null 2>&1
     apt-get -y install mongodb-org re2c
     sudo pecl install mongodb
-    ln -s /usr/lib/php/20151012/mongodb.so /usr/lib/php/20170718/mongodb.so
-    ln -s /usr/lib/php/20160303/mongodb.so /usr/lib/php/20170718/mongodb.so
+    ln -s /usr/lib/php/20151012/mongodb.so /usr/lib/php/20180731/mongodb.so
+    ln -s /usr/lib/php/20160303/mongodb.so /usr/lib/php/20180731/mongodb.so
+    ln -s /usr/lib/php/20170718/mongodb.so /usr/lib/php/20180731/mongodb.so
     phpenmod mongodb
     # auto-remove records older than 2592000 seconds (30 days)
     mongo xhprof --eval 'db.collection.ensureIndex( { "meta.request_ts" : 1 }, { expireAfterSeconds : 2592000 } )' > /dev/null 2>&1
