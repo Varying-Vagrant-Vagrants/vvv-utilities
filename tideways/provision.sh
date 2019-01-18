@@ -43,7 +43,7 @@ restart_php() {
 }
 
 install_mongodb() {
-    apt-key add "${DIR}/aptkey.gpg"
+    apt-key add "${DIR}/aptkey.pgp"
     echo "deb http://repo.mongodb.org/apt/ubuntu trusty/mongodb-org/3.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list
     sudo apt update > /dev/null 2>&1
     apt-get -y install mongodb-org re2c
