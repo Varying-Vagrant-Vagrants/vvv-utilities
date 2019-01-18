@@ -40,6 +40,7 @@ restart_php() {
             service php$version-fpm restart
         fi
     done
+    service nginx restart
 }
 
 install_mongodb() {
@@ -48,9 +49,9 @@ install_mongodb() {
     sudo apt update > /dev/null 2>&1
     apt-get -y install mongodb-org re2c
     sudo pecl install mongodb
-    ln -s /usr/lib/php/20151012/mongodb.so /usr/lib/php/20180731/mongodb.so
-    ln -s /usr/lib/php/20160303/mongodb.so /usr/lib/php/20180731/mongodb.so
-    ln -s /usr/lib/php/20170718/mongodb.so /usr/lib/php/20180731/mongodb.so
+    ln -s /usr/lib/php/20151012/mongodb.so /usr/lib/php/20170718/mongodb.so
+    ln -s /usr/lib/php/20160303/mongodb.so /usr/lib/php/20170718/mongodb.so
+    ln -s /usr/lib/php/20180731/mongodb.so /usr/lib/php/20170718/mongodb.so
     phpenmod mongodb
     # auto-remove records older than 2592000 seconds (30 days)
     mongo xhprof --eval 'db.collection.ensureIndex( { "meta.request_ts" : 1 }, { expireAfterSeconds : 2592000 } )' > /dev/null 2>&1
@@ -81,7 +82,7 @@ if [[ ! -d "/srv/www/default/xhgui" ]]; then
     echo -e "\nDownloading xhgui, see https://github.com/perftools/xhgui"
     git clone "https://github.com/perftools/xhgui" "/srv/www/default/xhgui"
     cd /srv/www/default/xhgui
-    php install.php > /dev/null 2>&1
+    sudo php install.php > /dev/null 2>&1
     cp -f "${DIR}/config.php" "/srv/www/default/xhgui/config/config.php"
     cp -f "${DIR}/tideways-header.php" "/srv/www/default/xhgui/config/tideways-header.php"
     cp -f "${DIR}/nginx.conf" "/etc/nginx/custom-utilities/xhgui.conf"
