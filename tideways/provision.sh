@@ -18,7 +18,6 @@ install_tideways_php() {
     if [[ `command -v php$version` ]]; then
         echo "Copying tideways files for php $version"
         cp -f "${DIR}/tideways.ini" "/etc/php/$version/mods-available/tideways_xhprof.ini"
-        cp -f "${DIR}/mongodb.ini" "/etc/php/$version/mods-available/mongodb.ini"
         cp -f "${DIR}/xhgui-php.ini" "/etc/php/$version/mods-available/xhgui.ini"
         cp -rf /var/local/tideways-php /var/local/tideways-php$version
         echo "Compiling Tideways for PHP $version"
@@ -52,6 +51,12 @@ install_mongodb() {
     ln -s /usr/lib/php/20151012/mongodb.so /usr/lib/php/20170718/mongodb.so
     ln -s /usr/lib/php/20160303/mongodb.so /usr/lib/php/20170718/mongodb.so
     ln -s /usr/lib/php/20180731/mongodb.so /usr/lib/php/20170718/mongodb.so
+    for version in 7.0 7.1 7.2 7.3
+    do
+        if [[ `command -v php$version` ]]; then
+            cp -f "${DIR}/mongodb.ini" "/etc/php/$version/mods-available/mongodb.ini"
+        fi
+    done
     phpenmod mongodb
     # auto-remove records older than 2592000 seconds (30 days)
     mongo xhprof --eval 'db.collection.ensureIndex( { "meta.request_ts" : 1 }, { expireAfterSeconds : 2592000 } )' > /dev/null 2>&1
@@ -62,7 +67,7 @@ install_mongodb() {
     mongo xhprof --eval  "db.collection.ensureIndex( { 'profile.main().cpu' : -1 } )" > /dev/null 2>&1
     mongo xhprof --eval  "db.collection.ensureIndex( { 'meta.url' : 1 } )" > /dev/null 2>&1
     update-rc.d mongodb defaults
-    update-rc.d mongodb enable
+    service mongod restart
 }
 
 echo "Installing Tideways & XHgui"
