@@ -43,7 +43,7 @@ restart_php() {
 }
 
 install_mongodb() {
-    apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14518585931BC711F9BA15703C6
+    apt-key add "${DIR}/aptkey.gpg"
     echo "deb http://repo.mongodb.org/apt/ubuntu trusty/mongodb-org/3.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list
     sudo apt update > /dev/null 2>&1
     apt-get -y install mongodb-org re2c
@@ -64,16 +64,19 @@ install_mongodb() {
 }
 
 echo "Installing Tideways & XHgui"
-if [[ ! -d "/srv/www/default/xhgui" ]]; then
+if [[ ! `command -v mongo` ]]; then
     install_mongodb
-    install_tideways
-    for version in 7.0 7.1 7.2 7.3
-    do
-        if [[ `command -v php$version` ]]; then
-            install_tideways_php $version
-        fi
-    done
-    phpenmod tideways_xhprof
+fi
+install_tideways
+for version in 7.0 7.1 7.2 7.3
+do
+    if [[ `command -v php$version` ]]; then
+        install_tideways_php $version
+    fi
+done
+phpenmod tideways_xhprof
+
+if [[ ! -d "/srv/www/default/xhgui" ]]; then
     echo -e "\nDownloading xhgui, see https://github.com/perftools/xhgui"
     git clone "https://github.com/perftools/xhgui" "/srv/www/default/xhgui"
     cd /srv/www/default/xhgui
