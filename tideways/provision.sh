@@ -48,9 +48,9 @@ install_mongodb() {
     sudo apt update > /dev/null 2>&1
     apt-get -y install mongodb-org re2c
     sudo pecl install mongodb
-    ln -s /usr/lib/php/20151012/mongodb.so /usr/lib/php/20170718/mongodb.so
-    ln -s /usr/lib/php/20160303/mongodb.so /usr/lib/php/20170718/mongodb.so
-    ln -s /usr/lib/php/20180731/mongodb.so /usr/lib/php/20170718/mongodb.so
+    ln -s /usr/lib/php/20151012/mongodb.so /usr/lib/php/20180731/mongodb.so
+    ln -s /usr/lib/php/20160303/mongodb.so /usr/lib/php/20180731/mongodb.so
+    ln -s /usr/lib/php/20170718/mongodb.so /usr/lib/php/20180731/mongodb.so
     for version in 7.0 7.1 7.2 7.3
     do
         if [[ `command -v php$version` ]]; then
