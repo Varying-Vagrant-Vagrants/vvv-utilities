@@ -47,13 +47,10 @@ install_mongodb() {
     echo "deb http://repo.mongodb.org/apt/ubuntu trusty/mongodb-org/3.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list
     sudo apt update > /dev/null 2>&1
     apt-get -y install mongodb-org re2c
-    sudo pecl install mongodb
-    ln -s /usr/lib/php/20180731/mongodb.so /usr/lib/php/20151012/mongodb.so
-    ln -s /usr/lib/php/20180731/mongodb.so /usr/lib/php/20160303/mongodb.so 
-    ln -s /usr/lib/php/20180731/mongodb.so /usr/lib/php/20170718/mongodb.so
     for version in 7.0 7.1 7.2 7.3
     do
         if [[ `command -v php$version` ]]; then
+            sudo pecl -d php_suffix=$version install mongodb
             cp -f "${DIR}/mongodb.ini" "/etc/php/$version/mods-available/mongodb.ini"
         fi
     done
