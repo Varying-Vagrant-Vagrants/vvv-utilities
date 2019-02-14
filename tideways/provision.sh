@@ -70,7 +70,9 @@ install_xhgui() {
 echo "Installing Tideways & XHgui"
 install_tideways
 install_tideways_php
-install_xhgui
+if [[ $(command -v mongo) ]]; then
+    install_xhgui
+fi
 restart_php
 
 echo "Finish installation of Tideways with xhgui"
