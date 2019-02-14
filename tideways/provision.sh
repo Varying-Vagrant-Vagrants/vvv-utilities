@@ -76,9 +76,9 @@ for version in 7.0 7.1 7.2 7.3
 do
     if [[ `command -v php$version` ]]; then
         install_tideways_php $version
+        phpenmod -v $version tideways_xhprof
     fi
 done
-phpenmod tideways_xhprof
 
 if [[ ! -d "/srv/www/default/xhgui" ]]; then
     echo -e "\nDownloading xhgui, see https://github.com/perftools/xhgui"
