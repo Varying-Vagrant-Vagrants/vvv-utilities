@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Tideways with XHgui
-DIR=`dirname $0`
+DIR=$(dirname "$0")
 
 install_tideways() {
     # Tideways is only for php =>7.0
@@ -15,16 +15,16 @@ install_tideways() {
 
 install_tideways_php() {
     version=$1
-    if [[ `command -v php$version` ]]; then
+    if [[ $(command -v php$version) ]]; then
         echo "Copying tideways files for php $version"
         cp -f "${DIR}/tideways.ini" "/etc/php/$version/mods-available/tideways_xhprof.ini"
         cp -f "${DIR}/xhgui-php.ini" "/etc/php/$version/mods-available/xhgui.ini"
-        cp -rf /var/local/tideways-php /var/local/tideways-php$version
+        cp -rf /var/local/tideways-php "/var/local/tideways-php$version"
         echo "Compiling Tideways for PHP $version"
         cd "/var/local/tideways-php${version}"
-        update-alternatives --set php /usr/bin/php$version > /dev/null 2>&1
-        update-alternatives --set php-config /usr/bin/php-config$version > /dev/null 2>&1
-        update-alternatives --set phpize /usr/bin/phpize$version > /dev/null 2>&1
+        update-alternatives --set php "/usr/bin/php$version" > /dev/null 2>&1
+        update-alternatives --set php-config "/usr/bin/php-config$version" > /dev/null 2>&1
+        update-alternatives --set phpize "/usr/bin/phpize$version" > /dev/null 2>&1
         phpize$version
         ./configure --enable-tideways-xhprof --with-php-config=php-config$version > /dev/null 2>&1
         make > /dev/null 2>&1
@@ -35,8 +35,8 @@ install_tideways_php() {
 restart_php() {
     for version in 7.0 7.1 7.2 7.3
     do
-        if [[ `command -v php$version` ]]; then
-            service php$version-fpm restart
+        if [[ $(command -v php$version) ]]; then
+            service "php$version-fpm" restart
         fi
     done
     service nginx restart
@@ -49,12 +49,12 @@ install_mongodb() {
     apt-get -y install mongodb-org re2c
     for version in 7.0 7.1 7.2 7.3
     do
-        if [[ `command -v php$version` ]]; then
+        if [[ $(command -v php$version) ]]; then
             sudo pecl -d php_suffix=$version install mongodb
             cp -f "${DIR}/mongodb.ini" "/etc/php/$version/mods-available/mongodb.ini"
         fi
     done
-    phpenmod -v $version mongodb
+    phpenmod -v "$version" mongodb
     # auto-remove records older than 2592000 seconds (30 days)
     mongo xhprof --eval 'db.collection.ensureIndex( { "meta.request_ts" : 1 }, { expireAfterSeconds : 2592000 } )' > /dev/null 2>&1
     # indexes
@@ -68,15 +68,15 @@ install_mongodb() {
 }
 
 echo "Installing Tideways & XHgui"
-if [[ ! `command -v mongo` ]]; then
+if [[ ! $(command -v mongo) ]]; then
     install_mongodb
 fi
 install_tideways
 for version in 7.0 7.1 7.2 7.3
 do
-    if [[ `command -v php$version` ]]; then
-        install_tideways_php $version
-        phpenmod -v $version tideways_xhprof
+    if [[ $(command -v php$version) ]]; then
+        install_tideways_php "$version"
+        phpenmod -v "$version" tideways_xhprof
     fi
 done
 
@@ -92,7 +92,7 @@ if [[ ! -d "/srv/www/default/xhgui" ]]; then
     service mongodb restart
     for version in 7.0 7.1 7.2 7.3
     do
-        if [[ `command -v php$version` ]]; then
+        if [[ $(command -v php$version) ]]; then
             php$version --ri tideways_xhprof
         fi
     done
@@ -104,13 +104,13 @@ else
     for version in 7.0 7.1 7.2 7.3
     do
         if [[ -d "/var/local/tideways-php$version" ]]; then
-            rm -rf /var/local/tideways-php$version
+            rm -rf "/var/local/tideways-php$version"
         fi
     done
     install_tideways
     for version in 7.0 7.1 7.2 7.3
     do
-        if [[ `command -v php$version` ]]; then
+        if [[ $(command -v php$version) ]]; then
             install_tideways_php $version
         fi
     done
