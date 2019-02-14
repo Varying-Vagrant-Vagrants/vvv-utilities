@@ -54,7 +54,7 @@ install_mongodb() {
             cp -f "${DIR}/mongodb.ini" "/etc/php/$version/mods-available/mongodb.ini"
         fi
     done
-    phpenmod mongodb
+    phpenmod -v $version mongodb
     # auto-remove records older than 2592000 seconds (30 days)
     mongo xhprof --eval 'db.collection.ensureIndex( { "meta.request_ts" : 1 }, { expireAfterSeconds : 2592000 } )' > /dev/null 2>&1
     # indexes
