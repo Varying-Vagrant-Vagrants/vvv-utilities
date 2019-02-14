@@ -54,14 +54,14 @@ install_mongodb() {
         apt-key add "${DIR}/aptkey.pgp"
         echo "deb http://repo.mongodb.org/apt/ubuntu trusty/mongodb-org/3.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list
         sudo apt update > /dev/null 2>&1
-        apt-get -y install mongodb-org re2c
+        apt-get -y install mongodb-org re2c > /dev/null 2>&1
         for version in "7.0" "7.1" "7.2" "7.3"
         do
             if [[ $(command -v php$version) ]]; then
                 echo "Install MongoDB for PHP $version"
                 sudo pecl -d php_suffix="$version" install mongodb > /dev/null 2>&1
                 # do not remove files, only register the packages as not installed so we can install for other php version
-                sudo pecl uninstall -r mongodb
+                sudo pecl uninstall -r mongodb > /dev/null 2>&1
                 cp -f "${DIR}/mongodb.ini" "/etc/php/$version/mods-available/mongodb.ini"
                 phpenmod -v "$version" mongodb
             fi
@@ -84,7 +84,7 @@ install_xhgui() {
         git clone "https://github.com/perftools/xhgui" "/srv/www/default/xhgui" > /dev/null 2>&1
         cd /srv/www/default/xhgui
         echo "Installing Tideways"
-        sudo php install.php
+        sudo php install.php > /dev/null 2>&1
         cp -f "${DIR}/config.php" "/srv/www/default/xhgui/config/config.php"
         cp -f "${DIR}/tideways-header.php" "/srv/www/default/xhgui/config/tideways-header.php"
         cp -f "${DIR}/nginx.conf" "/etc/nginx/custom-utilities/xhgui.conf"
@@ -93,6 +93,7 @@ install_xhgui() {
         echo -e "\nUpdating xhgui..."
         cd /srv/www/default/xhgui
         git pull --rebase origin master > /dev/null 2>&1
+        sudo php install.php > /dev/null 2>&1
     fi
 }
 
