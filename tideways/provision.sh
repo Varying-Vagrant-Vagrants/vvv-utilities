@@ -29,12 +29,13 @@ install_tideways_php() {
         ./configure --enable-tideways-xhprof --with-php-config=php-config$version > /dev/null 2>&1
         make > /dev/null 2>&1
         make install > /dev/null 2>&1
+        rm -rf "/var/local/tideways-php$version"
     fi
 }
 
 restart_php() {
     echo "Restarting PHP-FPM server"
-    for version in 7.0 7.1 7.2 7.3
+    for version in "7.0" "7.1" "7.2" "7.3"
     do
         if [[ $(command -v php$version) ]]; then
             service "php$version-fpm" restart
@@ -49,12 +50,13 @@ install_mongodb() {
     echo "deb http://repo.mongodb.org/apt/ubuntu trusty/mongodb-org/3.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list
     sudo apt update > /dev/null 2>&1
     apt-get -y install mongodb-org re2c
-    for version in 7.0 7.1 7.2 7.3
+    for version in "7.0" "7.1" "7.2" "7.3"
     do
         if [[ $(command -v php$version) ]]; then
             echo "Install MongoDB for PHP $version"
             sudo pecl -d php_suffix="$version" install mongodb > /dev/null 2>&1
             cp -f "${DIR}/mongodb.ini" "/etc/php/$version/mods-available/mongodb.ini"
+            cp -f "${DIR}/mongodb.ini" "/etc/php/$version/fpm/conf.d/20-mongodb.ini"
         fi
     done
     phpenmod -v "$version" mongodb
@@ -73,15 +75,6 @@ echo "Installing Tideways & XHgui"
 if [[ ! $(command -v mongo) ]]; then
     install_mongodb
 fi
-install_tideways
-for version in 7.0 7.1 7.2 7.3
-do
-    if [[ $(command -v php$version) ]]; then
-        echo "Install Tideways for PHP $version"
-        install_tideways_php "$version"
-        phpenmod -v "$version" tideways_xhprof
-    fi
-done
 
 if [[ ! -d "/srv/www/default/xhgui" ]]; then
     echo -e "\nDownloading xhgui, see https://github.com/perftools/xhgui"
@@ -92,28 +85,23 @@ if [[ ! -d "/srv/www/default/xhgui" ]]; then
     cp -f "${DIR}/config.php" "/srv/www/default/xhgui/config/config.php"
     cp -f "${DIR}/tideways-header.php" "/srv/www/default/xhgui/config/tideways-header.php"
     cp -f "${DIR}/nginx.conf" "/etc/nginx/custom-utilities/xhgui.conf"
-    restart_php
     service mongod restart
 else
     echo -e "\nUpdating xhgui..."
     cd /srv/www/default/xhgui
     git pull --rebase origin master > /dev/null 2>&1
-    for version in 7.0 7.1 7.2 7.3
-    do
-        if [[ -d "/var/local/tideways-php$version" ]]; then
-            rm -rf "/var/local/tideways-php$version"
-        fi
-    done
-    install_tideways
-    for version in 7.0 7.1 7.2 7.3
-    do
-        if [[ $(command -v php$version) ]]; then
-            install_tideways_php $version
-        fi
-    done
-    make  > /dev/null 2>&1
-    make install  > /dev/null 2>&1
-    restart_php
 fi
+
+install_tideways
+for version in "7.0" "7.1" "7.2" "7.3"
+do
+    if [[ $(command -v php$version) ]]; then
+        echo "Install Tideways for PHP $version"
+        install_tideways_php "$version"
+        phpenmod -v "$version" tideways_xhprof
+    fi
+done
+
+restart_php
 
 echo "Finish installation of Tideways with xhgui"
