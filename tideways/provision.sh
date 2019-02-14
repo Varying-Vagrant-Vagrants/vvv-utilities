@@ -89,14 +89,13 @@ if [[ ! -d "/srv/www/default/xhgui" ]]; then
     cp -f "${DIR}/tideways-header.php" "/srv/www/default/xhgui/config/tideways-header.php"
     cp -f "${DIR}/nginx.conf" "/etc/nginx/custom-utilities/xhgui.conf"
     restart_php
-    service mongodb restart
+    service mongod restart
     for version in 7.0 7.1 7.2 7.3
     do
         if [[ $(command -v php$version) ]]; then
             php$version --ri tideways_xhprof
         fi
     done
-    php --ri tideways_xhprof
 else
     echo -e "\nUpdating xhgui..."
     cd /srv/www/default/xhgui
