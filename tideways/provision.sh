@@ -55,13 +55,13 @@ install_mongodb() {
         echo "deb http://repo.mongodb.org/apt/ubuntu trusty/mongodb-org/3.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list
         sudo apt update > /dev/null 2>&1
         apt-get -y install mongodb-org re2c
-        # pecl install only on the latest version, on multiple doesn't enable to register to all of them
-        sudo pecl install mongodb > /dev/null 2>&1
-        for version in "20170718" "20160303" "20151012"
+        for version in "7.0" "7.1" "7.2" "7.3"
         do
             if [[ $(command -v php$version) ]]; then
                 echo "Install MongoDB for PHP $version"
-                ln -s /usr/lib/php/20180731/mongodb.so "/usr/lib/php/$version/mongodb.so"
+                sudo pecl -d php_suffix="$version" install mongodb > /dev/null 2>&1
+                # do not remove files, only register the packages as not installed so we can install for other php version
+                sudo pecl uninstall -r mongodb
                 cp -f "${DIR}/mongodb.ini" "/etc/php/$version/mods-available/mongodb.ini"
                 phpenmod -v "$version" mongodb
             fi
@@ -98,9 +98,9 @@ install_xhgui() {
 
 echo "Installing Tideways & XHgui"
 install_mongodb
-install_xhgui
 install_tideways
 install_tideways_php
+install_xhgui
 restart_php
 
 echo "Finish installation of Tideways with xhgui"
