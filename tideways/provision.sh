@@ -14,11 +14,11 @@ install_tideways() {
 }
 
 install_tideways_php() {
-    echo "Install Tideways for PHP $version"
+    echo "Installing Tideways for PHP $version"
     for version in "7.0" "7.1" "7.2" "7.3"
     do
         if [[ $(command -v php$version) ]]; then
-            echo "Copying tideways files for php $version"
+            echo "Copying tideways files for PHP $version"
             cp -f "${DIR}/tideways.ini" "/etc/php/$version/mods-available/tideways_xhprof.ini"
             cp -f "${DIR}/xhgui-php.ini" "/etc/php/$version/mods-available/xhgui.ini"
             cp -rf /var/local/tideways-php "/var/local/tideways-php$version"
@@ -45,6 +45,7 @@ restart_php() {
             service "php$version-fpm" restart > /dev/null 2>&1
         fi
     done
+    echo "Restarting Nginx"
     service nginx restart > /dev/null 2>&1
 }
 
@@ -58,6 +59,7 @@ install_xhgui() {
         cp -f "${DIR}/config.php" "/srv/www/default/xhgui/config/config.php"
         cp -f "${DIR}/tideways-header.php" "/srv/www/default/xhgui/config/tideways-header.php"
         cp -f "${DIR}/nginx.conf" "/etc/nginx/custom-utilities/xhgui.conf"
+        echo "Restarting MongoDB"
         service mongod restart
     else
         echo -e "\nUpdating xhgui..."
@@ -70,9 +72,11 @@ install_xhgui() {
 echo "Installing Tideways & XHgui"
 install_tideways
 install_tideways_php
+install_xhgui
 if [[ $(command -v mongo) ]]; then
-    install_xhgui
+    echo "Critical Error!! MongoDB is needed for XHGUI/Tideways support, add mongodb to your vvv-custom.yml utilities section then reprovision"
+    exit 1
 fi
 restart_php
 
-echo "Finish installation of Tideways with xhgui"
+echo "Tideways and xhgui installed"
