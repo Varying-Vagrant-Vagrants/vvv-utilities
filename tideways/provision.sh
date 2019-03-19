@@ -52,7 +52,8 @@ restart_php() {
 install_xhgui() {
     if [[ ! -d "/srv/www/default/xhgui" ]]; then
         echo -e "\nDownloading xhgui, see https://github.com/perftools/xhgui"
-        git clone "https://github.com/perftools/xhgui" "/srv/www/default/xhgui" > /dev/null 2>&1
+        #mkdir -p /srv/www/default/xhgui
+        git clone "https://github.com/perftools/xhgui.git" "/srv/www/default/xhgui" # > /dev/null 2>&1
         cd /srv/www/default/xhgui
         echo "Installing Tideways"
         sudo php install.php > /dev/null 2>&1
@@ -72,7 +73,7 @@ install_xhgui() {
 echo "Installing Tideways & XHgui"
 if [[ $(command -v mongo) ]]; then
     echo "MongoDB is needed for XHGUI/Tideways support, provisioning MongoDB"
-    . ../mongodb/provision.sh
+    . "${DIR}/../mongodb/provision.sh"
 fi
 install_tideways
 install_tideways_php
