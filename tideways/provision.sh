@@ -59,7 +59,6 @@ install_xhgui() {
         sudo php install.php > /dev/null 2>&1e
         cp -f "${DIR}/config.php" "/srv/www/default/xhgui/config/config.php"
         cp -f "${DIR}/tideways-header.php" "/srv/www/default/xhgui/config/tideways-header.php"
-        cp -f "${DIR}/nginx.conf" "/etc/nginx/custom-utilities/xhgui.conf"
         echo "Restarting MongoDB"
         service mongod restart
     else
@@ -78,6 +77,7 @@ fi
 install_tideways
 install_tideways_php
 install_xhgui
+cp -f "${DIR}/nginx.conf" "/etc/nginx/custom-utilities/xhgui.conf"
 restart_php
 
 echo "Tideways and xhgui installed"
