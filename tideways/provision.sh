@@ -32,6 +32,7 @@ install_tideways_php() {
             make > /dev/null 2>&1
             make install > /dev/null 2>&1        
             phpenmod -v "$version" tideways_xhprof
+            phpenmod -v "$version" xhgui
             rm -rf "/var/local/tideways-php$version"
         fi
     done
