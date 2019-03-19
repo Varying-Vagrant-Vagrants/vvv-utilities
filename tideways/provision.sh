@@ -8,6 +8,11 @@ install_tideways() {
         echo 'deb http://s3-eu-west-1.amazonaws.com/tideways/packages debian main' | sudo tee /etc/apt/sources.list.d/tideways.list
         sudo apt update > /dev/null 2>&1
         apt-get -y install tideways-php tideways-daemon > /dev/null 2>&1
+        for version in "7.0" "7.1" "7.2" "7.3"
+        do
+        if [[ $(command -v php$version) ]]; then
+            cp -f "${DIR}/xhgui-php.ini" "/etc/php/$version/mods-available/xhgui.ini"
+        done
     fi
 }
 
