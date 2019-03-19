@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 # Mongodb
-DIR=$(dirname "$0") 
+DIR="$(dirname "$(readlink -f "$0")")"
 
 install_mongodb() {
     echo "Installing MongoDB"
     apt-key add "${DIR}/aptkey.pgp"
     echo "deb http://repo.mongodb.org/apt/ubuntu trusty/mongodb-org/3.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list
     sudo apt update > /dev/null 2>&1
-    apt-get -y install mongodb-org re2c > /dev/null 2>&1
+    apt-get -y install mongodb-org re2c
     for version in "7.0" "7.1" "7.2" "7.3"
     do
         if [[ $(command -v php$version) ]]; then
