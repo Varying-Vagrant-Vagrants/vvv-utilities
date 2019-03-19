@@ -51,12 +51,12 @@ restart_php() {
 
 install_xhgui() {
     if [[ ! -d "/srv/www/default/xhgui" ]]; then
-        echo -e "\nDownloading xhgui, see https://github.com/perftools/xhgui"
-        #mkdir -p /srv/www/default/xhgui
-        git clone "https://github.com/perftools/xhgui.git" "/srv/www/default/xhgui" # > /dev/null 2>&1
-        cd /srv/www/default/xhgui
-        echo "Installing Tideways"
-        sudo php install.php > /dev/null 2>&1
+        echo -e "\nGit cloning xhgui from https://github.com/perftools/xhgui.git"
+        cd /srv/www/default
+        git clone "https://github.com/perftools/xhgui.git" xhgui
+        cd xhgui
+        echo "Installing xhgui"
+        sudo php install.php > /dev/null 2>&1e
         cp -f "${DIR}/config.php" "/srv/www/default/xhgui/config/config.php"
         cp -f "${DIR}/tideways-header.php" "/srv/www/default/xhgui/config/tideways-header.php"
         cp -f "${DIR}/nginx.conf" "/etc/nginx/custom-utilities/xhgui.conf"
