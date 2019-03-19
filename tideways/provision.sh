@@ -56,7 +56,7 @@ install_xhgui() {
         git clone "https://github.com/perftools/xhgui.git" xhgui
         cd xhgui
         echo "Installing xhgui"
-        sudo php install.php > /dev/null 2>&1
+        sudo php install.php
         cp -f "${DIR}/config.php" "/srv/www/default/xhgui/config/config.php"
         cp -f "${DIR}/tideways-header.php" "/srv/www/default/xhgui/config/tideways-header.php"
         echo "Restarting MongoDB"
