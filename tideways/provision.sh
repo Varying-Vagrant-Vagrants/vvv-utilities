@@ -12,6 +12,7 @@ install_tideways() {
         do
         if [[ $(command -v php$version) ]]; then
             cp -f "${DIR}/xhgui-php.ini" "/etc/php/$version/mods-available/xhgui.ini"
+            phpenmod -v "$version" xhgui
         done
     fi
 }
