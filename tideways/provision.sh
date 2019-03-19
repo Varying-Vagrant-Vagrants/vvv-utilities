@@ -10,9 +10,10 @@ install_tideways() {
         apt-get -y install tideways-php tideways-daemon > /dev/null 2>&1
         for version in "7.0" "7.1" "7.2" "7.3"
         do
-        if [[ $(command -v php$version) ]]; then
-            cp -f "${DIR}/xhgui-php.ini" "/etc/php/$version/mods-available/xhgui.ini"
-            phpenmod -v "$version" xhgui
+            if [[ $(command -v php$version) ]]; then
+                cp -f "${DIR}/xhgui-php.ini" "/etc/php/$version/mods-available/xhgui.ini"
+                phpenmod -v "$version" xhgui
+            fi
         done
     fi
 }
