@@ -51,7 +51,7 @@ install_xhgui() {
 }
 
 echo "Installing Tideways & XHgui"
-if [[ $(command -v mongo) ]]; then
+if [[ ! $(command -v mongo) ]]; then
     echo "MongoDB is needed for XHGUI/Tideways support, provisioning MongoDB"
     . "${DIR}/../mongodb/provision.sh"
 fi
