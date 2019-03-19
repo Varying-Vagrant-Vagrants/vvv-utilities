@@ -70,13 +70,13 @@ install_xhgui() {
 }
 
 echo "Installing Tideways & XHgui"
+if [[ $(command -v mongo) ]]; then
+    echo "MongoDB is needed for XHGUI/Tideways support, provisioning MongoDB"
+    . ../mongodb/provision.sh
+fi
 install_tideways
 install_tideways_php
 install_xhgui
-if [[ $(command -v mongo) ]]; then
-    echo "Critical Error!! MongoDB is needed for XHGUI/Tideways support, add mongodb to your vvv-custom.yml utilities section then reprovision"
-    exit 1
-fi
 restart_php
 
 echo "Tideways and xhgui installed"
