@@ -1,7 +1,6 @@
 <?php
 
-// In config/config.php
-return array(
+$defaults = array(
     'debug' => false,
 
     // Can be either mongodb or file.
@@ -20,9 +19,17 @@ return array(
     // Other config
     'profiler.enable' => function() {
         $url = $_SERVER['REQUEST_URI'];
-        if (strpos($url, '/xhgui/') === 0) {
+        if (strpos($url, 'vvv.test/') === 0) {
             return false;
         }
         return true;
     }
 );
+
+$custom_args = array();
+if( file_exists( './custom-config.php' ) ) {
+    include_once( './custom-config.php' );
+}
+
+// In config/config.php
+return array_merge( $defaults, $custom_args );
