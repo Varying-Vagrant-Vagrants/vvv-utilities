@@ -18,22 +18,25 @@ install_tideways_php() {
     for version in "7.0" "7.1" "7.2" "7.3"
     do
         if [[ $(command -v php$version) ]]; then
-            echo "Copying tideways files for PHP $version"
-            cp -f "${DIR}/tideways.ini" "/etc/php/$version/mods-available/tideways_xhprof.ini"
-            cp -f "${DIR}/xhgui-php.ini" "/etc/php/$version/mods-available/xhgui.ini"
-            cp -rf /var/local/tideways-php "/var/local/tideways-php$version"
-            echo "Compiling Tideways for PHP $version"
-            cd "/var/local/tideways-php${version}"
-            update-alternatives --set php "/usr/bin/php$version" > /dev/null 2>&1
-            update-alternatives --set php-config "/usr/bin/php-config$version" > /dev/null 2>&1
-            update-alternatives --set phpize "/usr/bin/phpize$version" > /dev/null 2>&1
-            phpize$version > /dev/null 2>&1
-            ./configure --enable-tideways-xhprof --with-php-config=php-config$version > /dev/null 2>&1
-            make > /dev/null 2>&1
-            make install > /dev/null 2>&1        
-            phpenmod -v "$version" tideways_xhprof
-            phpenmod -v "$version" xhgui
-            rm -rf "/var/local/tideways-php$version"
+            php_modules_path=$(php-config$version --extension-dir)
+            if [[ ! -f "$php_modules_path/tideways_xhprof.so" ]] || [[ $(stat -c %Y "$php_modules_path/tideways_xhprof.so") -lt $(stat -c %Y "/var/local/tideways-php/.git/info/") ]]; then
+                echo "Copying tideways files for PHP $version"
+                cp -f "${DIR}/tideways.ini" "/etc/php/$version/mods-available/tideways_xhprof.ini"
+                cp -f "${DIR}/xhgui-php.ini" "/etc/php/$version/mods-available/xhgui.ini"
+                cp -rf /var/local/tideways-php "/var/local/tideways-php$version"
+                echo "Compiling Tideways for PHP $version"
+                cd "/var/local/tideways-php${version}"
+                update-alternatives --set php "/usr/bin/php$version" > /dev/null 2>&1
+                update-alternatives --set php-config "/usr/bin/php-config$version" > /dev/null 2>&1
+                update-alternatives --set phpize "/usr/bin/phpize$version" > /dev/null 2>&1
+                phpize$version > /dev/null 2>&1
+                ./configure --enable-tideways-xhprof --with-php-config=php-config$version > /dev/null 2>&1
+                make > /dev/null 2>&1
+                make install > /dev/null 2>&1        
+                phpenmod -v "$version" tideways_xhprof
+                phpenmod -v "$version" xhgui
+                rm -rf "/var/local/tideways-php$version"
+            fi
         fi
     done
 }
