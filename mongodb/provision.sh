@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Mongodb
-DIR="$(dirname "$(readlink -f "$0")")"
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 install_mongodb() {
     echo "Installing MongoDB"
