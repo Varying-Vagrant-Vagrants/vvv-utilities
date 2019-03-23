@@ -78,6 +78,7 @@ if [[ ! $(command -v mongo) ]]; then
     echo "MongoDB is needed for XHGUI/Tideways support, provisioning MongoDB"
     . "${DIR}/../mongodb/provision.sh"
 fi
+DIR=$(dirname "$0")
 install_tideways
 install_tideways_php
 install_xhgui
