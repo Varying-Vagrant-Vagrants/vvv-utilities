@@ -23,6 +23,11 @@ $defaults = array(
             return false;
         }
         return true;
+    },
+    'profiler.replace_url' => function($uri) {
+        $uri = str_replace('?enable-tideways', '', $uri);
+        $uri = str_replace('%3Fenable-tideways', '', $uri);
+        return $uri;
     }
 );
 
