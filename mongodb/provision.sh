@@ -2,12 +2,7 @@
 # Mongodb
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
-install_mongodb() {
-    echo "Installing MongoDB"
-    apt-key add "${DIR}/aptkey.pgp"
-    echo "deb http://repo.mongodb.org/apt/ubuntu trusty/mongodb-org/3.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list
-    sudo apt update > /dev/null 2>&1
-    apt-get -y install mongodb-org re2c
+install_mongodb_php() {
     for version in "7.0" "7.1" "7.2" "7.3"
     do
         if [[ $(command -v php$version) ]]; then
@@ -19,6 +14,18 @@ install_mongodb() {
             phpenmod -v "$version" mongodb
         fi
     done
+}
+
+install_mongodb() {
+    echo "Installing MongoDB"
+    apt-key add "${DIR}/aptkey.pgp"
+    echo "deb http://repo.mongodb.org/apt/ubuntu trusty/mongodb-org/3.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list
+    sudo apt update > /dev/null 2>&1
+    apt-get -y install mongodb-org re2c
+    install_mongodb_php
+}
+
+cleanup_mongodb_entries() {
     echo "Auto-removing mongoDB records older than 2592000 seconds (30 days)"
     mongo xhprof --eval 'db.collection.ensureIndex( { "meta.request_ts" : 1 }, { expireAfterSeconds : 2592000 } )' > /dev/null 2>&1
     # indexes
@@ -27,10 +34,12 @@ install_mongodb() {
     mongo xhprof --eval  "db.collection.ensureIndex( { 'profile.main().mu' : -1 } )" > /dev/null 2>&1
     mongo xhprof --eval  "db.collection.ensureIndex( { 'profile.main().cpu' : -1 } )" > /dev/null 2>&1
     mongo xhprof --eval  "db.collection.ensureIndex( { 'meta.url' : 1 } )" > /dev/null 2>&1
-    echo "Restarting mongod"
-    service mongod restart
 }
 
 if [[ ! $(command -v mongo) ]]; then
     install_mongodb
 fi
+cleanup_mongodb_entries
+
+echo "Restarting mongod"
+service mongod restart
