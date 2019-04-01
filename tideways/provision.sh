@@ -39,6 +39,7 @@ install_tideways_php() {
             fi
         fi
     done
+    cp -rf "${DIR}/tideways-header.php" "/srv/tideways-header.php"
 }
 
 restart_php() {
@@ -62,7 +63,6 @@ install_xhgui() {
         echo "Installing xhgui"
         sudo php install.php
         cp -f "${DIR}/config.php" "/srv/www/default/xhgui/config/config.php"
-        cp -f "${DIR}/tideways-header.php" "/srv/www/default/xhgui/config/tideways-header.php"
         echo "Restarting MongoDB"
         service mongod restart
     else
