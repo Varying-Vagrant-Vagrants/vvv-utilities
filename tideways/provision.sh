@@ -3,7 +3,6 @@
 DIR=$(dirname "$0")
 
 install_tideways() {
-    # Tideways is only for php =>7.0
     if [[ ! -d /var/local/tideways-php/.git ]]; then
         echo "Cloning Tideways extension"
         git clone "https://github.com/tideways/php-xhprof-extension" /var/local/tideways-php
@@ -16,6 +15,7 @@ install_tideways() {
 install_tideways_php() {
     echo "Installing Tideways for PHP $version"
     cp -f "${DIR}/tideways-header.php" "/srv/tideways-header.php"
+    # Tideways is only for php =>7.0
     for version in "7.0" "7.1" "7.2" "7.3"
     do
         if [[ $(command -v php$version) ]]; then
