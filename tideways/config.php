@@ -16,6 +16,10 @@ $defaults = array(
     'date.format' => 'M jS H:i:s',
     'detail.count' => 6,
     'page.limit' => 25,
+    'run.view.filter.names' => array(
+        'wp_*',
+        'Composer*',
+    ),
     // Other config
     'profiler.enable' => function() {
         $url = $_SERVER['REQUEST_URI'];
