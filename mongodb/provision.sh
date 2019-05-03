@@ -18,11 +18,11 @@ install_mongodb_php() {
 
 install_mongodb() {
     echo "Installing MongoDB"
-    apt-key add "${DIR}/aptkey.pgp"
     codename=$(lsb_release --codename | cut -f2)
-    echo "deb http://repo.mongodb.org/apt/ubuntu ${codename}/mongodb-org/3.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list
-    sudo apt update > /dev/null 2>&1
-    apt-get -y install mongodb-org re2c
+    apt-key add "${DIR}/aptkey.pgp"
+    echo "deb [ arch=amd64 ] http://repo.mongodb.org/apt/ubuntu ${codename}/mongodb-org/3.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list
+    sudo apt-get update > /dev/null 2>&1
+    sudo apt-get -y install mongodb-org re2c
     install_mongodb_php
 }
 
