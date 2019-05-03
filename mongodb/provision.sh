@@ -19,8 +19,19 @@ install_mongodb_php() {
 install_mongodb() {
     echo "Installing MongoDB"
     codename=$(lsb_release --codename | cut -f2)
-    apt-key add "${DIR}/aptkey.pgp"
-    echo "deb [ arch=amd64 ] http://repo.mongodb.org/apt/ubuntu ${codename}/mongodb-org/3.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list
+    if [[ $codename == "trusty" ]]; then
+        if [[ ! $( apt-key list | grep 'MongoDB 3.4') ]]; then
+            apt-key add "${DIR}/server-3.4.asc"
+        fi
+        echo "deb [ arch=amd64 ] http://repo.mongodb.org/apt/ubuntu trusty/mongodb-org/3.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list
+    else
+        [ -e /etc/apt/sources.list.d/mongodb-org-3.4.list ] && rm /etc/apt/sources.list.d/mongodb-org-3.4.list
+        if [[ ! $( apt-key list | grep 'MongoDB 4.0') ]]; then
+            apt-key add "${DIR}/server-4.0.asc"
+        fi
+        echo "deb [ arch=amd64 ] http://repo.mongodb.org/apt/ubuntu ${codename}/mongodb-org/4.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.0.list
+    fi
+    
     sudo apt-get update > /dev/null 2>&1
     sudo apt-get -y install mongodb-org re2c
     install_mongodb_php
