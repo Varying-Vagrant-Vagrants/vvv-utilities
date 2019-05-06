@@ -34,6 +34,7 @@ install_tideways_php() {
                 ./configure --enable-tideways-xhprof --with-php-config=php-config$version > /dev/null 2>&1
                 make > /dev/null 2>&1
                 make install > /dev/null 2>&1
+                cd /var/
                 rm -rf "/var/local/tideways-php$version"
             fi
             phpenmod -v "$version" tideways_xhprof
