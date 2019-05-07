@@ -5,7 +5,11 @@ if [[ -f /vagrant/vvv-custom.yml ]]; then
 	VVV_CONFIG=/vagrant/vvv-custom.yml
 fi
 
-CERTIFICATES_DIR="/vagrant/certificates"
+CERTIFICATES_DIR="/srv/certificates"
+if [[ -f "/vagrant/certificates" ]]; then
+    CERTIFICATES_DIR="/vagrant/certificates"
+fi
+
 CA_DIR="${CERTIFICATES_DIR}/ca"
 
 if [ ! -d ${CA_DIR} ];then
