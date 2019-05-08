@@ -4,9 +4,9 @@ VVV_CONFIG=/vagrant/vvv-config.yml
 if [[ -f /vagrant/vvv-custom.yml ]]; then
 	VVV_CONFIG=/vagrant/vvv-custom.yml
 fi
-
+codename=$(lsb_release --codename | cut -f2)
 CERTIFICATES_DIR="/srv/certificates"
-if [[ -f "/vagrant/certificates" ]]; then
+if [[ $codename == "trusty" ]]; then # VVV 2 uses Ubuntu 14 LTS trusty
     CERTIFICATES_DIR="/vagrant/certificates"
 fi
 
@@ -43,10 +43,8 @@ subjectAltName = @alt_names
 [alt_names]
 DNS.1 = vvv.test
 DNS.2 = *.vvv.test
-DNS.3 = vvv.dev
-DNS.4 = *.vvv.dev
-DNS.5 = vvv.local
-DNS.6 = *.vvv.local
+DNS.3 = vvv.local
+DNS.4 = *.vvv.local
 EOF
 
 openssl genrsa \
