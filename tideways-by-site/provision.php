@@ -8,7 +8,7 @@ $hosts_list = array();
 
 foreach ($config['sites'] as $domain => $settings) {
     if(isset($settings['tideways'])) {
-        $hosts_list = array_merge($hosts_list, $config['hosts']);
+        $hosts_list = array_merge($hosts_list, $settings['hosts']);
     }
 }
 
