@@ -74,28 +74,6 @@ install_xhgui() {
     fi
 }
 
-enable_tideways_by_site() {
-    rm /srv/tideways.json
-
-    domains=""
-    input=$(cat "${VVV_CONFIG}")
-    sites=$(echo "$input" | shyaml keys-0 sites | xargs -0 -n 1 echo "")
-
-    for value in ${sites}; do
-        domain=$(echo "$value" | tr -d '[:space:]')
-        tideways=$(echo "$input" | shyaml -q get-value sites."$domain".tideways)
-        if [[ $tideways != "" ]]; then
-            hosts=$(echo "$input" | shyaml -q get-value sites."$domain".hosts)
-            domains="$domains${hosts/\- /''}\n"
-        fi
-    done
-    SAVEIFS=$IFS   # Save current IFS
-    IFS=$'\n'      # Change IFS to new line
-    domains=("$domains")
-    IFS=$SAVEIFS   # Restore IFS
-    printf "${domains[@]}" | jq -R . | jq -s . > /srv/tideways.json
-}
-
 echo "Installing Tideways & XHgui"
 if [[ ! $(command -v mongo) ]]; then
     echo "MongoDB is needed for XHGUI/Tideways support, provisioning MongoDB"
@@ -106,7 +84,6 @@ install_tideways
 install_tideways_php
 install_xhgui
 cp -f "${DIR}/nginx.conf" "/etc/nginx/custom-utilities/xhgui.conf"
-enable_tideways_by_site
 restart_php
 
 echo "Tideways and xhgui installed"
