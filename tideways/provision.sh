@@ -74,6 +74,15 @@ install_xhgui() {
     fi
 }
 
+enable_tideways_by_site() {
+    echo "Tideways-by-site started"
+
+    sudo apt install php-yaml -y
+    sudo php "${DIR}/by-site.php" "${VVV_CONFIG}"
+
+    echo "Tideways-by-site runned"
+}
+
 echo "Installing Tideways & XHgui"
 if [[ ! $(command -v mongo) ]]; then
     echo "MongoDB is needed for XHGUI/Tideways support, provisioning MongoDB"
@@ -84,6 +93,7 @@ install_tideways
 install_tideways_php
 install_xhgui
 cp -f "${DIR}/nginx.conf" "/etc/nginx/custom-utilities/xhgui.conf"
+enable_tideways_by_site
 restart_php
 
 echo "Tideways and xhgui installed"
