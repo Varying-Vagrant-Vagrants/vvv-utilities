@@ -1,6 +1,8 @@
 #!/bin/env php    
 <?php 
-unlink('/srv/tideways.json');
+if(is_file('/srv/tideways.json')) {
+    unlink('/srv/tideways.json');
+}
 
 $vvv_config = $argv[1];
 $config     = yaml_parse_file($vvv_config);
