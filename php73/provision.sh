@@ -124,15 +124,15 @@ package_install() {
 
     # Update all of the package references before installing anything
     echo "Running apt-get update..."
-    apt-get -y update
+    apt-get -y update &>/dev/null
 
     # Install required packages
     echo "Installing apt-get packages..."
-    apt-get -y install ${apt_package_install_list[@]}
+    apt-get -y install ${apt_package_install_list[@]} &>/dev/null
 
     # Remove unnecessary packages
     echo "Removing unnecessary packages..."
-    apt-get autoremove -y
+    apt-get autoremove -y &>/dev/null
 
     # Clean up apt caches
     apt-get clean
