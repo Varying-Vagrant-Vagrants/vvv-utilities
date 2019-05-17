@@ -59,6 +59,9 @@ if [[ ! $(command -v mongo) ]]; then
 fi
 cleanup_mongodb_entries
 
+# make sure mongo can actually write to the log folder
+chown mongodb mongodb
+
 echo "Restarting mongod"
 systemctl enable mongod.service
 systemctl start mongod.service
