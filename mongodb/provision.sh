@@ -52,6 +52,9 @@ cleanup_mongodb_entries() {
 mkdir -p /var/log/mongodb
 mkdir -p /data/db
 
+echo "Making sure mongodb service is enabled"
+systemctl enable mongodb.service
+
 if [[ ! $(command -v mongo) ]]; then
     install_mongodb
 fi
