@@ -48,6 +48,10 @@ cleanup_mongodb_entries() {
     mongo xhprof --eval  "db.collection.ensureIndex( { 'meta.url' : 1 } )" > /dev/null 2>&1
 }
 
+# Create the log and data directories if they don't exist already
+mkdir -p /var/log/mongodb
+mkdir -p /data/db
+
 if [[ ! $(command -v mongo) ]]; then
     install_mongodb
 fi
