@@ -60,7 +60,7 @@ fi
 cleanup_mongodb_entries
 
 # make sure mongo can actually write to the log folder
-chown mongodb mongodb
+chown mongodb /var/log/mongodb
 
 echo "Restarting mongod"
 systemctl enable mongod.service
