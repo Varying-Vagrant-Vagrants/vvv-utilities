@@ -7,6 +7,7 @@ if [[ ! -d "/srv/www/default/memcached-admin" ]]; then
 	wget -q -O phpmemcachedadmin.tar.gz "https://github.com/wp-cloud/phpmemcacheadmin/archive/1.2.4-vvv.tar.gz"
 	tar -xf phpmemcachedadmin.tar.gz
 	mv phpmemcacheadmin* memcached-admin
+	cp memcached-admin/Config/Memcache.sample.php memcached-admin/Config/Memcache.php
 	rm phpmemcachedadmin.tar.gz
 else
 	echo "phpMemcachedAdmin already installed."
