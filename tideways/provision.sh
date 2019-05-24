@@ -34,6 +34,7 @@ install_tideways_php() {
                 ./configure --enable-tideways-xhprof --with-php-config=php-config$version > /dev/null 2>&1
                 make > /dev/null 2>&1
                 make install > /dev/null 2>&1
+                cd ${DIR}
                 rm -rf "/var/local/tideways-php$version"
             fi
             phpenmod -v "$version" tideways_xhprof
@@ -83,11 +84,9 @@ enable_tideways_by_site() {
     echo "Tideways-by-site runned"
 }
 
+. "${DIR}/../mongodb/provision.sh"
+
 echo "Installing Tideways & XHgui"
-if [[ ! $(command -v mongo) ]]; then
-    echo "MongoDB is needed for XHGUI/Tideways support, provisioning MongoDB"
-    . "${DIR}/../mongodb/provision.sh"
-fi
 DIR=$(dirname "$0")
 install_tideways
 install_tideways_php

@@ -18,10 +18,22 @@ install_mongodb_php() {
 
 install_mongodb() {
     echo "Installing MongoDB"
-    apt-key add "${DIR}/aptkey.pgp"
-    echo "deb http://repo.mongodb.org/apt/ubuntu trusty/mongodb-org/3.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list
-    sudo apt update > /dev/null 2>&1
-    apt-get -y install mongodb-org re2c
+    codename=$(lsb_release --codename | cut -f2)
+    if [[ $codename == "trusty" ]]; then
+        if [[ ! $( apt-key list | grep 'MongoDB 3.4') ]]; then
+            apt-key add "${DIR}/server-3.4.asc"
+        fi
+        echo "deb [ arch=amd64 ] http://repo.mongodb.org/apt/ubuntu trusty/mongodb-org/3.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list
+    else
+        [ -e /etc/apt/sources.list.d/mongodb-org-3.4.list ] && rm /etc/apt/sources.list.d/mongodb-org-3.4.list
+        if [[ ! $( apt-key list | grep 'MongoDB 4.0') ]]; then
+            apt-key add "${DIR}/server-4.0.asc"
+        fi
+        echo "deb [ arch=amd64 ] http://repo.mongodb.org/apt/ubuntu ${codename}/mongodb-org/4.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.0.list
+    fi
+    
+    sudo apt-get update > /dev/null 2>&1
+    sudo apt-get -y install mongodb-org re2c
     install_mongodb_php
 }
 
@@ -36,10 +48,20 @@ cleanup_mongodb_entries() {
     mongo xhprof --eval  "db.collection.ensureIndex( { 'meta.url' : 1 } )" > /dev/null 2>&1
 }
 
+# Create the log and data directories if they don't exist already
+mkdir -p /var/log/mongodb
+mkdir -p /data/db
+
+echo "Making sure mongodb service is enabled"
+
 if [[ ! $(command -v mongo) ]]; then
     install_mongodb
 fi
 cleanup_mongodb_entries
 
+# make sure mongo can actually write to the log folder
+chown mongodb /var/log/mongodb
+
 echo "Restarting mongod"
-service mongod restart
+systemctl enable mongod.service
+systemctl start mongod.service
