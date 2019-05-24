@@ -15,8 +15,8 @@ if( $is_vvv_tideways ) {
     }
 
     define( 'QM_DISABLED', true );
-    if( file_exists( './custom-header.php' ) ) {
-        include_once( './custom-header.php' );
+    if( file_exists( '/srv/www/default/xhgui/config/custom-header.php' ) ) {
+        include_once( '/srv/www/default/xhgui/config/custom-header.php' );
     }
 }
 
