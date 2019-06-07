@@ -79,7 +79,7 @@ enable_tideways_by_site() {
     echo "Tideways-by-site started"
 
     sudo apt install php-yaml -y
-    sudo php "${DIR}/by-site.php" "${VVV_CONFIG}"
+    php "${DIR}/by-site.php" "${VVV_CONFIG}"
 
     echo "Tideways-by-site runned"
 }
