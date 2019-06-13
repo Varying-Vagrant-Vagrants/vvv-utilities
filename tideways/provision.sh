@@ -78,7 +78,6 @@ install_xhgui() {
 enable_tideways_by_site() {
     echo "Tideways-by-site started"
 
-    sudo apt install php-yaml -y
     php "${DIR}/by-site.php" "${VVV_CONFIG}"
 
     echo "Tideways-by-site runned"
