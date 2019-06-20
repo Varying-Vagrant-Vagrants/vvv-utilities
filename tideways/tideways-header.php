@@ -1,6 +1,7 @@
 <?php
 
-if( isset( $_SERVER['REQUEST_URI'] ) && strpos( $_SERVER['REQUEST_URI'], 'enable-tideways' ) !== false ) {
+if ( !empty( $_REQUEST['enable-tideways'] ) && ( $_REQUEST['enable-tideways'] == true ) ) {
+
     if ( file_exists( '/srv/www/default/xhgui/external/header.php' ) ) {
         include '/srv/www/default/xhgui/external/header.php';
     }
