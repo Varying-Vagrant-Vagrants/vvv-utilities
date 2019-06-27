@@ -32,12 +32,12 @@ if [ ! -d ${CA_DIR} ];then
         -subj "/CN=VVV INTERNAL CA" &>/dev/null
 fi
 
-mkdir -p /usr/share/ca-certificates/extra
-if [[ ! -f /usr/share/ca-certificates/extra/ca.crt ]]; then
+mkdir -p /usr/share/ca-certificates/vvv
+if [[ ! -f /usr/share/ca-certificates/vvv/ca.crt ]]; then
     echo "Adding root certificate to the VM"
-    cp -f "${CA_DIR}/ca.crt" /usr/share/ca-certificates/extra/ca.crt
+    cp -f "${CA_DIR}/ca.crt" /usr/share/ca-certificates/vvv/ca.crt
     echo "Updating loaded VM certificates"
-    update-ca-certificates
+    update-ca-certificates --fresh
 fi
 
 echo "Setting up default Certificate for vvv.test and vvv.local"
