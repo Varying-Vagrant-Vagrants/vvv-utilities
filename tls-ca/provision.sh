@@ -7,13 +7,16 @@ fi
 codename=$(lsb_release --codename | cut -f2)
 CERTIFICATES_DIR="/srv/certificates"
 if [[ $codename == "trusty" ]]; then # VVV 2 uses Ubuntu 14 LTS trusty
+    echo "Unsupported Ubuntu 14 detected! Switching certificate folder, please upgrade to VVV 3+"
     CERTIFICATES_DIR="/vagrant/certificates"
 fi
 
 CA_DIR="${CERTIFICATES_DIR}/ca"
 
 if [ ! -d ${CA_DIR} ];then
+    echo "Setting up Certificate Authority"
     mkdir -p ${CA_DIR}
+    
 
     openssl genrsa \
         -out ${CA_DIR}/ca.key \
@@ -28,6 +31,16 @@ if [ ! -d ${CA_DIR} ];then
         -out ${CA_DIR}/ca.crt \
         -subj "/CN=VVV INTERNAL CA" &>/dev/null
 fi
+
+mkdir -p /usr/share/ca-certificates/extra
+if [[ -f /usr/share/ca-certificates/extra/ca.crt ]]; then
+    echo "Adding root certificate to the VM"
+    cp -f "${CA_DIR}/ca.crt" /usr/share/ca-certificates/extra/ca.crt
+    echo "Updating loaded VM certificates"
+    update-ca-certificates
+fi
+
+echo "Setting up default Certificate for vvv.test and vvv.local"
 
 CERT_DIR="${CERTIFICATES_DIR}/default"
 
@@ -68,6 +81,8 @@ openssl x509 \
     -sha256 \
     -extfile ${CERT_DIR}/openssl.conf  &>/dev/null
 
+echo "Symlinking default server certificate and key"
+
 rm -rf /etc/nginx/server-2.1.0.crt
 rm -rf /etc/nginx/server-2.1.0.key
 
@@ -89,7 +104,9 @@ get_hosts() {
     echo ${value:-$@}
 }
 
+echo "Generating Site certificates"
 for SITE in `get_sites`; do
+    echo "Generating certificates for the ${SITE} hosts"
     SITE_ESCAPED=`echo ${SITE} | sed 's/\./\\\\./g'`
     COMMON_NAME=`get_host ${SITE_ESCAPED}`
     HOSTS=`get_hosts ${SITE_ESCAPED}`
@@ -135,3 +152,6 @@ EOF
         -sha256 \
         -extfile ${CERT_DIR}/openssl.conf &>/dev/null
 done
+
+
+echo "Finished generating TLS certificates"
