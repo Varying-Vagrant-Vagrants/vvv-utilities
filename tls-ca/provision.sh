@@ -33,7 +33,7 @@ if [ ! -d ${CA_DIR} ];then
 fi
 
 mkdir -p /usr/share/ca-certificates/extra
-if [[ -f /usr/share/ca-certificates/extra/ca.crt ]]; then
+if [[ ! -f /usr/share/ca-certificates/extra/ca.crt ]]; then
     echo "Adding root certificate to the VM"
     cp -f "${CA_DIR}/ca.crt" /usr/share/ca-certificates/extra/ca.crt
     echo "Updating loaded VM certificates"
