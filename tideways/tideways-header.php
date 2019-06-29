@@ -5,7 +5,7 @@ if ( file_exists( '/srv/config/tideways.json' ) && in_array( $_SERVER['HTTP_HOST
     $is_vvv_tideways = true;
 }
     
-if ( isset( $_SERVER['REQUEST_URI'] ) && strpos( $_SERVER['REQUEST_URI'], 'enable-tideways' ) !== false ) {
+if ( isset( $_SERVER['REQUEST_URI'] ) && ( $_REQUEST['enable-tideways'] == true ) ) {
     $is_vvv_tideways = true;
 }
 
