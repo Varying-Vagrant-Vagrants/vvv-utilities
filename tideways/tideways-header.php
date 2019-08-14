@@ -1,7 +1,7 @@
 <?php
 
 $is_vvv_tideways = false;
-if ( strpos( $_SERVER['HTTP_HOST'], 'vvv.test' ) == false ) {
+if ( isset( $_SERVER['HTTP_HOST'] ) && strpos( $_SERVER['HTTP_HOST'], 'vvv.test' ) == false ) {
     
     if ( file_exists( '/srv/config/tideways.json' ) && in_array( $_SERVER['HTTP_HOST'], json_decode( file_get_contents( '/srv/config/tideways.json' ) ) ) ) {
         $is_vvv_tideways = true;
