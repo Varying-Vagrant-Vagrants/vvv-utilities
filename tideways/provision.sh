@@ -16,7 +16,7 @@ install_tideways_php() {
     echo "Installing Tideways for PHP $version"
     cp -f "${DIR}/tideways-header.php" "/srv/tideways-header.php"
     # Tideways is only for php =>7.0
-    for version in "7.0" "7.1" "7.2" "7.3"
+    for version in "7.0" "7.1" "7.2" "7.3" "7.4"
     do
         if [[ $(command -v php$version) ]]; then
             php_modules_path=$(php-config$version --extension-dir)
@@ -46,7 +46,7 @@ install_tideways_php() {
 
 restart_php() {
     echo "Restarting PHP-FPM server"
-    for version in "7.0" "7.1" "7.2" "7.3"
+    for version in "7.0" "7.1" "7.2" "7.3" "7.4"
     do
         if [[ $(command -v php$version) ]]; then
             service "php$version-fpm" restart > /dev/null 2>&1
