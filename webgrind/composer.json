@@ -1,5 +1,5 @@
 {
-    "name": "VVV/webgrind",
+    "name": "vvv/webgrind",
     "type": "project",
     "require": {
         "oomphinc/composer-installers-extender": "^1.1",
