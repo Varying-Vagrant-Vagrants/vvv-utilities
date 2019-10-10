@@ -15,9 +15,9 @@ echo -e "\n DB operations done.\n\n"
 
 sudo apt install -y jq
 
-noroot git clone https://github.com/wp-cli/wp-cli-dev
+git clone https://github.com/wp-cli/wp-cli-dev
 cd wp-cli-dev
-noroot composer install --no-dev
+composer install --no-dev
 
 echo "Creating the symlink as wp-dev"
 ln -s /srv/www/wp-cli-dev/vendor/bin/wp /usr/local/bin/wp-dev
