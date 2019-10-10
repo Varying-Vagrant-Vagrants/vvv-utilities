@@ -15,7 +15,7 @@ echo "Downloading a developer version of WP-CLI"
 echo -e "\nCreating database '${DB_NAME}' (if it's not already there)"
 mysql -u root --password=root -e "CREATE DATABASE IF NOT EXISTS ${DB_NAME}"
 mysql -u root --password=root -e "GRANT ALL PRIVILEGES ON ${DB_NAME}.* TO wp_cli_test@localhost IDENTIFIED BY 'password1';"
-echo -e "\n DB operations done.\n\n"
+echo -e " DB operations done.\n"
 
 sudo apt install -y jq
 
@@ -24,4 +24,4 @@ cd wp-cli-dev
 noroot composer install --no-dev
 
 echo "Creating the symlink as wp-dev"
-ln -s /srv/www/wp-cli-dev/vendor/bin/wp /usr/local/bin/wp-dev
+ln -sf /srv/www/wp-cli-dev/vendor/bin/wp /usr/local/bin/wp-dev
