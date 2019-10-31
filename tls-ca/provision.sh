@@ -1,9 +1,5 @@
 #!/usr/bin/env bash
 
-VVV_CONFIG=/vagrant/vvv-config.yml
-if [[ -f /vagrant/vvv-custom.yml ]]; then
-	VVV_CONFIG=/vagrant/vvv-custom.yml
-fi
 codename=$(lsb_release --codename | cut -f2)
 CERTIFICATES_DIR="/srv/certificates"
 if [[ $codename == "trusty" ]]; then # VVV 2 uses Ubuntu 14 LTS trusty
