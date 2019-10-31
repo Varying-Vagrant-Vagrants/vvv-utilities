@@ -80,7 +80,7 @@ enable_tideways_by_site() {
 
     VVV_CONFIG=/vagrant/vvv-custom.yml
     if [[ -f /vagrant/config.yml ]]; then
-        VVV_CONFIG=/srv/config/config.yml
+        VVV_CONFIG=/vagrant/config.yml
     fi
     php "${DIR}/by-site.php" "${VVV_CONFIG}"
 
