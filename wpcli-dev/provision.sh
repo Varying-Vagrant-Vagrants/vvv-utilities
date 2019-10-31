@@ -9,7 +9,7 @@ noroot() {
 
 DB_NAME='wp_cli_test'
 
-echo "Downloading a developer version of WP-CLI"
+echo "Provisioning WP-CLI-Dev"
 
 # Make a database, if we don't already have one
 echo -e "\nCreating database '${DB_NAME}' (if it's not already there)"
