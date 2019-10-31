@@ -8,14 +8,14 @@ fi
 codename=$(lsb_release --codename | cut -f2)
 CERTIFICATES_DIR="/srv/certificates"
 if [[ $codename == "trusty" ]]; then # VVV 2 uses Ubuntu 14 LTS trusty
-    echo "Unsupported Ubuntu 14 detected! Switching certificate folder, please upgrade to VVV 3+"
+    echo " ! Unsupported Ubuntu 14 detected! Switching certificate folder, please upgrade to VVV 3+"
     CERTIFICATES_DIR="/vagrant/certificates"
 fi
 
 CA_DIR="${CERTIFICATES_DIR}/ca"
 
 if [ ! -d ${CA_DIR} ];then
-    echo "Setting up Certificate Authority"
+    echo " * Setting up VVV Certificate Authority"
     mkdir -p ${CA_DIR}
 
     openssl genrsa \
