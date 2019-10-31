@@ -4,27 +4,27 @@ DIR=$(dirname "$0")
 
 install_tideways() {
     if [[ ! -d /var/local/tideways-php/.git ]]; then
-        echo "Cloning Tideways extension"
+        echo " * Cloning Tideways extension"
         git clone "https://github.com/tideways/php-xhprof-extension" /var/local/tideways-php
     else
-        echo "Updating Tideways extension"
+        echo " * Updating Tideways extension"
         ( cd /var/local/tideways-php/ && git pull -q && git checkout -q )
     fi
 }
 
 install_tideways_php() {
-    echo "Installing Tideways for PHP $version"
+    echo " * Installing Tideways for PHP $version"
     cp -f "${DIR}/tideways-header.php" "/srv/tideways-header.php"
     # Tideways is only for php =>7.0
     for version in "7.0" "7.1" "7.2" "7.3" "7.4"
     do
         if [[ $(command -v php$version) ]]; then
             php_modules_path=$(php-config$version --extension-dir)
-            echo "Copying tideways files for PHP $version"
+            echo " * Copying tideways files for PHP $version"
             cp -f "${DIR}/tideways.ini" "/etc/php/$version/mods-available/tideways_xhprof.ini"
             cp -f "${DIR}/xhgui-php.ini" "/etc/php/$version/mods-available/xhgui.ini"
             if [[ ! -f "$php_modules_path/tideways_xhprof.so" ]] || [[ $(stat -c %Y "$php_modules_path/tideways_xhprof.so") -lt $(stat -c %Y "/var/local/tideways-php/.git/info/") ]]; then
-                echo "Compiling Tideways for PHP $version"
+                echo " * Compiling Tideways for PHP $version"
                 cp -rf /var/local/tideways-php "/var/local/tideways-php$version"
                 cd "/var/local/tideways-php${version}"
                 update-alternatives --set php "/usr/bin/php$version" > /dev/null 2>&1
@@ -45,30 +45,30 @@ install_tideways_php() {
 }
 
 restart_php() {
-    echo "Restarting PHP-FPM server"
+    echo " * Restarting PHP-FPM server"
     for version in "7.0" "7.1" "7.2" "7.3" "7.4"
     do
         if [[ $(command -v php$version) ]]; then
             service "php$version-fpm" restart > /dev/null 2>&1
         fi
     done
-    echo "Restarting Nginx"
+    echo " * Restarting Nginx"
     service nginx restart > /dev/null 2>&1
 }
 
 install_xhgui() {
     if [[ ! -d "/srv/www/default/xhgui" ]]; then
-        echo -e "\nGit cloning xhgui from https://github.com/perftools/xhgui.git"
+        echo -e "\n * Git cloning xhgui from https://github.com/perftools/xhgui.git"
         cd /srv/www/default
         git clone "https://github.com/perftools/xhgui.git" xhgui
         cd xhgui
-        echo "Installing xhgui"
+        echo " * Installing xhgui"
         sudo php install.php
         cp -f "${DIR}/config.php" "/srv/www/default/xhgui/config/config.php"
-        echo "Restarting MongoDB"
+        echo " * Restarting MongoDB"
         service mongod restart
     else
-        echo -e "\nUpdating xhgui..."
+        echo -e "\n * Updating xhgui..."
         cd /srv/www/default/xhgui
         git pull --rebase origin master > /dev/null 2>&1
         sudo php install.php > /dev/null 2>&1
@@ -76,7 +76,7 @@ install_xhgui() {
 }
 
 enable_tideways_by_site() {
-    echo "Tideways-by-site started"
+    echo " * Tideways-by-site started"
 
     VVV_CONFIG=/vagrant/vvv-custom.yml
     if [[ -f /vagrant/config.yml ]]; then
@@ -84,12 +84,12 @@ enable_tideways_by_site() {
     fi
     php "${DIR}/by-site.php" "${VVV_CONFIG}"
 
-    echo "Tideways-by-site runned"
+    echo " * Tideways-by-site finished"
 }
 
 . "${DIR}/../mongodb/provision.sh"
 
-echo "Installing Tideways & XHgui"
+echo " * Installing Tideways & XHgui"
 DIR=$(dirname "$0")
 install_tideways
 install_tideways_php
@@ -98,4 +98,4 @@ cp -f "${DIR}/nginx.conf" "/etc/nginx/custom-utilities/xhgui.conf"
 enable_tideways_by_site
 restart_php
 
-echo "Tideways and xhgui installed"
+echo " * Tideways and xhgui installed"
