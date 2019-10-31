@@ -17,7 +17,6 @@ CA_DIR="${CERTIFICATES_DIR}/ca"
 if [ ! -d ${CA_DIR} ];then
     echo "Setting up Certificate Authority"
     mkdir -p ${CA_DIR}
-    
 
     openssl genrsa \
         -out ${CA_DIR}/ca.key \
@@ -35,13 +34,13 @@ fi
 
 mkdir -p /usr/share/ca-certificates/vvv
 if [[ ! -f /usr/share/ca-certificates/vvv/ca.crt ]]; then
-    echo "Adding root certificate to the VM"
+    echo " * Adding root certificate to the VM"
     cp -f "${CA_DIR}/ca.crt" /usr/share/ca-certificates/vvv/ca.crt
-    echo "Updating loaded VM certificates"
+    echo " * Updating loaded VM certificates"
     update-ca-certificates --fresh
 fi
 
-echo "Setting up default Certificate for vvv.test and vvv.local"
+echo " * Setting up default Certificate for vvv.test and vvv.local"
 
 CERT_DIR="${CERTIFICATES_DIR}/default"
 
@@ -82,7 +81,7 @@ openssl x509 \
     -sha256 \
     -extfile ${CERT_DIR}/openssl.conf  &>/dev/null
 
-echo "Symlinking default server certificate and key"
+echo " * Symlinking default server certificate and key"
 
 rm -rf /etc/nginx/server-2.1.0.crt
 rm -rf /etc/nginx/server-2.1.0.key
@@ -105,7 +104,7 @@ get_hosts() {
     echo ${value:-$@}
 }
 
-echo "Generating Site certificates"
+echo " * Generating Site certificates"
 for SITE in `get_sites`; do
     echo "Generating certificates for the ${SITE} hosts"
     SITE_ESCAPED=`echo ${SITE} | sed 's/\./\\\\./g'`
@@ -155,4 +154,4 @@ EOF
 done
 
 
-echo "Finished generating TLS certificates"
+echo " * Finished generating TLS certificates"
