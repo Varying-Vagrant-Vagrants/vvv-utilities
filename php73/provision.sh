@@ -52,7 +52,7 @@ package_install() {
   fi
 
   # Remove unnecessary packages
-  echo "Removing unnecessary packages..."
+  echo " * Removing unnecessary packages..."
   apt-get autoremove -y
 
   # Clean up apt caches
