@@ -121,4 +121,12 @@ configure() {
 network_check
 package_install
 configure
+
+# Change the CLI PHP back to 7.2
+update-alternatives --set php /usr/bin/php7.2
+update-alternatives --set phar /usr/bin/phar7.2
+update-alternatives --set phar.phar /usr/bin/phar.phar7.2
+update-alternatives --set phpize /usr/bin/phpize7.2
+update-alternatives --set php-config /usr/bin/php-config7.2
+
 echo "PHP 7.4 installed"
