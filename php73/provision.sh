@@ -91,7 +91,6 @@ configure() {
   service php7.3-fpm restart
 }
 
-network_check
 package_install
 configure
 
