@@ -45,7 +45,7 @@ package_install() {
   apt-get -y update
 
   # Install required packages
-  echo "Installing apt-get packages..."
+  echo " * Installing apt-get packages..."
   if ! apt-get -y --allow-downgrades --allow-remove-essential --allow-change-held-packages -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confnew install --fix-missing --fix-broken ${apt_package_install_list[@]}; then
     echo " * Installing apt-get packages returned a failure code, cleaning up apt caches then exiting"
     apt-get clean
