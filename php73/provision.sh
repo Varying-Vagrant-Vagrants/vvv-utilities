@@ -37,52 +37,26 @@ apt_package_install_list=(
 
 ### FUNCTIONS
 
-network_detection() {
-  # Network Detection
-  #
-  # Make an HTTP request to ppa.launchpad.net to determine if outside access is available
-  # to us. If 3 attempts with a timeout of 5 seconds are not successful, then we'll
-  # skip a few things further in provisioning rather than create a bunch of errors.
-  if [[ "$(wget --tries=3 --timeout=10 --spider --recursive --level=2 https://ppa.launchpad.net 2>&1 | grep 'connected')" ]]; then
-    echo "Succesful Network connection to ppa.launchpad.net detected..."
-    ping_result="Connected"
-  else
-    echo "Network connection not detected. Unable to reach ppa.launchpad.net..."
-    ping_result="Not Connected"
-  fi
-}
-
-network_check() {
-  network_detection
-  if [[ ! "$ping_result" == "Connected" ]]; then
-    echo -e "\nNo network connection available, skipping package installation"
-    exit 0
-  fi
-}
-
 package_install() {
 
   # Update all of the package references before installing anything
-  echo "Running apt-get update..."
+  echo " * Running apt-get update..."
   apt-get -y update
 
   # Install required packages
-  echo "Installing apt-get packages..."
-  apt-get -y install ${apt_package_install_list[@]}
-  # Install required packages
-  echo "Installing apt-get packages..."
+  echo " * Installing apt-get packages..."
   if ! apt-get -y --allow-downgrades --allow-remove-essential --allow-change-held-packages -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confnew install --fix-missing --fix-broken ${apt_package_install_list[@]}; then
-    echo "Installing apt-get packages returned a failure code, cleaning up apt caches then exiting"
+    echo " * Installing apt-get packages returned a failure code, cleaning up apt caches then exiting"
     apt-get clean
     return 1
   fi
 
   # Remove unnecessary packages
-  echo "Removing unnecessary packages..."
+  echo " * Removing unnecessary packages..."
   apt-get autoremove -y
 
   # Clean up apt caches
-  echo "Cleaning apt caches..."
+  echo " * Cleaning apt caches..."
   apt-get clean
 
   return 0
@@ -117,7 +91,14 @@ configure() {
   service php7.3-fpm restart
 }
 
-network_check
 package_install
 configure
-echo "PHP 7.3 installed"
+
+# Change the CLI PHP back to 7.2
+update-alternatives --set php /usr/bin/php7.2
+update-alternatives --set phar /usr/bin/phar7.2
+update-alternatives --set phar.phar /usr/bin/phar.phar7.2
+update-alternatives --set phpize /usr/bin/phpize7.2
+update-alternatives --set php-config /usr/bin/php-config7.2
+
+echo " * PHP 7.3 installed"
