@@ -71,7 +71,7 @@ install_xhgui() {
         echo -e "\n * Updating xhgui..."
         cd /srv/www/default/xhgui
         git pull --rebase origin master > /dev/null 2>&1
-        sudo php install.php > /dev/null 2>&1
+        sudo composer update > /dev/null 2>&1
     fi
 }
 
