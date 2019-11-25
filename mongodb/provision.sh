@@ -3,10 +3,10 @@
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 install_mongodb_php() {
-    for version in "7.0" "7.1" "7.2" "7.3"
+    for version in "7.0" "7.1" "7.2" "7.3" "7.4"
     do
         if [[ $(command -v php$version) ]]; then
-            echo "Installing MongoDB for PHP $version"
+            echo " * Installing MongoDB for PHP $version"
             sudo pecl -d php_suffix="$version" install mongodb > /dev/null 2>&1
             # do not remove files, only register the packages as not installed so we can install for other php version
             sudo pecl uninstall -r mongodb > /dev/null 2>&1
@@ -17,7 +17,7 @@ install_mongodb_php() {
 }
 
 install_mongodb() {
-    echo "Installing MongoDB"
+    echo " * Installing MongoDB"
     codename=$(lsb_release --codename | cut -f2)
     if [[ $codename == "trusty" ]]; then
         if [[ ! $( apt-key list | grep 'MongoDB 3.4') ]]; then
@@ -38,7 +38,7 @@ install_mongodb() {
 }
 
 cleanup_mongodb_entries() {
-    echo "Auto-removing mongoDB records older than 2592000 seconds (30 days)"
+    echo " * Auto-removing mongoDB records older than 2592000 seconds (30 days)"
     mongo xhprof --eval 'db.collection.ensureIndex( { "meta.request_ts" : 1 }, { expireAfterSeconds : 2592000 } )' > /dev/null 2>&1
     # indexes
     mongo xhprof --eval  "db.collection.ensureIndex( { 'meta.SERVER.REQUEST_TIME' : -1 } )" > /dev/null 2>&1
@@ -52,7 +52,7 @@ cleanup_mongodb_entries() {
 mkdir -p /var/log/mongodb
 mkdir -p /data/db
 
-echo "Making sure mongodb service is enabled"
+echo " * Making sure mongodb service is enabled"
 
 if [[ ! $(command -v mongo) ]]; then
     install_mongodb
@@ -62,6 +62,6 @@ cleanup_mongodb_entries
 # make sure mongo can actually write to the log folder
 chown mongodb /var/log/mongodb
 
-echo "Restarting mongod"
+echo " * Restarting mongod"
 systemctl enable mongod.service
 systemctl start mongod.service
