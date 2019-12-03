@@ -2,6 +2,7 @@
 
 # Download and extract phpMemcachedAdmin to provide a dashboard view and
 # admin interface to the goings on of memcached when running
+echo " * Checking for memcached-admin"
 if [[ ! -d "/srv/www/default/memcached-admin" ]]; then
 	echo -e " * Downloading phpMemcachedAdmin, see https://github.com/elijaa/phpmemcachedadmin"
 	cd /srv/www/default
