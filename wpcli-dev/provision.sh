@@ -17,8 +17,8 @@ mysql -u root --password=root -e "CREATE DATABASE IF NOT EXISTS ${DB_NAME}"
 mysql -u root --password=root -e "GRANT ALL PRIVILEGES ON ${DB_NAME}.* TO wp_cli_test@localhost IDENTIFIED BY 'password1';"
 echo -e " * DB operations done."
 
-echo "Downloading jq utility"
-apt install -y jq
+echo " * Downloading jq utility"
+sudo apt-get -y --allow-downgrades --allow-remove-essential --allow-change-held-packages -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confnew install --fix-missing --fix-broken jq
 
 if [[ ! -d /srv/www/wp-cli-dev/.git ]]; then
   echo " * Downloading official WP-CLI-Dev environment"
