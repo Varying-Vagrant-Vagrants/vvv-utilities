@@ -1,6 +1,5 @@
-
-#!/bin/env php    
-<?php 
+#!/bin/env php
+<?php
 if(is_file('/srv/config/tideways.json')) {
     unlink('/srv/config/tideways.json');
 }

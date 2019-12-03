@@ -3,7 +3,7 @@
 // don't run on CLI
 if ( empty($_SERVER['REMOTE_ADDR']) and !isset($_SERVER['HTTP_USER_AGENT']) and count($_SERVER['argv']) > 0) {
     return;
-} 
+}
 
 if ( !isset( $_SERVER['HTTP_HOST'] ) ) {
     return;
@@ -31,5 +31,5 @@ if ( file_exists( '/srv/www/default/xhgui/external/header.php' ) ) {
 
 define( 'QM_DISABLED', true );
 if( file_exists( '/srv/www/default/xhgui/config/custom-header.php' ) ) {
-    include_once( '/srv/www/default/xhgui/config/custom-header.php' );
+    include_once '/srv/www/default/xhgui/config/custom-header.php';
 }

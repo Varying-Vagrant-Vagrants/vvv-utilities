@@ -37,7 +37,7 @@ $defaults = array(
 
 $custom_args = array();
 if( file_exists( './custom-config.php' ) ) {
-    include_once( './custom-config.php' );
+    include_once './custom-config.php';
 }
 
 // In config/config.php
