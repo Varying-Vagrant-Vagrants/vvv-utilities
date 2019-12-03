@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Tideways with XHgui
-DIR=$(dirname "$0")
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 install_tideways() {
     if [[ ! -d /var/local/tideways-php/.git ]]; then

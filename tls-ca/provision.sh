@@ -107,9 +107,9 @@ get_hosts() {
 echo " * Generating Site certificates"
 for SITE in `get_sites`; do
     echo "Generating certificates for the ${SITE} hosts"
-    SITE_ESCAPED=`echo ${SITE} | sed 's/\./\\\\./g'`
-    COMMON_NAME=`get_host ${SITE_ESCAPED}`
-    HOSTS=`get_hosts ${SITE_ESCAPED}`
+    SITE_ESCAPED=$(echo ${SITE} | sed 's/\./\\\\./g')
+    COMMON_NAME=$(get_host "${SITE_ESCAPED}")
+    HOSTS=$(get_hosts "${SITE_ESCAPED}")
     CERT_DIR="${CERTIFICATES_DIR}/${SITE}"
 
     rm -rf "${CERT_DIR}"
