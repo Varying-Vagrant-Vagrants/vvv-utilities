@@ -31,7 +31,7 @@ install_mongodb() {
         fi
         echo "deb [ arch=amd64 ] http://repo.mongodb.org/apt/ubuntu ${codename}/mongodb-org/4.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.0.list
     fi
-    
+
     sudo apt-get update > /dev/null 2>&1
     sudo apt-get -y install mongodb-org re2c
     install_mongodb_php
