@@ -100,12 +100,12 @@ get_sites() {
 }
 
 get_host() {
-    local value=$(shyaml "get-value sites.${1}.hosts.0" 2> /dev/null < ${VVV_CONFIG})
+    local value=$(shyaml get-value sites.${1}.hosts.0 2> /dev/null < ${VVV_CONFIG})
     echo "${value:-$@}"
 }
 
 get_hosts() {
-    local value=$(shyaml "get-values sites.${1}.hosts" 2> /dev/null < ${VVV_CONFIG})
+    local value=$(shyaml get-values sites.${1}.hosts 2> /dev/null < ${VVV_CONFIG})
     echo "${value:-$@}"
 }
 
