@@ -59,7 +59,7 @@ DNS.2 = *.vvv.test
 DNS.3 = vvv.local
 DNS.4 = *.vvv.local
 DNS.5 = vvv
-DNS.6 = *.vvv.test
+DNS.6 = *.vvv
 EOF
 
 openssl genrsa \
@@ -100,12 +100,12 @@ get_sites() {
 }
 
 get_host() {
-    local value=$(shyaml "get-value sites.${1}.hosts.0" 2> /dev/null < ${VVV_CONFIG})
+    local value=$(shyaml get-value "sites.${1}.hosts.0" 2> /dev/null < ${VVV_CONFIG})
     echo "${value:-$@}"
 }
 
 get_hosts() {
-    local value=$(shyaml "get-values sites.${1}.hosts" 2> /dev/null < ${VVV_CONFIG})
+    local value=$(shyaml get-values "sites.${1}.hosts" 2> /dev/null < ${VVV_CONFIG})
     echo "${value:-$@}"
 }
 
