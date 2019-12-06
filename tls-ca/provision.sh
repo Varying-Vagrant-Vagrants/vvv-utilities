@@ -112,7 +112,7 @@ get_hosts() {
 echo " * Generating Site certificates"
 for SITE in $(get_sites); do
     echo " * Generating certificates for the '${SITE}' hosts"
-    SITE_ESCAPED=$(echo "${SITE}" | sed 's/\./\\\\./g')
+    SITE_ESCAPED="${SITE//./\\.}"
     COMMON_NAME=$(get_host "${SITE_ESCAPED}")
     HOSTS=$(get_hosts "${SITE_ESCAPED}")
     SITE_CERT_DIR="${CERTIFICATES_DIR}/${SITE}"
