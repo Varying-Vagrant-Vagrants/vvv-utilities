@@ -79,7 +79,7 @@ openssl x509 \
     -CAkey "${CA_DIR}/ca.key" \
     -CAcreateserial \
     -out "${DEFAULT_CERT_DIR}/dev.crt" \
-    -days 3650 \
+    -days 200 \
     -sha256 \
     -extfile "${DEFAULT_CERT_DIR}/openssl.conf"  &>/dev/null
 
@@ -153,7 +153,7 @@ EOF
         -CAkey "${CA_DIR}/ca.key" \
         -CAcreateserial \
         -out "${SITE_CERT_DIR}/dev.crt" \
-        -days 3650 \
+        -days 200 \
         -sha256 \
         -extfile "${SITE_CERT_DIR}/openssl.conf" &>/dev/null
 done
