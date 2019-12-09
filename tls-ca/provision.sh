@@ -48,10 +48,11 @@ rm -rf "${DEFAULT_CERT_DIR}"
 mkdir -p "${DEFAULT_CERT_DIR}"
 
 cat << EOF > "${DEFAULT_CERT_DIR}/openssl.conf"
-authorityKeyIdentifier=keyid,issuer
-basicConstraints=CA:FALSE
-keyUsage = digitalSignature, nonRepudiation, keyEncipherment, dataEncipherment
-subjectAltName = @alt_names
+authorityKeyIdentifier = keyid,issuer
+basicConstraints       = CA:FALSE
+keyUsage               = digitalSignature, nonRepudiation, keyEncipherment, dataEncipherment
+extendedKeyUsage       = serverAuth, clientAuth
+subjectAltName         = @alt_names
 
 [alt_names]
 DNS.1 = vvv.test
@@ -70,7 +71,7 @@ openssl req \
     -new \
     -key "${DEFAULT_CERT_DIR}/dev.key" \
     -out "${DEFAULT_CERT_DIR}/dev.csr" \
-    -subj "/CN=vvv.test"  &>/dev/null
+    -subj "/CN=vvv.test/C=GB/ST=Test Province/L=Test Locality/O=VVV/OU=VVV" &>/dev/null
 
 openssl x509 \
     -req \
@@ -112,7 +113,7 @@ get_hosts() {
 echo " * Generating Site certificates"
 for SITE in $(get_sites); do
     echo " * Generating certificates for the '${SITE}' hosts"
-    SITE_ESCAPED="${SITE//./\\.}"
+    SITE_ESCAPED=$(echo "${SITE}" | sed 's/\./\\\\./g')
     COMMON_NAME=$(get_host "${SITE_ESCAPED}")
     HOSTS=$(get_hosts "${SITE_ESCAPED}")
     SITE_CERT_DIR="${CERTIFICATES_DIR}/${SITE}"
@@ -121,19 +122,20 @@ for SITE in $(get_sites); do
     mkdir -p "${SITE_CERT_DIR}"
 
     cat << EOF > "${SITE_CERT_DIR}/openssl.conf"
-authorityKeyIdentifier=keyid,issuer
-basicConstraints=CA:FALSE
-keyUsage = digitalSignature, nonRepudiation, keyEncipherment, dataEncipherment
-subjectAltName = @alt_names
+authorityKeyIdentifier = keyid,issuer
+basicConstraints       = CA:FALSE
+keyUsage               = digitalSignature, nonRepudiation, keyEncipherment, dataEncipherment
+extendedKeyUsage       = serverAuth, clientAuth
+subjectAltName         = @alt_names
 
 [alt_names]
 EOF
     I=0
     for DOMAIN in ${HOSTS}; do
         ((I++))
-        echo "DNS.${I} = ${DOMAIN}" >> "${SITE_CERT_DIR}/openssl.conf"
+        echo "DNS.${I} = ${DOMAIN//\\/}" >> "${SITE_CERT_DIR}/openssl.conf"
         ((I++))
-        echo "DNS.${I} = *.${DOMAIN}" >> "${SITE_CERT_DIR}/openssl.conf"
+        echo "DNS.${I} = *.${DOMAIN//\\/}" >> "${SITE_CERT_DIR}/openssl.conf"
     done
 
     openssl genrsa \
@@ -144,7 +146,7 @@ EOF
         -new \
         -key "${SITE_CERT_DIR}/dev.key" \
         -out "${SITE_CERT_DIR}/dev.csr" \
-        -subj "/CN=${COMMON_NAME}" &>/dev/null
+        -subj "/CN=${COMMON_NAME//\\/}/C=GB/ST=Test Province/L=Test Locality/O=VVV/OU=VVV" &>/dev/null
 
     openssl x509 \
         -req \
