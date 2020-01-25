@@ -21,6 +21,7 @@ apt_package_install_list=(
   php-imagick
   php-memcache
   php-memcached
+  php-pcov
   php-ssh2
   php-xdebug
   php5.6-bcmath
