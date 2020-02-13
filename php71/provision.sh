@@ -66,42 +66,47 @@ package_install() {
 
 configure() {
   # Copy nginx configuration from local
-  cp "${DIR}/php7.1-upstream.conf" "/etc/nginx/upstreams/php71.conf"
+  cp -f "${DIR}/php7.1-upstream.conf" "/etc/nginx/upstreams/php71.conf"
+  echo " * Copied ${DIR}/php7.1-upstream.conf              to /etc/nginx/upstreams/php71.conf"
 
   # Copy php-fpm configuration from local
-  cp "${DIR}/php7.1-fpm.conf" "/etc/php/7.1/fpm/php-fpm.conf"
-  cp "${DIR}/php7.1-www.conf" "/etc/php/7.1/fpm/pool.d/www.conf"
-  cp "${DIR}/php7.1-custom.ini" "/etc/php/7.1/fpm/conf.d/php-custom.ini"
-  cp "/srv/config/php-config/opcache.ini" "/etc/php/7.1/fpm/conf.d/opcache.ini"
-  cp "/srv/config/php-config/xdebug.ini" "/etc/php/7.1/mods-available/xdebug.ini"
+  cp -f "${DIR}/php7.1-fpm.conf" "/etc/php/7.1/fpm/php-fpm.conf"
+  echo " * Copied ${DIR}/php7.1-fpm.conf                   to /etc/php/7.1/fpm/php-fpm.conf"
+
+  cp -f "${DIR}/php7.1-www.conf" "/etc/php/7.1/fpm/pool.d/www.conf"
+  echo " * Copied ${DIR}/php7.1-www.conf                   to /etc/php/7.1/fpm/pool.d/www.conf"
+
+  cp -f "${DIR}/php7.1-custom.ini" "/etc/php/7.1/fpm/conf.d/php-custom.ini"
+  echo " * Copied ${DIR}/php7.1-custom.ini                 to /etc/php/7.1/fpm/conf.d/php-custom.ini"
+
+  cp -f "/srv/config/php-config/opcache.ini" "/etc/php/7.1/fpm/conf.d/opcache.ini"
+  echo " * Copied /srv/config/php-config/opcache.ini       to /etc/php/7.1/fpm/conf.d/opcache.ini"
+
+  cp -f "/srv/config/php-config/xdebug.ini" "/etc/php/7.1/mods-available/xdebug.ini"
+  echo " * Copied /srv/config/php-config/xdebug.ini        to /etc/php/7.1/mods-available/xdebug.ini"
+
   if [[ -e /srv/config/php-config/mailcatcher.ini ]]; then
-    cp "/srv/config/php-config/mailcatcher.ini" "/etc/php/7.1/mods-available/mailcatcher.ini"
+    cp -f "/srv/config/php-config/mailcatcher.ini" "/etc/php/7.1/mods-available/mailcatcher.ini"
     echo " * Copied /srv/config/php-config/mailcatcher.ini   to /etc/php/7.1/mods-available/mailcatcher.ini"
 
   fi
   if [[ -e /srv/config/php-config/mailhog.ini ]]; then
-    cp "/srv/config/php-config/mailhog.ini" "/etc/php/7.1/mods-available/mailhog.ini"
+    cp -f "/srv/config/php-config/mailhog.ini" "/etc/php/7.1/mods-available/mailhog.ini"
     echo " * Copied /srv/config/php-config/mailhog.ini   to /etc/php/7.1/mods-available/mailhog.ini"
   fi
 
-  echo " * Copied ${DIR}/php7.1-fpm.conf                   to /etc/php/7.1/fpm/php-fpm.conf"
-  echo " * Copied ${DIR}/php7.1-www.conf                   to /etc/php/7.1/fpm/pool.d/www.conf"
-  echo " * Copied ${DIR}/php7.1-custom.ini                 to /etc/php/7.1/fpm/conf.d/php-custom.ini"
-  echo " * Copied /srv/config/php-config/opcache.ini       to /etc/php/7.1/fpm/conf.d/opcache.ini"
-  echo " * Copied /srv/config/php-config/xdebug.ini        to /etc/php/7.1/mods-available/xdebug.ini"
-
+  echo " * Restarting php7.1-fpm service "
   service php7.1-fpm restart
 }
 
 package_install
 configure
 
-
-# Change the CLI PHP back to 7.2
+echo " * Restoring the default PHP CLI version"
 update-alternatives --set php /usr/bin/php7.2
 update-alternatives --set phar /usr/bin/phar7.2
 update-alternatives --set phar.phar /usr/bin/phar.phar7.2
 update-alternatives --set phpize /usr/bin/phpize7.2
 update-alternatives --set php-config /usr/bin/php-config7.2
 
-echo "PHP 7.1 installed"
+echo "PHP 7.1 provisioning complete"

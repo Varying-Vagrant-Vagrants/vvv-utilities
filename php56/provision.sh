@@ -39,7 +39,6 @@ apt_package_install_list=(
 
 ### FUNCTIONS
 package_install() {
-
   # Update all of the package references before installing anything
   echo " * Running apt-get update..."
   apt-get -y update
@@ -65,16 +64,27 @@ package_install() {
 
 configure() {
   # Copy nginx configuration from local
-  cp "${DIR}/php5.6-upstream.conf" "/etc/nginx/upstreams/php56.conf"
+  cp -f "${DIR}/php5.6-upstream.conf" "/etc/nginx/upstreams/php56.conf"
+  echo " * Copied ${DIR}/php5.6-upstream.conf              to /etc/nginx/upstreams/php56.conf"
 
   # Copy php-fpm configuration from local
-  cp "${DIR}/php5.6-fpm.conf" "/etc/php/5.6/fpm/php-fpm.conf"
-  cp "${DIR}/php5.6-www.conf" "/etc/php/5.6/fpm/pool.d/www.conf"
-  cp "${DIR}/php5.6-custom.ini" "/etc/php/5.6/fpm/conf.d/php-custom.ini"
-  cp "/srv/config/php-config/opcache.ini" "/etc/php/5.6/fpm/conf.d/opcache.ini"
-  cp "/srv/config/php-config/xdebug.ini" "/etc/php/5.6/mods-available/xdebug.ini"
+  cp -f "${DIR}/php5.6-fpm.conf" "/etc/php/5.6/fpm/php-fpm.conf"
+  echo " * Copied ${DIR}/php5.6-fpm.conf                   to /etc/php/5.6/fpm/php-fpm.conf"
+
+  cp -f "${DIR}/php5.6-www.conf" "/etc/php/5.6/fpm/pool.d/www.conf"
+  echo " * Copied ${DIR}/php5.6-www.conf                   to /etc/php/5.6/fpm/pool.d/www.conf"
+
+  cp -f "${DIR}/php5.6-custom.ini" "/etc/php/5.6/fpm/conf.d/php-custom.ini"
+  echo " * Copied ${DIR}/php5.6-custom.ini                 to /etc/php/5.6/fpm/conf.d/php-custom.ini"
+
+  cp -f "/srv/config/php-config/opcache.ini" "/etc/php/5.6/fpm/conf.d/opcache.ini"
+  echo " * Copied /srv/config/php-config/opcache.ini       to /etc/php/5.6/fpm/conf.d/opcache.ini"
+
+  cp -f "/srv/config/php-config/xdebug.ini" "/etc/php/5.6/mods-available/xdebug.ini"
+  echo " * Copied /srv/config/php-config/xdebug.ini        to /etc/php/5.6/mods-available/xdebug.ini"
+
   if [[ -e /srv/config/php-config/mailcatcher.ini ]]; then
-    cp "/srv/config/php-config/mailcatcher.ini" "/etc/php/5.6/mods-available/mailcatcher.ini"
+    cp -f "/srv/config/php-config/mailcatcher.ini" "/etc/php/5.6/mods-available/mailcatcher.ini"
     echo " * Copied /srv/config/php-config/mailcatcher.ini   to /etc/php/5.6/mods-available/mailcatcher.ini"
 
   fi
@@ -83,24 +93,18 @@ configure() {
     echo " * Copied /srv/config/php-config/mailhog.ini   to /etc/php/5.6/mods-available/mailhog.ini"
   fi
 
-  echo " * Copied ${DIR}/php5.6-fpm.conf                   to /etc/php/5.6/fpm/php-fpm.conf"
-  echo " * Copied ${DIR}/php5.6-www.conf                   to /etc/php/5.6/fpm/pool.d/www.conf"
-  echo " * Copied ${DIR}/php5.6-custom.ini                 to /etc/php/5.6/fpm/conf.d/php-custom.ini"
-  echo " * Copied /srv/config/php-config/opcache.ini       to /etc/php/5.6/fpm/conf.d/opcache.ini"
-  echo " * Copied /srv/config/php-config/xdebug.ini        to /etc/php/5.6/mods-available/xdebug.ini"
-
-
+  echo " * Restarting php5.6-fpm service"
   service php5.6-fpm restart
 }
 
 package_install
 configure
 
-# Change the CLI PHP back to 7.2
+echo " * Restoring the default PHP CLI version"
 update-alternatives --set php /usr/bin/php7.2
 update-alternatives --set phar /usr/bin/phar7.2
 update-alternatives --set phar.phar /usr/bin/phar.phar7.2
 update-alternatives --set phpize /usr/bin/phpize7.2
 update-alternatives --set php-config /usr/bin/php-config7.2
 
-echo " * PHP 5.6 installed"
+echo " * PHP 5.6 provisioning complete"
