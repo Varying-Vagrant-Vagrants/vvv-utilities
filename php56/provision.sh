@@ -39,7 +39,7 @@ apt_package_install_list=(
 
 ### FUNCTIONS
 package_install() {
-
+g
   # Update all of the package references before installing anything
   echo " * Running apt-get update..."
   apt-get -y update
@@ -66,6 +66,8 @@ package_install() {
 configure() {
   # Copy nginx configuration from local
   cp -f "${DIR}/php5.6-upstream.conf" "/etc/nginx/upstreams/php56.conf"
+  echo " * Copied ${DIR}/php5.6-upstream.conf              to /etc/nginx/upstreams/php56.conf"
+
 
   # Copy php-fpm configuration from local
   cp -f "${DIR}/php5.6-fpm.conf" "/etc/php/5.6/fpm/php-fpm.conf"
@@ -93,6 +95,7 @@ configure() {
     echo " * Copied /srv/config/php-config/mailhog.ini   to /etc/php/5.6/mods-available/mailhog.ini"
   fi
 
+  echo " * Restarting php5.6-fpm service"
   service php5.6-fpm restart
 }
 
