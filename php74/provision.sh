@@ -95,7 +95,6 @@ configure() {
     echo " * Copied /srv/config/php-config/mailhog.ini   to /etc/php/7.4/mods-available/mailhog.ini"
   fi
 
-
   echo " * Restarting php7.4-fpm service "
   service php7.4-fpm restart
 }
