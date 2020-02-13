@@ -68,7 +68,7 @@ configure() {
   cp -f "${DIR}/php5.6-upstream.conf" "/etc/nginx/upstreams/php56.conf"
   echo " * Copied ${DIR}/php5.6-upstream.conf              to /etc/nginx/upstreams/php56.conf"
 
-
+g
   # Copy php-fpm configuration from local
   cp -f "${DIR}/php5.6-fpm.conf" "/etc/php/5.6/fpm/php-fpm.conf"
   echo " * Copied ${DIR}/php5.6-fpm.conf                   to /etc/php/5.6/fpm/php-fpm.conf"
@@ -102,7 +102,7 @@ configure() {
 package_install
 configure
 
-# Change the CLI PHP back to 7.2
+echo " * Restoring the default PHP CLI version"
 update-alternatives --set php /usr/bin/php7.2
 update-alternatives --set phar /usr/bin/phar7.2
 update-alternatives --set phar.phar /usr/bin/phar.phar7.2

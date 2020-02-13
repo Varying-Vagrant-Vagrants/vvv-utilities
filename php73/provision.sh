@@ -65,21 +65,21 @@ package_install() {
 
 configure() {
   # Copy nginx configuration from local
-  cp "${DIR}/php7.3-upstream.conf" "/etc/nginx/upstreams/php73.conf"
+  cp -f "${DIR}/php7.3-upstream.conf" "/etc/nginx/upstreams/php73.conf"
 
   # Copy php-fpm configuration from local
-  cp "${DIR}/php7.3-fpm.conf" "/etc/php/7.3/fpm/php-fpm.conf"
-  cp "${DIR}/php7.3-www.conf" "/etc/php/7.3/fpm/pool.d/www.conf"
-  cp "${DIR}/php7.3-custom.ini" "/etc/php/7.3/fpm/conf.d/php-custom.ini"
-  cp "/srv/config/php-config/opcache.ini" "/etc/php/7.3/fpm/conf.d/opcache.ini"
-  cp "/srv/config/php-config/xdebug.ini" "/etc/php/7.3/mods-available/xdebug.ini"
+  cp -f "${DIR}/php7.3-fpm.conf" "/etc/php/7.3/fpm/php-fpm.conf"
+  cp -f "${DIR}/php7.3-www.conf" "/etc/php/7.3/fpm/pool.d/www.conf"
+  cp -f "${DIR}/php7.3-custom.ini" "/etc/php/7.3/fpm/conf.d/php-custom.ini"
+  cp -f "/srv/config/php-config/opcache.ini" "/etc/php/7.3/fpm/conf.d/opcache.ini"
+  cp -f "/srv/config/php-config/xdebug.ini" "/etc/php/7.3/mods-available/xdebug.ini"
   if [[ -e /srv/config/php-config/mailcatcher.ini ]]; then
     cp "/srv/config/php-config/mailcatcher.ini" "/etc/php/7.3/mods-available/mailcatcher.ini"
     echo " * Copied /srv/config/php-config/mailcatcher.ini   to /etc/php/7.3/mods-available/mailcatcher.ini"
 
   fi
   if [[ -e /srv/config/php-config/mailhog.ini ]]; then
-    cp "/srv/config/php-config/mailhog.ini" "/etc/php/7.3/mods-available/mailhog.ini"
+    cp -f "/srv/config/php-config/mailhog.ini" "/etc/php/7.3/mods-available/mailhog.ini"
     echo " * Copied /srv/config/php-config/mailhog.ini   to /etc/php/7.3/mods-available/mailhog.ini"
   fi
 
