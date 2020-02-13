@@ -39,7 +39,6 @@ apt_package_install_list=(
 
 ### FUNCTIONS
 package_install() {
-g
   # Update all of the package references before installing anything
   echo " * Running apt-get update..."
   apt-get -y update
