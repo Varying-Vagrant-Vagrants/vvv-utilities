@@ -65,13 +65,24 @@ package_install() {
 configure() {
   # Copy nginx configuration from local
   cp -f "${DIR}/php7.2-upstream.conf" "/etc/nginx/upstreams/php72.conf"
+  echo " * Copied ${DIR}/php7.2-upstream.conf              to /etc/nginx/upstreams/php72.conf"
 
   # Copy php-fpm configuration from local
   cp -f "${DIR}/php7.2-fpm.conf" "/etc/php/7.2/fpm/php-fpm.conf"
+  echo " * Copied ${DIR}/php7.2-fpm.conf                   to /etc/php/7.2/fpm/php-fpm.conf"
+
   cp -f "${DIR}/php7.2-www.conf" "/etc/php/7.2/fpm/pool.d/www.conf"
+  echo " * Copied ${DIR}/php7.2-www.conf                   to /etc/php/7.2/fpm/pool.d/www.conf"
+
   cp -f "${DIR}/php7.2-custom.ini" "/etc/php/7.2/fpm/conf.d/php-custom.ini"
+  echo " * Copied ${DIR}/php7.2-custom.ini                 to /etc/php/7.2/fpm/conf.d/php-custom.ini"
+
   cp -f "/srv/config/php-config/opcache.ini" "/etc/php/7.2/fpm/conf.d/opcache.ini"
+  echo " * Copied /srv/config/php-config/opcache.ini       to /etc/php/7.2/fpm/conf.d/opcache.ini"
+
   cp -f "/srv/config/php-config/xdebug.ini" "/etc/php/7.2/mods-available/xdebug.ini"
+  echo " * Copied /srv/config/php-config/xdebug.ini        to /etc/php/7.2/mods-available/xdebug.ini"
+
   if [[ -e /srv/config/php-config/mailcatcher.ini ]]; then
     cp -f "/srv/config/php-config/mailcatcher.ini" "/etc/php/7.2/mods-available/mailcatcher.ini"
     echo " * Copied /srv/config/php-config/mailcatcher.ini   to /etc/php/7.2/mods-available/mailcatcher.ini"
@@ -82,16 +93,11 @@ configure() {
     echo " * Copied /srv/config/php-config/mailhog.ini   to /etc/php/7.2/mods-available/mailhog.ini"
   fi
 
-  echo " * Copied ${DIR}/php7.2-fpm.conf                   to /etc/php/7.2/fpm/php-fpm.conf"
-  echo " * Copied ${DIR}/php7.2-www.conf                   to /etc/php/7.2/fpm/pool.d/www.conf"
-  echo " * Copied ${DIR}/php7.2-custom.ini                 to /etc/php/7.2/fpm/conf.d/php-custom.ini"
-  echo " * Copied /srv/config/php-config/opcache.ini       to /etc/php/7.2/fpm/conf.d/opcache.ini"
-  echo " * Copied /srv/config/php-config/xdebug.ini        to /etc/php/7.2/mods-available/xdebug.ini"
-
+  echo " * Restarting php7.2-fpm service "
   service php7.2-fpm restart
 }
 
 package_install
 configure
 
-echo " * PHP 7.2 installed"
+echo " * PHP 7.2 provisioning complete"
