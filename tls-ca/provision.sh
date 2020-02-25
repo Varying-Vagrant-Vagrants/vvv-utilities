@@ -12,7 +12,7 @@ if [[ $codename == "trusty" ]]; then # VVV 2 uses Ubuntu 14 LTS trusty
     CERTIFICATES_DIR="/vagrant/certificates"
 fi
 
-ROOT_CERTIFICATE_LENGTH=200
+ROOT_CERTIFICATE_LENGTH=860
 CERTIFICATE_LENGTH=200
 CA_DIR="${CERTIFICATES_DIR}/ca"
 DEFAULT_CERT_DIR="${CERTIFICATES_DIR}/default"
