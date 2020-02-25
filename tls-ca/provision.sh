@@ -27,7 +27,7 @@ if [ ! -d "${CA_DIR}" ];then
         -nodes \
         -key "${CA_DIR}/ca.key" \
         -sha256 \
-        -days 3650 \
+        -days 865 \
         -out "${CA_DIR}/ca.crt" \
         -subj "/CN=VVV INTERNAL CA" &>/dev/null
 fi
