@@ -12,11 +12,17 @@ if [[ $codename == "trusty" ]]; then # VVV 2 uses Ubuntu 14 LTS trusty
     CERTIFICATES_DIR="/vagrant/certificates"
 fi
 
+CERTIFICATE_LENGTH=200
+
 CA_DIR="${CERTIFICATES_DIR}/ca"
 
 if [ ! -d "${CA_DIR}" ];then
-    echo " * Setting up VVV Certificate Authority"
+    echo " * Creating certificates folder"
     mkdir -p "${CA_DIR}"
+fi
+
+if [ ! -e "${CA_DIR}/ca.crt" ];then
+    echo " * Setting up the root certificate"
 
     openssl genrsa \
         -out "${CA_DIR}/ca.key" \
@@ -27,7 +33,18 @@ if [ ! -d "${CA_DIR}" ];then
         -nodes \
         -key "${CA_DIR}/ca.key" \
         -sha256 \
-        -days 3650 \
+        -days "${CERTIFICATE_LENGTH}" \
+        -out "${CA_DIR}/ca.crt" \
+        -subj "/CN=VVV INTERNAL CA" &>/dev/null
+else
+    echo " * Renewing the root certificate"
+    # Renew root certificate using key
+    openssl req \
+        -x509 -new \
+        -nodes \
+        -key "${CA_DIR}/ca.key" \
+        -sha256 \
+        -days "${CERTIFICATE_LENGTH}" \
         -out "${CA_DIR}/ca.crt" \
         -subj "/CN=VVV INTERNAL CA" &>/dev/null
 fi
@@ -80,7 +97,7 @@ openssl x509 \
     -CAkey "${CA_DIR}/ca.key" \
     -CAcreateserial \
     -out "${DEFAULT_CERT_DIR}/dev.crt" \
-    -days 200 \
+    -days "${CERTIFICATE_LENGTH}" \
     -sha256 \
     -extfile "${DEFAULT_CERT_DIR}/openssl.conf"  &>/dev/null
 
@@ -155,7 +172,7 @@ EOF
         -CAkey "${CA_DIR}/ca.key" \
         -CAcreateserial \
         -out "${SITE_CERT_DIR}/dev.crt" \
-        -days 200 \
+        -days "${CERTIFICATE_LENGTH}" \
         -sha256 \
         -extfile "${SITE_CERT_DIR}/openssl.conf" &>/dev/null
 done
