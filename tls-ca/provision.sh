@@ -23,30 +23,22 @@ fi
 
 if [ ! -e "${CA_DIR}/ca.crt" ];then
     echo " * Setting up the root certificate"
-
     openssl genrsa \
         -out "${CA_DIR}/ca.key" \
         2048 &>/dev/null
-
-    openssl req \
-        -x509 -new \
-        -nodes \
-        -key "${CA_DIR}/ca.key" \
-        -sha256 \
-        -days "${CERTIFICATE_LENGTH}" \
-        -out "${CA_DIR}/ca.crt" \
-        -subj "/CN=VVV INTERNAL CA" &>/dev/null
 else
     echo " * Renewing the root certificate"
-    # Renew root certificate using key
-    openssl req \
-        -x509 -new \
-        -nodes \
-        -key "${CA_DIR}/ca.key" \
-        -sha256 \
-        -days "${CERTIFICATE_LENGTH}" \
-        -out "${CA_DIR}/ca.crt" \
-        -subj "/CN=VVV INTERNAL CA" &>/dev/null
+fi
+
+# Renew root certificate using key
+openssl req \
+    -x509 -new \
+    -nodes \
+    -key "${CA_DIR}/ca.key" \
+    -sha256 \
+    -days "${CERTIFICATE_LENGTH}" \
+    -out "${CA_DIR}/ca.crt" \
+    -subj "/CN=VVV INTERNAL CA" &>/dev/null
 fi
 
 mkdir -p /usr/share/ca-certificates/vvv
