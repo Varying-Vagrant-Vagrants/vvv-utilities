@@ -39,7 +39,6 @@ openssl req \
     -days "${CERTIFICATE_LENGTH}" \
     -out "${CA_DIR}/ca.crt" \
     -subj "/CN=VVV INTERNAL CA" &>/dev/null
-fi
 
 mkdir -p /usr/share/ca-certificates/vvv
 if [[ ! -f /usr/share/ca-certificates/vvv/ca.crt ]]; then
