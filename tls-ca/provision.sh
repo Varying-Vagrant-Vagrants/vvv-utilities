@@ -12,50 +12,18 @@ if [[ $codename == "trusty" ]]; then # VVV 2 uses Ubuntu 14 LTS trusty
     CERTIFICATES_DIR="/vagrant/certificates"
 fi
 
+ROOT_CERTIFICATE_LENGTH=200
 CERTIFICATE_LENGTH=200
-
 CA_DIR="${CERTIFICATES_DIR}/ca"
-
-if [ ! -d "${CA_DIR}" ];then
-    echo " * Creating certificates folder"
-    mkdir -p "${CA_DIR}"
-fi
-
-if [ ! -e "${CA_DIR}/ca.crt" ];then
-    echo " * Setting up the root certificate"
-    openssl genrsa \
-        -out "${CA_DIR}/ca.key" \
-        2048 &>/dev/null
-else
-    echo " * Renewing the root certificate"
-fi
-
-# Renew root certificate using key
-openssl req \
-    -x509 -new \
-    -nodes \
-    -key "${CA_DIR}/ca.key" \
-    -sha256 \
-    -days "${CERTIFICATE_LENGTH}" \
-    -out "${CA_DIR}/ca.crt" \
-    -subj "/CN=VVV INTERNAL CA" &>/dev/null
-
-mkdir -p /usr/share/ca-certificates/vvv
-if [[ ! -f /usr/share/ca-certificates/vvv/ca.crt ]]; then
-    echo " * Adding root certificate to the VM"
-    cp -f "${CA_DIR}/ca.crt" /usr/share/ca-certificates/vvv/ca.crt
-    echo " * Updating loaded VM certificates"
-    update-ca-certificates --fresh
-fi
-
-echo " * Setting up default Certificate for vvv.test and vvv.local"
-
 DEFAULT_CERT_DIR="${CERTIFICATES_DIR}/default"
 
-rm -rf "${DEFAULT_CERT_DIR}"
-mkdir -p "${DEFAULT_CERT_DIR}"
+function setup_default_certificate {
+    echo " * Setting up default Certificate for vvv.test and vvv.local"
 
-cat << EOF > "${DEFAULT_CERT_DIR}/openssl.conf"
+    rm -rf "${DEFAULT_CERT_DIR}"
+    mkdir -p "${DEFAULT_CERT_DIR}"
+
+    cat << EOF > "${DEFAULT_CERT_DIR}/openssl.conf"
 authorityKeyIdentifier = keyid,issuer
 basicConstraints       = CA:FALSE
 keyUsage               = digitalSignature, nonRepudiation, keyEncipherment, dataEncipherment
@@ -71,37 +39,39 @@ DNS.5 = vvv
 DNS.6 = *.vvv
 EOF
 
-openssl genrsa \
-    -out "${DEFAULT_CERT_DIR}/dev.key" \
-    2048 &>/dev/null
+    openssl genrsa \
+        -out "${DEFAULT_CERT_DIR}/dev.key" \
+        2048 &>/dev/null
 
-openssl req \
-    -new \
-    -key "${DEFAULT_CERT_DIR}/dev.key" \
-    -out "${DEFAULT_CERT_DIR}/dev.csr" \
-    -subj "/CN=vvv.test/C=GB/ST=Test Province/L=Test Locality/O=VVV/OU=VVV" &>/dev/null
+    openssl req \
+        -new \
+        -key "${DEFAULT_CERT_DIR}/dev.key" \
+        -out "${DEFAULT_CERT_DIR}/dev.csr" \
+        -subj "/CN=vvv.test/C=GB/ST=Test Province/L=Test Locality/O=VVV/OU=VVV" &>/dev/null
 
-openssl x509 \
-    -req \
-    -in "${DEFAULT_CERT_DIR}/dev.csr" \
-    -CA "${CA_DIR}/ca.crt" \
-    -CAkey "${CA_DIR}/ca.key" \
-    -CAcreateserial \
-    -out "${DEFAULT_CERT_DIR}/dev.crt" \
-    -days "${CERTIFICATE_LENGTH}" \
-    -sha256 \
-    -extfile "${DEFAULT_CERT_DIR}/openssl.conf"  &>/dev/null
+    openssl x509 \
+        -req \
+        -in "${DEFAULT_CERT_DIR}/dev.csr" \
+        -CA "${CA_DIR}/ca.crt" \
+        -CAkey "${CA_DIR}/ca.key" \
+        -CAcreateserial \
+        -out "${DEFAULT_CERT_DIR}/dev.crt" \
+        -days "${CERTIFICATE_LENGTH}" \
+        -sha256 \
+        -extfile "${DEFAULT_CERT_DIR}/openssl.conf"  &>/dev/null
 
-echo " * Symlinking default server certificate and key"
+    echo " * Symlinking default server certificate and key"
 
-rm -rf /etc/nginx/server-2.1.0.crt
-rm -rf /etc/nginx/server-2.1.0.key
+    rm -rf /etc/nginx/server-2.1.0.crt
+    rm -rf /etc/nginx/server-2.1.0.key
 
-echo " * Symlinking ${DEFAULT_CERT_DIR}/dev.crt to /etc/nginx/server-2.1.0.crt"
-ln -s "${DEFAULT_CERT_DIR}/dev.crt" /etc/nginx/server-2.1.0.crt
+    echo " * Symlinking ${DEFAULT_CERT_DIR}/dev.crt to /etc/nginx/server-2.1.0.crt"
+    ln -s "${DEFAULT_CERT_DIR}/dev.crt" /etc/nginx/server-2.1.0.crt
 
-echo " * Symlinking ${DEFAULT_CERT_DIR}/dev.key to /etc/nginx/server-2.1.0.key"
-ln -s "${DEFAULT_CERT_DIR}/dev.key" /etc/nginx/server-2.1.0.key
+    echo " * Symlinking ${DEFAULT_CERT_DIR}/dev.key to /etc/nginx/server-2.1.0.key"
+    ln -s "${DEFAULT_CERT_DIR}/dev.key" /etc/nginx/server-2.1.0.key
+
+}
 
 get_sites() {
     local value=$(shyaml keys sites 2> /dev/null < ${VVV_CONFIG})
@@ -118,18 +88,62 @@ get_hosts() {
     echo "${value:-$@}"
 }
 
-echo " * Generating Site certificates"
-for SITE in $(get_sites); do
-    echo " * Generating certificates for the '${SITE}' hosts"
-    SITE_ESCAPED="${SITE//./\\.}"
-    COMMON_NAME=$(get_host "${SITE_ESCAPED}")
-    HOSTS=$(get_hosts "${SITE_ESCAPED}")
-    SITE_CERT_DIR="${CERTIFICATES_DIR}/${SITE}"
+function generate_root_ca_key {
+    if [ ! -e "${CA_DIR}/ca.key" ];then
+        echo " * Setting up the root certificate key"
+        openssl genrsa \
+            -out "${CA_DIR}/ca.key" \
+            2048 &>/dev/null
+    fi
+}
 
-    rm -rf "${SITE_CERT_DIR}"
-    mkdir -p "${SITE_CERT_DIR}"
+function generate_root_ca {
+    # Renew root certificate using key
+    openssl req \
+        -x509 -new \
+        -nodes \
+        -key "${CA_DIR}/ca.key" \
+        -sha256 \
+        -days "${ROOT_CERTIFICATE_LENGTH}" \
+        -out "${CA_DIR}/ca.crt" \
+        -subj "/CN=VVV INTERNAL CA" &>/dev/null
+}
 
-    cat << EOF > "${SITE_CERT_DIR}/openssl.conf"
+function install_root_ca {
+    mkdir -p /usr/share/ca-certificates/vvv
+    if [[ ! -f /usr/share/ca-certificates/vvv/ca.crt ]]; then
+        echo " * Adding root certificate to the VM"
+        cp -f "${CA_DIR}/ca.crt" /usr/share/ca-certificates/vvv/ca.crt
+        echo " * Updating loaded VM certificates"
+        update-ca-certificates --fresh
+    fi
+}
+
+function check_renew_root_certificate {
+    echo " * Checking root certificate expiry"
+    if openssl x509 -checkend 86400 -noout -in "${CA_DIR}/ca.crt"
+    then
+        echo " * Root Certificate is good for another day!"
+    else
+        echo " * Root Certificate has expired or will do so within 24 hours!"
+        echo " * (or is invalid/not found), recreating!"
+        generate_root_ca
+    fi
+}
+
+function generate_site_certificates {
+    echo " * Generating Site certificates"
+    for SITE in $(get_sites); do
+        echo " * Generating certificates for the '${SITE}' hosts"
+        SITE_ESCAPED="${SITE//./\\.}"
+        COMMON_NAME=$(get_host "${SITE_ESCAPED}")
+        HOSTS=$(get_hosts "${SITE_ESCAPED}")
+        SITE_CERT_DIR="${CERTIFICATES_DIR}/${SITE}"
+
+        rm -rf "${SITE_CERT_DIR}"
+        mkdir -p "${SITE_CERT_DIR}"
+
+        cat << EOF > "${SITE_CERT_DIR}/openssl.conf"
 authorityKeyIdentifier = keyid,issuer
 basicConstraints       = CA:FALSE
 keyUsage               = digitalSignature, nonRepudiation, keyEncipherment, dataEncipherment
@@ -138,35 +152,53 @@ subjectAltName         = @alt_names
 
 [alt_names]
 EOF
-    I=0
-    for DOMAIN in ${HOSTS}; do
-        ((I++))
-        echo "DNS.${I} = ${DOMAIN//\\/}" >> "${SITE_CERT_DIR}/openssl.conf"
-        ((I++))
-        echo "DNS.${I} = *.${DOMAIN//\\/}" >> "${SITE_CERT_DIR}/openssl.conf"
+        I=0
+        for DOMAIN in ${HOSTS}; do
+            ((I++))
+            echo "DNS.${I} = ${DOMAIN//\\/}" >> "${SITE_CERT_DIR}/openssl.conf"
+            ((I++))
+            echo "DNS.${I} = *.${DOMAIN//\\/}" >> "${SITE_CERT_DIR}/openssl.conf"
+        done
+
+        openssl genrsa \
+            -out "${SITE_CERT_DIR}/dev.key" \
+            2048 &>/dev/null
+
+        openssl req \
+            -new \
+            -key "${SITE_CERT_DIR}/dev.key" \
+            -out "${SITE_CERT_DIR}/dev.csr" \
+            -subj "/CN=${COMMON_NAME//\\/}/C=GB/ST=Test Province/L=Test Locality/O=VVV/OU=VVV" &>/dev/null
+
+        openssl x509 \
+            -req \
+            -in "${SITE_CERT_DIR}/dev.csr" \
+            -CA "${CA_DIR}/ca.crt" \
+            -CAkey "${CA_DIR}/ca.key" \
+            -CAcreateserial \
+            -out "${SITE_CERT_DIR}/dev.crt" \
+            -days "${CERTIFICATE_LENGTH}" \
+            -sha256 \
+            -extfile "${SITE_CERT_DIR}/openssl.conf" &>/dev/null
+        echo " * Generated certificates for the '${SITE}' hosts"
     done
+    echo " * Site certificate generation complete"
+}
 
-    openssl genrsa \
-        -out "${SITE_CERT_DIR}/dev.key" \
-        2048 &>/dev/null
+if [ ! -d "${CA_DIR}" ];then
+    echo " * Creating certificates folder"
+    mkdir -p "${CA_DIR}"
+fi
 
-    openssl req \
-        -new \
-        -key "${SITE_CERT_DIR}/dev.key" \
-        -out "${SITE_CERT_DIR}/dev.csr" \
-        -subj "/CN=${COMMON_NAME//\\/}/C=GB/ST=Test Province/L=Test Locality/O=VVV/OU=VVV" &>/dev/null
+generate_root_ca_key
 
-    openssl x509 \
-        -req \
-        -in "${SITE_CERT_DIR}/dev.csr" \
-        -CA "${CA_DIR}/ca.crt" \
-        -CAkey "${CA_DIR}/ca.key" \
-        -CAcreateserial \
-        -out "${SITE_CERT_DIR}/dev.crt" \
-        -days "${CERTIFICATE_LENGTH}" \
-        -sha256 \
-        -extfile "${SITE_CERT_DIR}/openssl.conf" &>/dev/null
-done
+if [ ! -e "${CA_DIR}/ca.crt" ];then
+    generate_root_ca
+fi
 
+check_renew_root_certificate
+install_root_ca
+setup_default_certificate
+generate_site_certificates
 
 echo " * Finished generating TLS certificates"
