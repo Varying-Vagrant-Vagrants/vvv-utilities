@@ -50,7 +50,7 @@ EOF
         -nodes \
         -key "${CA_DIR}/ca.key" \
         -sha256 \
-        -days 825 \
+        -days 397 \
         -config "${CA_DIR}/openssl.conf" \
         -out "${CA_DIR}/ca.crt"  &>/dev/null
 fi
