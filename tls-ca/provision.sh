@@ -22,14 +22,38 @@ if [ ! -d "${CA_DIR}" ];then
         -out "${CA_DIR}/ca.key" \
         2048 &>/dev/null
 
+cat << EOF > "${CA_DIR}/openssl.conf"
+extendedKeyUsage       = id-kp-serverAuth
+subjectAltName         = @alt_names
+
+distinguished_name = @my_dn
+
+[ my_dn ]
+# The bare minimum is probably a commonName
+            commonName = VVV INTERNAL CA
+           countryName = XX
+          localityName = Test Locality
+      organizationName = VVV
+organizationalUnitName = VVV
+   stateOrProvinceName = Test Province
+          emailAddress = test@example.com
+                  name = John Doe
+               surname = Doe
+             givenName = John
+              initials = JXD
+
+[alt_names]
+DNS.1 = vvv.test
+EOF
+
     openssl req \
         -x509 -new \
         -nodes \
         -key "${CA_DIR}/ca.key" \
         -sha256 \
         -days 825 \
-        -out "${CA_DIR}/ca.crt" \
-	-subj "/CN=VVV INTERNAL CA/C=GB/ST=Test Province/L=Test Locality/O=VVV/OU=VVV" &>/dev/null
+	-config "${CA_DIR}/openssl.conf" \
+        -out "${CA_DIR}/ca.crt"  &>/dev/null
 fi
 
 mkdir -p /usr/share/ca-certificates/vvv
