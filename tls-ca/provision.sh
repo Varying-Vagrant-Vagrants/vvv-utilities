@@ -23,27 +23,26 @@ if [ ! -d "${CA_DIR}" ];then
         2048 &>/dev/null
 
 cat << EOF > "${CA_DIR}/openssl.conf"
-extendedKeyUsage       = id-kp-serverAuth
-subjectAltName         = @alt_names
+[req]
+distinguished_name     = req_distinguished_name
+prompt                 = no
+x509_extensions        = v3_ca
 
-distinguished_name = @my_dn
+[v3_ca]
+subjectKeyIdentifier   = hash
+#extendedKeyUsage      = id-kp-serverAuth
+authorityKeyIdentifier = keyid:always,issuer
+basicConstraints       = critical, CA:true
+keyUsage               = critical, digitalSignature, cRLSign, keyCertSign
 
-[ my_dn ]
-# The bare minimum is probably a commonName
-            commonName = VVV INTERNAL CA
-           countryName = XX
-          localityName = Test Locality
-      organizationName = VVV
-organizationalUnitName = VVV
-   stateOrProvinceName = Test Province
-          emailAddress = test@example.com
-                  name = John Doe
-               surname = Doe
-             givenName = John
-              initials = JXD
-
-[alt_names]
-DNS.1 = vvv.test
+[req_distinguished_name]
+C                      = GB
+ST                     = Test State or Province
+L                      = Test Locality
+O                      = VVV
+OU                     = VVV
+CN                     = VVV INTERNAL CA
+emailAddress           = test@example.com
 EOF
 
     openssl req \
@@ -52,7 +51,7 @@ EOF
         -key "${CA_DIR}/ca.key" \
         -sha256 \
         -days 825 \
-	-config "${CA_DIR}/openssl.conf" \
+        -config "${CA_DIR}/openssl.conf" \
         -out "${CA_DIR}/ca.crt"  &>/dev/null
 fi
 
