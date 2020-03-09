@@ -6,6 +6,11 @@ if [[ -f /vagrant/config.yml ]]; then
 	VVV_CONFIG=/vagrant/config.yml
 fi
 
+if [[ ! -e ~/.rnd ]]; then
+    echo " * Generating Random Number for cert generation..."
+    openssl rand -out ~/.rnd -hex 256 2>&1
+fi
+
 codename=$(lsb_release --codename | cut -f2)
 CERTIFICATES_DIR="/srv/certificates"
 if [[ $codename == "trusty" ]]; then # VVV 2 uses Ubuntu 14 LTS trusty
@@ -30,7 +35,7 @@ if [ ! -d "${CA_DIR}" ];then
         -sha256 \
         -days 397 \
         -config "${DIR}/openssl-ca.conf" \
-        -out "${CA_DIR}/ca.crt"  &>/dev/null
+        -out "${CA_DIR}/ca.crt"
 fi
 
 mkdir -p /usr/share/ca-certificates/vvv
@@ -83,7 +88,7 @@ openssl x509 \
     -out "${DEFAULT_CERT_DIR}/dev.crt" \
     -days 200 \
     -sha256 \
-    -extfile "${DEFAULT_CERT_DIR}/openssl.conf"  &>/dev/null
+    -extfile "${DEFAULT_CERT_DIR}/openssl.conf" &>/dev/null
 
 echo " * Symlinking default server certificate and key"
 
