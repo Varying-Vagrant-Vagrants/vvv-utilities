@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 VVV_CONFIG=/vagrant/vvv-custom.yml
 if [[ -f /vagrant/config.yml ]]; then
@@ -22,36 +23,13 @@ if [ ! -d "${CA_DIR}" ];then
         -out "${CA_DIR}/ca.key" \
         2048 &>/dev/null
 
-cat << EOF > "${CA_DIR}/openssl.conf"
-[req]
-distinguished_name     = req_distinguished_name
-prompt                 = no
-x509_extensions        = v3_ca
-
-[v3_ca]
-subjectKeyIdentifier   = hash
-#extendedKeyUsage      = id-kp-serverAuth
-authorityKeyIdentifier = keyid:always,issuer
-basicConstraints       = critical, CA:true
-keyUsage               = critical, digitalSignature, cRLSign, keyCertSign
-
-[req_distinguished_name]
-C                      = GB
-ST                     = Test State or Province
-L                      = Test Locality
-O                      = VVV
-OU                     = VVV
-CN                     = VVV INTERNAL CA
-emailAddress           = test@example.com
-EOF
-
     openssl req \
         -x509 -new \
         -nodes \
         -key "${CA_DIR}/ca.key" \
         -sha256 \
         -days 397 \
-        -config "${CA_DIR}/openssl.conf" \
+        -config "${DIR}/openssl-ca.conf" \
         -out "${CA_DIR}/ca.crt"  &>/dev/null
 fi
 
