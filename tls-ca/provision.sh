@@ -54,34 +54,43 @@ create_root_certificate() {
     if [ ! -d "${CA_DIR}" ]; then
         echo " * Setting up VVV Certificate Authority"
         mkdir -p "${CA_DIR}"
+    fi
 
+    if [[ ! -e "${DEFAULT_CERT_DIR}/dev.key" ]]; then
+        echo " * Generating key root certificate"
         openssl genrsa \
             -out "${CA_DIR}/ca.key" \
             2048 &>/dev/null
-
-        openssl req \
-            -x509 -new \
-            -nodes \
-            -key "${CA_DIR}/ca.key" \
-            -sha256 \
-            -days $ROOT_CA_DAYS \
-            -config "${DIR}/openssl-ca.conf" \
-            -out "${CA_DIR}/ca.crt"
     fi
+
+    openssl req \
+        -x509 -new \
+        -nodes \
+        -key "${CA_DIR}/ca.key" \
+        -sha256 \
+        -days $ROOT_CA_DAYS \
+        -config "${DIR}/openssl-ca.conf" \
+        -out "${CA_DIR}/ca.crt"
 }
 
 setup_default_certificate_key_csr() {
     echo " * Generating key and CSR for vvv.test"
 
-    openssl genrsa \
-        -out "${DEFAULT_CERT_DIR}/dev.key" \
-        2048 &>/dev/null
+    if [[ ! -e "${DEFAULT_CERT_DIR}/dev.key" ]]; then
+        echo " * Generating key for:             'vvv.test'"
+        openssl genrsa \
+            -out "${DEFAULT_CERT_DIR}/dev.key" \
+            2048 &>/dev/null
+    fi
 
-    openssl req \
-        -new \
-        -key "${DEFAULT_CERT_DIR}/dev.key" \
-        -out "${DEFAULT_CERT_DIR}/dev.csr" \
-        -subj "/CN=vvv.test/C=GB/ST=Test Province/L=Test Locality/O=VVV/OU=VVV" &>/dev/null
+    if [[ ! -e "${DEFAULT_CERT_DIR}/dev.key" ]]; then
+        echo " * Generating CSR for:             'vvv.test'"
+        openssl req \
+            -new \
+            -key "${DEFAULT_CERT_DIR}/dev.key" \
+            -out "${DEFAULT_CERT_DIR}/dev.csr" \
+            -subj "/CN=vvv.test/C=GB/ST=Test Province/L=Test Locality/O=VVV/OU=VVV" &>/dev/null
+    fi
 }
 
 create_default_certificate() {
@@ -104,7 +113,7 @@ create_default_certificate() {
         -out "${DEFAULT_CERT_DIR}/dev.crt" \
         -days $SITE_CERTIFICATE_DAYS \
         -sha256 \
-        -extfile "${DIR}/openssl-default-cert.conf"
+        -extfile "${DIR}/openssl-default-cert.conf" &>/dev/null
 }
 
 install_default_certificate() {
@@ -128,18 +137,20 @@ setup_site_key_csr() {
 
     mkdir -p "${SITE_CERT_DIR}"
 
-    echo " * Generating key for: '${SITE}'"
-    openssl genrsa \
-        -out "${SITE_CERT_DIR}/dev.key" \
-        2048 &>/dev/null
-
-    echo " * Generating CSR for: '${SITE}'"
-    openssl req \
-        -new \
-        -key "${SITE_CERT_DIR}/dev.key" \
-        -out "${SITE_CERT_DIR}/dev.csr" \
-        -subj "/CN=${COMMON_NAME//\\/}/C=GB/ST=Test Province/L=Test Locality/O=VVV/OU=VVV" &>/dev/null
-
+    if [[ ! -e "${SITE_CERT_DIR}/dev.key" ]]; then
+        echo " * Generating key for:             '${SITE}'"
+        openssl genrsa \
+            -out "${SITE_CERT_DIR}/dev.key" \
+            2048 &>/dev/null
+    fi
+    if [[ ! -e "${SITE_CERT_DIR}/dev.csr" ]]; then
+        echo " * Generating CSR for:             '${SITE}'"
+        openssl req \
+            -new \
+            -key "${SITE_CERT_DIR}/dev.key" \
+            -out "${SITE_CERT_DIR}/dev.csr" \
+            -subj "/CN=${COMMON_NAME//\\/}/C=GB/ST=Test Province/L=Test Locality/O=VVV/OU=VVV" &>/dev/null
+    fi
 }
 
 regenerate_site_certificate() {
@@ -150,10 +161,9 @@ regenerate_site_certificate() {
 
     setup_site_key_csr $SITE
 
-    echo " * Removing certificate ${SITE_CERT_DIR}/dev.crt"
-    rm -f "${SITE_CERT_DIR}/dev.crt"
 
-    echo " * Generating new certificate for: ${SITE}"
+    echo " * Generating new certificate for: '${SITE}'"
+    rm -f "${SITE_CERT_DIR}/dev.crt"
 
     # Copy over the site conf stub then append the domains
     cp -f "${DIR}/openssl-site-stub.conf" "${SITE_CERT_DIR}/openssl.conf"
