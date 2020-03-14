@@ -70,11 +70,8 @@ create_root_certificate() {
     fi
 }
 
-create_default_certificate() {
-    echo " * Setting up default Certificate for vvv.test and vvv.local"
-
-    rm -rf "${DEFAULT_CERT_DIR}"
-    mkdir -p "${DEFAULT_CERT_DIR}"
+setup_default_certificate_key_csr() {
+    echo " * Generating key and CSR for vvv.test"
 
     openssl genrsa \
         -out "${DEFAULT_CERT_DIR}/dev.key" \
@@ -85,6 +82,18 @@ create_default_certificate() {
         -key "${DEFAULT_CERT_DIR}/dev.key" \
         -out "${DEFAULT_CERT_DIR}/dev.csr" \
         -subj "/CN=vvv.test/C=GB/ST=Test Province/L=Test Locality/O=VVV/OU=VVV" &>/dev/null
+}
+
+create_default_certificate() {
+    echo " * Setting up default Certificate for vvv.test and vvv.local"
+
+    mkdir -p "${DEFAULT_CERT_DIR}"
+
+    setup_default_certificate_key_csr
+
+    echo " * Removing and renewing the default certificate"
+
+    rm "${DEFAULT_CERT_DIR}/dev.crt"
 
     openssl x509 \
         -req \
@@ -111,20 +120,45 @@ install_default_certificate() {
     ln -s "${DEFAULT_CERT_DIR}/dev.key" /etc/nginx/server-2.1.0.key
 }
 
-regenerate_site_certificate() {
+setup_site_key_csr() {
     SITE=${1}
-    echo " * Generating certificates for the '${SITE}' hosts"
     SITE_ESCAPED="${SITE//./\\.}"
     COMMON_NAME=$(get_host "${SITE_ESCAPED}")
-    HOSTS=$(get_hosts "${SITE_ESCAPED}")
     SITE_CERT_DIR="${CERTIFICATES_DIR}/${SITE}"
 
-    rm -rf "${SITE_CERT_DIR}"
     mkdir -p "${SITE_CERT_DIR}"
+
+    echo " * Generating key for: '${SITE}'"
+    openssl genrsa \
+        -out "${SITE_CERT_DIR}/dev.key" \
+        2048 &>/dev/null
+
+    echo " * Generating CSR for: '${SITE}'"
+    openssl req \
+        -new \
+        -key "${SITE_CERT_DIR}/dev.key" \
+        -out "${SITE_CERT_DIR}/dev.csr" \
+        -subj "/CN=${COMMON_NAME//\\/}/C=GB/ST=Test Province/L=Test Locality/O=VVV/OU=VVV" &>/dev/null
+
+}
+
+regenerate_site_certificate() {
+    SITE=${1}
+    SITE_CERT_DIR="${CERTIFICATES_DIR}/${SITE}"
+    SITE_ESCAPED="${SITE//./\\.}"
+    COMMON_NAME=$(get_host "${SITE_ESCAPED}")
+
+    setup_site_key_csr $SITE
+
+    echo " * Removing certificate ${SITE_CERT_DIR}/dev.crt"
+    rm -f "${SITE_CERT_DIR}/dev.crt"
+
+    echo " * Generating new certificate for: ${SITE}"
 
     # Copy over the site conf stub then append the domains
     cp -f "${DIR}/openssl-site-stub.conf" "${SITE_CERT_DIR}/openssl.conf"
 
+    HOSTS=$(get_hosts "${SITE_ESCAPED}")
     I=0
     for DOMAIN in ${HOSTS}; do
         ((I++))
@@ -132,16 +166,6 @@ regenerate_site_certificate() {
         ((I++))
         echo "DNS.${I} = *.${DOMAIN//\\/}" >> "${SITE_CERT_DIR}/openssl.conf"
     done
-
-    openssl genrsa \
-        -out "${SITE_CERT_DIR}/dev.key" \
-        2048 &>/dev/null
-
-    openssl req \
-        -new \
-        -key "${SITE_CERT_DIR}/dev.key" \
-        -out "${SITE_CERT_DIR}/dev.csr" \
-        -subj "/CN=${COMMON_NAME//\\/}/C=GB/ST=Test Province/L=Test Locality/O=VVV/OU=VVV" &>/dev/null
 
     openssl x509 \
         -req \
