@@ -83,7 +83,7 @@ setup_default_certificate_key_csr() {
             2048 &>/dev/null
     fi
 
-    if [[ ! -e "${DEFAULT_CERT_DIR}/dev.key" ]]; then
+    if [[ ! -e "${DEFAULT_CERT_DIR}/dev.csr" ]]; then
         echo " * Generating CSR for:             'vvv.test'"
         openssl req \
             -new \
