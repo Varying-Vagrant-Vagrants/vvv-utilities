@@ -1,5 +1,9 @@
 <?php
 
+if ( ! extension_loaded( 'tideways_xhprof' ) ) {
+    return;
+}
+
 // don't run on CLI
 if ( empty($_SERVER['REMOTE_ADDR']) and !isset($_SERVER['HTTP_USER_AGENT']) and count($_SERVER['argv']) > 0) {
     return;
