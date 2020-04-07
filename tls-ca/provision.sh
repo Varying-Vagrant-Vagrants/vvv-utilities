@@ -159,8 +159,7 @@ regenerate_site_certificate() {
     SITE_ESCAPED="${SITE//./\\.}"
     COMMON_NAME=$(get_host "${SITE_ESCAPED}")
 
-    setup_site_key_csr $SITE
-
+    setup_site_key_csr "${SITE}"
 
     echo " * Generating new certificate for: '${SITE}'"
     rm -f "${SITE_CERT_DIR}/dev.crt"
@@ -192,7 +191,7 @@ regenerate_site_certificate() {
 process_site_certificates() {
     echo " * Generating site certificates"
     for SITE in $(get_sites); do
-        regenerate_site_certificate $SITE
+        regenerate_site_certificate "${SITE}"
     done
     echo " * Finished generating site certificates"
 }
