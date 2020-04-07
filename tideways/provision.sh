@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Tideways with XHgui
+# Tideways with XHGui
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 function install_tideways() {
@@ -15,7 +15,7 @@ function install_tideways() {
 function install_tideways_for_php_version() {
     version=$1
     echo " * Installing Tideways for PHP ${version}"
-    php_modules_path=$(php-config$version --extension-dir)
+    php_modules_path=$("php-config${version}" --extension-dir)
     echo " * Copying tideways files for PHP ${version}"
     cp -f "${DIR}/tideways.ini" "/etc/php/${version}/mods-available/tideways_xhprof.ini"
     cp -f "${DIR}/xhgui-php.ini" "/etc/php/${version}/mods-available/xhgui.ini"
@@ -28,7 +28,7 @@ function install_tideways_for_php_version() {
         update-alternatives --set php "/usr/bin/php${version}" > /dev/null 2>&1
         update-alternatives --set php-config "/usr/bin/php-config${version}" > /dev/null 2>&1
         update-alternatives --set phpize "/usr/bin/phpize${version}" > /dev/null 2>&1
-        phpize$version > /dev/null 2>&1
+        "phpize${version}" > /dev/null 2>&1
         
         # configure and build
         ./configure --enable-tideways-xhprof --with-php-config="php-config${version}" > /dev/null 2>&1
