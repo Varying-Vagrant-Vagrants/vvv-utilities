@@ -99,7 +99,7 @@ function enable_tideways_by_site() {
 }
 
 . "${DIR}/../mongodb/provision.sh"
-
+DIR=$(dirname "$0")
 echo " * Installing Tideways & XHGui"
 install_tideways
 check_tideways_php
