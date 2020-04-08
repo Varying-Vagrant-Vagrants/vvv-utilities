@@ -99,7 +99,8 @@ function enable_tideways_by_site() {
 }
 
 . "${DIR}/../mongodb/provision.sh"
-DIR=$(dirname "$0")
+# Set DIR back to undo the DIR set in the MongoDB provisioner
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 echo " * Installing Tideways & XHGui"
 install_tideways
 check_tideways_php
