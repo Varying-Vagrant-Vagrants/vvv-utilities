@@ -12,7 +12,7 @@ if [[ ! -f /srv/www/default/database-admin/RELEASE-DATE-4.9.1 ]]; then
     cd /tmp
     wget -q -O phpmyadmin.zip "https://files.phpmyadmin.net/phpMyAdmin/4.9.1/phpMyAdmin-4.9.1-all-languages.zip"
     echo " * Extracting phpMyAdmin v4.9.1 into /tmp"
-    unzip phpmyadmin.zip
+    unzip phpmyadmin.zip >> "${VVV_CURRENT_LOG_FILE}"
     echo " * Copying phpMyAdmin into place"
     mkdir -p /srv/www/default/database-admin
     cp -rf /tmp/phpMyAdmin-4.9.1-all-languages/* /srv/www/default/database-admin/
