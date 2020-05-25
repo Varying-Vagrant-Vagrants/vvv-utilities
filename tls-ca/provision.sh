@@ -40,9 +40,9 @@ get_hosts() {
 }
 
 install_root_certificate() {
-	mkdir -p /usr/share/ca-certificates/vvv
+	mkdir -p /usr/local/share/ca-certificates/vvv
 	echo " * Adding root certificate to the VM"
-	cp -f "${CA_DIR}/ca.crt" /usr/share/ca-certificates/vvv/ca.crt
+	cp -f "${CA_DIR}/ca.crt" /usr/local/share/ca-certificates/vvv/ca.crt
 	echo " * Updating loaded VM certificates"
 	update-ca-certificates --fresh
 }
