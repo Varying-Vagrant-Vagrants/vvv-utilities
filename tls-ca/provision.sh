@@ -40,15 +40,14 @@ get_hosts() {
 }
 
 install_root_certificate() {
-	mkdir -p /usr/local/share/ca-certificates/vvv
-	echo " * Adding root certificate to the VM"
-	cp -f "${CA_DIR}/ca.crt" /usr/local/share/ca-certificates/vvv/ca.crt
-	echo " * Updating loaded VM certificates"
-	update-ca-certificates --fresh
+    mkdir -p /usr/local/share/ca-certificates/vvv
+    echo " * Adding root certificate to the VM"
+    cp -f "${CA_DIR}/ca.crt" /usr/local/share/ca-certificates/vvv/ca.crt
+    echo " * Updating loaded VM certificates"
+    update-ca-certificates --fresh
 }
 
 create_root_certificate() {
-
     if [ ! -d "${CA_DIR}" ]; then
         echo " * Setting up VVV Certificate Authority"
         mkdir -p "${CA_DIR}"
