@@ -98,8 +98,9 @@ create_default_certificate() {
     setup_default_certificate_key_csr
 
     echo " * Removing and renewing the default certificate"
-
-    rm "${DEFAULT_CERT_DIR}/dev.crt"
+    if [[ -e "${DEFAULT_CERT_DIR}/dev.crt" ]]; then
+      rm "${DEFAULT_CERT_DIR}/dev.crt"
+    fi
 
     openssl x509 \
         -req \
