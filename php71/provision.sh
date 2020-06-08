@@ -27,6 +27,7 @@ apt_package_install_list=(
   php7.1-bcmath
   php7.1-curl
   php7.1-gd
+  php7.1-intl
   php7.1-mbstring
   php7.1-mcrypt
   php7.1-mysql
