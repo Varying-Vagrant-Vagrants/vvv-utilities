@@ -21,8 +21,8 @@ else
 
   # lets install it now
   echo " * NVM installation starting now"
-  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
-  $HOME/.nvm/nvm.sh
+  noroot curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
+  noroot $HOME/.nvm/nvm.sh
   echo " * NVM installed"
 
   # set default node to the one installed by VVV
