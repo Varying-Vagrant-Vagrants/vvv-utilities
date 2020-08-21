@@ -67,18 +67,18 @@ package_install() {
 
 configure() {
   # Copy nginx configuration from local
-  cp -f "${DIR}/php8.0-upstream.conf" "/etc/nginx/upstreams/php74.conf"
-  echo " * Copied ${DIR}/php8.0-upstream.conf              to /etc/nginx/upstreams/php80.conf"
+  cp -f "${DIR}/upstream.conf" "/etc/nginx/upstreams/php74.conf"
+  echo " * Copied ${DIR}/upstream.conf              to /etc/nginx/upstreams/php80.conf"
 
   # Copy php-fpm configuration from local
-  cp -f "${DIR}/php8.0-fpm.conf" "/etc/php/8.0/fpm/php-fpm.conf"
-  echo " * Copied ${DIR}/php8.0-fpm.conf                   to /etc/php/8.0/fpm/php-fpm.conf"
+  cp -f "${DIR}/fpm.conf" "/etc/php/8.0/fpm/php-fpm.conf"
+  echo " * Copied ${DIR}/fpm.conf                   to /etc/php/8.0/fpm/php-fpm.conf"
 
-  cp -f "${DIR}/php8.0-www.conf" "/etc/php/8.0/fpm/pool.d/www.conf"
-  echo " * Copied ${DIR}/php8.0-www.conf                   to /etc/php/8.0/fpm/pool.d/www.conf"
+  cp -f "${DIR}/www.conf" "/etc/php/8.0/fpm/pool.d/www.conf"
+  echo " * Copied ${DIR}/www.conf                   to /etc/php/8.0/fpm/pool.d/www.conf"
 
-  cp -f "${DIR}/php8.0-custom.ini" "/etc/php/8.0/fpm/conf.d/php-custom.ini"
-  echo " * Copied ${DIR}/php8.0-custom.ini                 to /etc/php/8.0/fpm/conf.d/php-custom.ini"
+  cp -f "${DIR}/php-custom.ini" "/etc/php/8.0/fpm/conf.d/php-custom.ini"
+  echo " * Copied ${DIR}/php-custom.ini                 to /etc/php/8.0/fpm/conf.d/php-custom.ini"
 
   cp -f "/srv/config/php-config/opcache.ini" "/etc/php/8.0/fpm/conf.d/opcache.ini"
   echo " * Copied /srv/config/php-config/opcache.ini       to /etc/php/8.0/fpm/conf.d/opcache.ini"
