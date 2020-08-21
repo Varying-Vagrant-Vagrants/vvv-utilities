@@ -4,19 +4,21 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 # PACKAGE INSTALLATION
 
+PHPVERSION="8.0"
+
 apt_package_install_list=(
 
-  # PHP8.0
+  # PHP
   #
   # Our base packages for php8.0. As long as php8.0-fpm and php8.0-cli are
   # installed, there is no need to install the general php8.0 package, which
   # can sometimes install apache as a requirement.
-  php8.0-fpm
-  php8.0-cli
+  "php${PHPVERSION}-fpm"
+  "php${PHPVERSION}-cli"
 
   # Common and dev packages for php
-  php8.0-common
-  php8.0-dev
+  "php${PHPVERSION}-common"
+  "php${PHPVERSION}-dev"
 
   # Extra PHP modules that we find useful
   php-imagick
@@ -25,17 +27,17 @@ apt_package_install_list=(
   php-pcov
   php-ssh2
   php-xdebug
-  php8.0-bcmath
-  php8.0-curl
-  php8.0-gd
-  php8.0-intl
-  php8.0-mbstring
-  php8.0-mysql
-  php8.0-imap
-  php8.0-json
-  php8.0-soap
-  php8.0-xml
-  php8.0-zip
+  "php${PHPVERSION}-bcmath"
+  "php${PHPVERSION}-curl"
+  "php${PHPVERSION}-gd"
+  "php${PHPVERSION}-intl"
+  "php${PHPVERSION}-mbstring"
+  "php${PHPVERSION}-mysql"
+  "php${PHPVERSION}-imap"
+  "php8.0-json"
+  "php${PHPVERSION}-soap"
+  "php${PHPVERSION}-xml"
+  "php${PHPVERSION}-zip"
 )
 
 ### FUNCTIONS
@@ -67,37 +69,37 @@ package_install() {
 
 configure() {
   # Copy nginx configuration from local
-  cp -f "${DIR}/upstream.conf" "/etc/nginx/upstreams/php74.conf"
+  cp -f "${DIR}/upstream.conf" "/etc/nginx/upstreams/php80.conf"
   echo " * Copied ${DIR}/upstream.conf              to /etc/nginx/upstreams/php80.conf"
 
   # Copy php-fpm configuration from local
-  cp -f "${DIR}/fpm.conf" "/etc/php/8.0/fpm/php-fpm.conf"
-  echo " * Copied ${DIR}/fpm.conf                   to /etc/php/8.0/fpm/php-fpm.conf"
+  cp -f "${DIR}/fpm.conf" "/etc/php/${PHPVERSION}/fpm/php-fpm.conf"
+  echo " * Copied ${DIR}/fpm.conf                   to /etc/php/${PHPVERSION}/fpm/php-fpm.conf"
 
-  cp -f "${DIR}/www.conf" "/etc/php/8.0/fpm/pool.d/www.conf"
-  echo " * Copied ${DIR}/www.conf                   to /etc/php/8.0/fpm/pool.d/www.conf"
+  cp -f "${DIR}/www.conf" "/etc/php/${PHPVERSION}/fpm/pool.d/www.conf"
+  echo " * Copied ${DIR}/www.conf                   to /etc/php/${PHPVERSION}/fpm/pool.d/www.conf"
 
-  cp -f "${DIR}/php-custom.ini" "/etc/php/8.0/fpm/conf.d/php-custom.ini"
-  echo " * Copied ${DIR}/php-custom.ini                 to /etc/php/8.0/fpm/conf.d/php-custom.ini"
+  cp -f "${DIR}/php-custom.ini" "/etc/php/${PHPVERSION}/fpm/conf.d/php-custom.ini"
+  echo " * Copied ${DIR}/php-custom.ini                 to /etc/php/${PHPVERSION}/fpm/conf.d/php-custom.ini"
 
-  cp -f "/srv/config/php-config/opcache.ini" "/etc/php/8.0/fpm/conf.d/opcache.ini"
-  echo " * Copied /srv/config/php-config/opcache.ini       to /etc/php/8.0/fpm/conf.d/opcache.ini"
+  cp -f "/srv/config/php-config/opcache.ini" "/etc/php/${PHPVERSION}/fpm/conf.d/opcache.ini"
+  echo " * Copied /srv/config/php-config/opcache.ini       to /etc/php/${PHPVERSION}/fpm/conf.d/opcache.ini"
 
-  cp -f "/srv/config/php-config/xdebug.ini" "/etc/php/8.0/mods-available/xdebug.ini"
-  echo " * Copied /srv/config/php-config/xdebug.ini        to /etc/php/8.0/mods-available/xdebug.ini"
+  cp -f "/srv/config/php-config/xdebug.ini" "/etc/php/${PHPVERSION}/mods-available/xdebug.ini"
+  echo " * Copied /srv/config/php-config/xdebug.ini        to /etc/php/${PHPVERSION}/mods-available/xdebug.ini"
 
   if [[ -e /srv/config/php-config/mailcatcher.ini ]]; then
-    cp -f "/srv/config/php-config/mailcatcher.ini" "/etc/php/8.0/mods-available/mailcatcher.ini"
-    echo " * Copied /srv/config/php-config/mailcatcher.ini   to /etc/php/8.0/mods-available/mailcatcher.ini"
+    cp -f "/srv/config/php-config/mailcatcher.ini" "/etc/php/${PHPVERSION}/mods-available/mailcatcher.ini"
+    echo " * Copied /srv/config/php-config/mailcatcher.ini   to /etc/php/${PHPVERSION}/mods-available/mailcatcher.ini"
 
   fi
   if [[ -e /srv/config/php-config/mailhog.ini ]]; then
-    cp -f "/srv/config/php-config/mailhog.ini" "/etc/php/8.0/mods-available/mailhog.ini"
-    echo " * Copied /srv/config/php-config/mailhog.ini   to /etc/php/8.0/mods-available/mailhog.ini"
+    cp -f "/srv/config/php-config/mailhog.ini" "/etc/php/${PHPVERSION}/mods-available/mailhog.ini"
+    echo " * Copied /srv/config/php-config/mailhog.ini   to /etc/php/${PHPVERSION}/mods-available/mailhog.ini"
   fi
 
-  echo " * Restarting php8.0-fpm service "
-  service php8.0-fpm restart
+  echo " * Restarting php${PHPVERSION}-fpm service "
+  service "php${PHPVERSION}-fpm" restart
 }
 
 package_install
@@ -110,4 +112,4 @@ update-alternatives --set phar.phar /usr/bin/phar.phar7.2
 update-alternatives --set phpize /usr/bin/phpize7.2
 update-alternatives --set php-config /usr/bin/php-config7.2
 
-echo " * PHP 8.0 provisioning complete"
+echo " * PHP ${PHPVERSION} provisioning complete"
