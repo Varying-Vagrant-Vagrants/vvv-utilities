@@ -25,8 +25,10 @@ if ( isset( $_REQUEST['enable-tideways'] ) && ( $_REQUEST['enable-tideways'] == 
 if( ! $is_vvv_tideways ) {
     return;
 }
+
 if ( file_exists( '/srv/www/default/php-profiler/config.php' ) ) {
     include '/srv/www/default/php-profiler/config.php';
 }
 
+// Query monitor it will be disabled with TIdeways/XHGUI PHP Profiler
 define( 'QM_DISABLED', true );
