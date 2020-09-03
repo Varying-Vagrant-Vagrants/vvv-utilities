@@ -17,19 +17,6 @@ $defaults = array(
         'wp_*',
         'Composer*',
     ),
-    // Other config
-    'profiler.enable' => function() {
-        $url = $_SERVER['REQUEST_URI'];
-        if (strpos($url, 'vvv.test/') === 0) {
-            return false;
-        }
-        return true;
-    },
-    'profiler.replace_url' => function($uri) {
-        $uri = str_replace('?enable-tideways', '', $uri);
-        $uri = str_replace('%3Fenable-tideways', '', $uri);
-        return $uri;
-    }
 );
 
 $custom_args = array();
