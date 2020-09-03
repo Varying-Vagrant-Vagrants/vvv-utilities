@@ -76,13 +76,21 @@ function install_xhgui_frontend() {
         echo " * Installing xhgui"
         sudo php install.php
         cp -f "${DIR}/config.php" "/srv/www/default/xhgui/config/config.php"
-        echo " * Restarting MongoDB"
-        service mongod restart
     else
         echo -e " * Updating xhgui..."
         cd /srv/www/default/xhgui
         git pull --rebase origin master > /dev/null 2>&1
         noroot composer update --prefer-dist > /dev/null 2>&1
+    fi
+    if [[ ! -d "/srv/www/default/php-profiler" ]]; then
+        echo -e " * Git cloning php-profiler for Xhgui from https://github.com/perftools/php-profiler.git"
+        apt install php-sqlite3 -y
+        cd /srv/www/default
+        git clone "https://github.com/perftools/php-profiler.git" php-profiler
+        cd php-profiler
+        echo " * Installing php-profiler"
+        composer require perftools/php-profiler
+        composer require perftools/xhgui-collector
     fi
 }
 
@@ -98,7 +106,6 @@ function enable_tideways_by_site() {
     echo " * Tideways-by-site finished"
 }
 
-. "${DIR}/../mongodb/provision.sh"
 # Set DIR back to undo the DIR set in the MongoDB provisioner
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 echo " * Installing Tideways & XHGui"
