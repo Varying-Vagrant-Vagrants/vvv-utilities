@@ -83,14 +83,14 @@ function install_xhgui_frontend() {
         noroot composer update --prefer-dist > /dev/null 2>&1
     fi
     if [[ ! -d "/srv/www/default/php-profiler" ]]; then
-        echo -e " * Git cloning php-profiler for Xhgui from https://github.com/perftools/php-profiler.git"
+        echo -e " * Installing php-profiler for Xhgui"
         apt install php-sqlite3 -y
         cd /srv/www/default
-        git clone "https://github.com/perftools/php-profiler.git" php-profiler
-        cd php-profiler
+        mkdir ./php-profiler && cd ./php-profiler
         echo " * Installing php-profiler"
-        composer require perftools/php-profiler
-        composer require perftools/xhgui-collector
+        composer require perftools/php-profiler > /dev/null 2>&1
+        composer require perftools/xhgui-collector > /dev/null 2>&1
+        cp -f "${DIR}/config.php-profiler.php" "./config.php"
     fi
 }
 
