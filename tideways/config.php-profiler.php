@@ -27,7 +27,7 @@ $config = array(
     ),
     // Other config
     'profiler.enable' => function() {
-        if ( isset( $_SERVER['REQUEST_URI'] ) && strpos( $_SERVER['REQUEST_URI'], 'vvv.test/' ) === 0) {
+        if ( isset( $_SERVER['REQUEST_URI'] ) && strpos( $_SERVER['REQUEST_URI'], 'vvv.test/' ) === 0 ) { //phpcs:ignore
             return false;
         }
         return true;
@@ -55,5 +55,5 @@ try {
     $profiler->start();
 } catch (Exception $e){
     print_r($e);
-    die();
+    die(); //phpcs:ignore
 }
