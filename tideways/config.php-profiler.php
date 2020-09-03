@@ -14,7 +14,7 @@ $config = array(
         \Xhgui\Profiler\ProfilingFlags::NO_BUILTINS,
         \Xhgui\Profiler\ProfilingFlags::NO_SPANS,
     ),
-    'save.handler' => \Xhgui\Profiler\Profiler::SAVER_PDO,
+    'save.handler' => 'pdo',
     'save.handler.pdo' => array(
         'dsn' => 'sqlite:/tmp/xhgui.sqlite3',
         'user' => null,
@@ -52,6 +52,6 @@ try {
     $profiler = new \Xhgui\Profiler\Profiler( array_merge( $config, $custom_args ) );
     $profiler->start();
 } catch (Exception $e){
-    var_dump($e);
+    print_r($e);
     die();
 }
