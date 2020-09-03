@@ -2,7 +2,7 @@
 
 $defaults = array(
     'debug' => false,
-    'save.handler' => 'sqlite',
+    'save.handler' => 'pdo',
     'pdo' => array(
         'dsn' => 'sqlite:/tmp/xhgui.sqlite3',
         'user' => null,

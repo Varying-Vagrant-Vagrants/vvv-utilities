@@ -88,7 +88,7 @@ function install_xhgui_frontend() {
         for version in "7.0" "7.1" "7.2" "7.3" "7.4"
         do
             if [[ $(command -v php$version) ]]; then
-                apt install php${version}-sqlite3 -y &>/dev/null
+                apt install "php${version}-sqlite3" -y &>/dev/null
             fi
         done
         cd /srv/www/default
