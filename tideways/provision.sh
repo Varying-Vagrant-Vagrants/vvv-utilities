@@ -75,23 +75,27 @@ function install_xhgui_frontend() {
         cd xhgui
         echo " * Installing xhgui"
         sudo php install.php
-        cp -f "${DIR}/config.php" "/srv/www/default/xhgui/config/config.php"
     else
         echo -e " * Updating xhgui..."
         cd /srv/www/default/xhgui
         git pull --rebase origin master > /dev/null 2>&1
         noroot composer update --prefer-dist > /dev/null 2>&1
     fi
+    cp -f "${DIR}/config.php" "/srv/www/default/xhgui/config/config.php"
     if [[ ! -d "/srv/www/default/php-profiler" ]]; then
         echo -e " * Installing php-profiler for Xhgui"
-        apt install php-sqlite3 -y
+        apt install php-sqlite3 -y &>/dev/null
         cd /srv/www/default
         mkdir ./php-profiler && cd ./php-profiler
         echo " * Installing php-profiler"
         composer require perftools/php-profiler > /dev/null 2>&1
         composer require perftools/xhgui-collector > /dev/null 2>&1
-        cp -f "${DIR}/config.php-profiler.php" "./config.php"
+    else
+        cd /srv/www/default/php-profiler
+        composer update
     fi
+    cp -f "${DIR}/config.php-profiler.php" "./config.php"
+    
 }
 
 function enable_tideways_by_site() {
