@@ -14,7 +14,7 @@ $config = array(
         \Xhgui\Profiler\ProfilingFlags::NO_BUILTINS,
         \Xhgui\Profiler\ProfilingFlags::NO_SPANS,
     ),
-    'save.handler' => 'pdo',
+    'save.handler' => \Xhgui\Profiler\Profiler::SAVER_PDO,
     'save.handler.pdo' => array(
         'dsn' => 'sqlite:/tmp/xhgui.sqlite3',
         'user' => null,
@@ -28,11 +28,8 @@ $config = array(
     ),
     // Other config
     'profiler.enable' => function() {
-        if ( isset( $_SERVER['REQUEST_URI'] ) ) {
-            $url = $_SERVER['REQUEST_URI'];
-            if (strpos($url, 'vvv.test/') === 0) {
-                return false;
-            }
+        if ( isset( $_SERVER['REQUEST_URI'] ) && strpos( $_SERVER['REQUEST_URI'], 'vvv.test/' ) === 0) {
+            return false;
         }
         return true;
     },
