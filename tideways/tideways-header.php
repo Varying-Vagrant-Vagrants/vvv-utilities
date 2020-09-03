@@ -25,8 +25,8 @@ if ( isset( $_REQUEST['enable-tideways'] ) && ( $_REQUEST['enable-tideways'] == 
 if( ! $is_vvv_tideways ) {
     return;
 }
-if ( file_exists( '/srv/www/default/xhgui/external/header.php' ) ) {
-    include '/srv/www/default/xhgui/external/header.php';
+if ( file_exists( '/srv/www/default/xhgui/external/import.php' ) ) {
+    include '/srv/www/default/xhgui/external/import.php';
 }
 
 define( 'QM_DISABLED', true );
