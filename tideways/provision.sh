@@ -90,7 +90,6 @@ function install_xhgui_frontend() {
         mkdir ./php-profiler && cd ./php-profiler
         echo " * Installing php-profiler"
         composer require perftools/php-profiler > /dev/null 2>&1
-        composer require perftools/xhgui-collector > /dev/null 2>&1
     else
         cd /srv/www/default/php-profiler
         composer update
