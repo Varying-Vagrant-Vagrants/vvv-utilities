@@ -25,11 +25,8 @@ if ( isset( $_REQUEST['enable-tideways'] ) && ( $_REQUEST['enable-tideways'] == 
 if( ! $is_vvv_tideways ) {
     return;
 }
-if ( file_exists( '/srv/www/default/xhgui/external/import.php' ) ) {
-    include '/srv/www/default/xhgui/external/import.php';
+if ( file_exists( '/srv/www/default/php-profiler/config.php' ) ) {
+    include '/srv/www/default/php-profiler/config.php';
 }
 
 define( 'QM_DISABLED', true );
-if( file_exists( '/srv/www/default/xhgui/config/custom-header.php' ) ) {
-    include_once '/srv/www/default/xhgui/config/custom-header.php';
-}
