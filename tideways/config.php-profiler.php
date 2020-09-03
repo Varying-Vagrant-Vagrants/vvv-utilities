@@ -52,5 +52,6 @@ try {
     $profiler = new \Xhgui\Profiler\Profiler( array_merge( $config, $custom_args ) );
     $profiler->start();
 } catch (Exception $e){
-    // throw away or log error about profiling instantiation failure
+    var_dump($e);
+    die();
 }

@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Tideways with XHGui
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+export COMPOSER_ALLOW_SUPERUSER=1
 
 function install_tideways() {
     if [[ ! -d /var/local/tideways-php/.git ]]; then
