@@ -22,8 +22,6 @@ $config = array(
     ),
     // Environment variables to exclude from profiling data
     'profiler.exclude-env' => array(
-        'APP_DATABASE_PASSWORD',
-        'PATH',
     ),
     // Other config
     'profiler.enable' => function() {
@@ -41,13 +39,11 @@ $config = array(
         return $url;
     },
     'profiler.options' => array(),
-    'profiler.skip_built_in' => false,
-    'fastcgi_finish_request' => true,
 ); 
 
 $custom_args = array();
 if( file_exists( './custom-config.php' ) ) {
-    include_once './custom-config.php';
+    include './custom-config.php';
 }
 
 try {
