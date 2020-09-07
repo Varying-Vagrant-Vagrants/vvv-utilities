@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-echo " * Running all PHP provisioners"
-
 wpsvn_check() {
   # Get all SVN repos.
   svn_repos=$(find /srv/www -maxdepth 5 -type d -name '.svn');
