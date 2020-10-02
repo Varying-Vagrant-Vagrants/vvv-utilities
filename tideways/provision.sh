@@ -94,13 +94,13 @@ function install_xhgui_frontend() {
         done
         apt -y --allow-downgrades --allow-remove-essential --allow-change-held-packages -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confnew install --fix-missing --fix-broken "${php_package}" &>/dev/null
         cd /srv/www/default
-        mkdir ./php-profiler && cd ./php-profiler
+        noroot mkdir ./php-profiler && cd ./php-profiler
         echo " * Installing php-profiler"
-        composer require perftools/php-profiler > /dev/null 2>&1
-        composer require perftools/xhgui-collector > /dev/null 2>&1
+        noroot composer require perftools/php-profiler > /dev/null 2>&1
+        noroot composer require perftools/xhgui-collector > /dev/null 2>&1
     else
         cd /srv/www/default/php-profiler
-        composer update
+        noroot composer update
     fi
     cp -f "${DIR}/config.php-profiler.php" "./config.php"
 }
