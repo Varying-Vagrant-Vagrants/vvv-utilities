@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 # Checkout Opcache Status to provide a dashboard for viewing statistics
 # about PHP's built in opcache.
+
+echo -e " * Opcache Status is abandoned, switch to the new VVV utility opcache-gui"
+
 if [[ ! -d "/srv/www/default/opcache-status" ]]; then
 	echo -e " * Downloading Opcache Status, see https://github.com/rlerdorf/opcache-status/"
 	cd /srv/www/default
