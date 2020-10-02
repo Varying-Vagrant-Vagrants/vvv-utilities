@@ -10,6 +10,6 @@ else
 	cd /srv/www/default/opcache-gui
 fi
 
-composer require amnuts/opcache-gui
+composer require amnuts/opcache-gui > /dev/null 2>&1
 
 ln -s ./vendor/amnuts/opcache-gui/index.php ./index.php
