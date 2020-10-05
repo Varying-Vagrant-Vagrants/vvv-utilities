@@ -1,9 +1,8 @@
 #!/usr/bin/env bash
 # Tideways with XHGui
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-export COMPOSER_ALLOW_SUPERUSER=1
 
-function install_tideways() {
+function fetch_tideways_repo() {
     if [[ ! -d /var/local/tideways-php/.git ]]; then
         echo " * Cloning Tideways extension"
         git clone "https://github.com/tideways/php-xhprof-extension" /var/local/tideways-php
@@ -118,7 +117,7 @@ function enable_tideways_by_site() {
 }
 
 echo " * Installing Tideways & XHGui"
-install_tideways
+fetch_tideways_repo
 check_tideways_php
 install_xhgui_frontend
 enable_tideways_by_site
