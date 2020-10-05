@@ -72,14 +72,14 @@ function install_xhgui_frontend() {
     if [[ ! -d "/srv/www/default/xhgui" ]]; then
         echo -e " * Git cloning xhgui from https://github.com/perftools/xhgui.git"
         cd /srv/www/default
-        git clone "https://github.com/perftools/xhgui.git" xhgui
+        noroot git clone "https://github.com/perftools/xhgui.git" xhgui
         cd xhgui
         echo " * Installing xhgui"
         sudo php install.php
     else
         echo -e " * Updating xhgui..."
         cd /srv/www/default/xhgui
-        git pull --rebase origin master > /dev/null 2>&1
+        noroot git pull --rebase origin master > /dev/null 2>&1
         noroot composer update --prefer-dist > /dev/null 2>&1
     fi
     cp -f "${DIR}/config.php" "/srv/www/default/xhgui/config/config.php"
@@ -91,7 +91,7 @@ function install_xhgui_frontend() {
                 packages+=("php${version}-sqlite3")
             fi
         done
-        apt -y --allow-downgrades --allow-remove-essential --allow-change-held-packages -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confnew install --fix-missing --fix-broken "${packages[@]}"
+        apt-get -y --allow-downgrades --allow-remove-essential --allow-change-held-packages -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confnew install --fix-missing --fix-broken "${packages[@]}"
         cd /srv/www/default
         noroot mkdir ./php-profiler && cd ./php-profiler
         echo " * Installing php-profiler"
@@ -102,7 +102,7 @@ function install_xhgui_frontend() {
         cd /srv/www/default/php-profiler
         noroot composer update
     fi
-    cp -f "${DIR}/config.php-profiler.php" "./config.php"
+    noroot cp -f "${DIR}/config.php-profiler.php" "./config.php"
 }
 
 function enable_tideways_by_site() {
@@ -117,8 +117,6 @@ function enable_tideways_by_site() {
     echo " * Tideways-by-site finished"
 }
 
-# Set DIR back to undo the DIR set in the MongoDB provisioner
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 echo " * Installing Tideways & XHGui"
 install_tideways
 check_tideways_php
