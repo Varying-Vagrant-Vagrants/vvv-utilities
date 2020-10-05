@@ -85,13 +85,13 @@ function install_xhgui_frontend() {
     cp -f "${DIR}/config.php" "/srv/www/default/xhgui/config/config.php"
     if [[ ! -d "/srv/www/default/php-profiler" ]]; then
         echo -e " * Installing php-profiler for Xhgui"
-        php_package=''
-        for version in "7.0" "7.1" "7.2" "7.3" "7.4"
-        do
+        declare -a packages=()
+        for version in "7.0" "7.1" "7.2" "7.3" "7.4"; do
             if [[ $(command -v php$version) ]]; then
-                php_package="${php_package} php${version}-sqlite3"
+                packages+=("php${version}-sqlite3")
             fi
         done
+        test "${#packages[*]}" -eq 0 || apt install -y "${packages[@]}" &>/dev/null
         apt -y --allow-downgrades --allow-remove-essential --allow-change-held-packages -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confnew install --fix-missing --fix-broken "${php_package}" &>/dev/null
         cd /srv/www/default
         noroot mkdir ./php-profiler && cd ./php-profiler
