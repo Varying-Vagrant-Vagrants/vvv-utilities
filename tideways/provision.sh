@@ -96,8 +96,9 @@ function install_xhgui_frontend() {
         cd /srv/www/default
         noroot mkdir ./php-profiler && cd ./php-profiler
         echo " * Installing php-profiler"
-        noroot composer require perftools/php-profiler > /dev/null 2>&1
-        noroot composer require perftools/xhgui-collector > /dev/null 2>&1
+        noroot composer require --no-update perftools/php-profiler > /dev/null 2>&1
+        noroot composer require --no-update perftools/xhgui-collector > /dev/null 2>&1
+        noroot composer install > /dev/null 2>&1
     else
         cd /srv/www/default/php-profiler
         noroot composer update
