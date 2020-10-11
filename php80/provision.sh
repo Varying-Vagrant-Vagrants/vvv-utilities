@@ -21,9 +21,9 @@ apt_package_install_list=(
   "php${PHPVERSION}-dev"
 
   # Extra PHP modules that we find useful
-  php-imagick
-  php-memcache
-  php-memcached
+  "php${PHPVERSION}-imagick"
+  "php${PHPVERSION}-memcache"
+  "php${PHPVERSION}-memcached"
   php-pcov
   php-ssh2
   php-xdebug
@@ -34,7 +34,7 @@ apt_package_install_list=(
   "php${PHPVERSION}-mbstring"
   "php${PHPVERSION}-mysql"
   "php${PHPVERSION}-imap"
-  "php8.0-json"
+  "php${PHPVERSION}-json"
   "php${PHPVERSION}-soap"
   "php${PHPVERSION}-xml"
   "php${PHPVERSION}-zip"
