@@ -4,38 +4,40 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 # PACKAGE INSTALLATION
 
+PHPVERSION="7.4"
+
 apt_package_install_list=(
 
-  # PHP7.4
+  # PHP
   #
-  # Our base packages for php7.4. As long as php7.4-fpm and php7.4-cli are
-  # installed, there is no need to install the general php7.4 package, which
+  # Our base packages for php8.0. As long as php8.0-fpm and php8.0-cli are
+  # installed, there is no need to install the general php8.0 package, which
   # can sometimes install apache as a requirement.
-  php7.4-fpm
-  php7.4-cli
+  "php${PHPVERSION}-fpm"
+  "php${PHPVERSION}-cli"
 
   # Common and dev packages for php
-  php7.4-common
-  php7.4-dev
+  "php${PHPVERSION}-common"
+  "php${PHPVERSION}-dev"
 
   # Extra PHP modules that we find useful
-  php-imagick
-  php-memcache
-  php-memcached
+  "php${PHPVERSION}-imagick"
+  "php${PHPVERSION}-memcache"
+  "php${PHPVERSION}-memcached"
   php-pcov
   php-ssh2
   php-xdebug
-  php7.4-bcmath
-  php7.4-curl
-  php7.4-gd
-  php7.4-intl
-  php7.4-mbstring
-  php7.4-mysql
-  php7.4-imap
-  php7.4-json
-  php7.4-soap
-  php7.4-xml
-  php7.4-zip
+  "php${PHPVERSION}-bcmath"
+  "php${PHPVERSION}-curl"
+  "php${PHPVERSION}-gd"
+  "php${PHPVERSION}-intl"
+  "php${PHPVERSION}-mbstring"
+  "php${PHPVERSION}-mysql"
+  "php${PHPVERSION}-imap"
+  "php${PHPVERSION}-json"
+  "php${PHPVERSION}-soap"
+  "php${PHPVERSION}-xml"
+  "php${PHPVERSION}-zip"
 )
 
 ### FUNCTIONS
@@ -67,37 +69,37 @@ package_install() {
 
 configure() {
   # Copy nginx configuration from local
-  cp -f "${DIR}/php7.4-upstream.conf" "/etc/nginx/upstreams/php74.conf"
-  echo " * Copied ${DIR}/php7.4-upstream.conf              to /etc/nginx/upstreams/php74.conf"
+  cp -f "${DIR}/php${PHPVERSION}-upstream.conf" "/etc/nginx/upstreams/php74.conf"
+  echo " * Copied ${DIR}/php${PHPVERSION}-upstream.conf              to /etc/nginx/upstreams/php74.conf"
 
   # Copy php-fpm configuration from local
-  cp -f "${DIR}/php7.4-fpm.conf" "/etc/php/7.4/fpm/php-fpm.conf"
-  echo " * Copied ${DIR}/php7.4-fpm.conf                   to /etc/php/7.4/fpm/php-fpm.conf"
+  cp -f "${DIR}/php${PHPVERSION}-fpm.conf" "/etc/php/${PHPVERSION}/fpm/php-fpm.conf"
+  echo " * Copied ${DIR}/php${PHPVERSION}-fpm.conf                   to /etc/php/${PHPVERSION}/fpm/php-fpm.conf"
 
-  cp -f "${DIR}/php7.4-www.conf" "/etc/php/7.4/fpm/pool.d/www.conf"
-  echo " * Copied ${DIR}/php7.4-www.conf                   to /etc/php/7.4/fpm/pool.d/www.conf"
+  cp -f "${DIR}/php${PHPVERSION}-www.conf" "/etc/php/${PHPVERSION}/fpm/pool.d/www.conf"
+  echo " * Copied ${DIR}/php${PHPVERSION}-www.conf                   to /etc/php/${PHPVERSION}/fpm/pool.d/www.conf"
 
-  cp -f "${DIR}/php7.4-custom.ini" "/etc/php/7.4/fpm/conf.d/php-custom.ini"
-  echo " * Copied ${DIR}/php7.4-custom.ini                 to /etc/php/7.4/fpm/conf.d/php-custom.ini"
+  cp -f "${DIR}/php${PHPVERSION}-custom.ini" "/etc/php/${PHPVERSION}/fpm/conf.d/php-custom.ini"
+  echo " * Copied ${DIR}/php${PHPVERSION}-custom.ini                 to /etc/php/${PHPVERSION}/fpm/conf.d/php-custom.ini"
 
-  cp -f "/srv/config/php-config/opcache.ini" "/etc/php/7.4/fpm/conf.d/opcache.ini"
-  echo " * Copied /srv/config/php-config/opcache.ini       to /etc/php/7.4/fpm/conf.d/opcache.ini"
+  cp -f "/srv/config/php-config/opcache.ini" "/etc/php/${PHPVERSION}/fpm/conf.d/opcache.ini"
+  echo " * Copied /srv/config/php-config/opcache.ini       to /etc/php/${PHPVERSION}/fpm/conf.d/opcache.ini"
 
-  cp -f "/srv/config/php-config/xdebug.ini" "/etc/php/7.4/mods-available/xdebug.ini"
-  echo " * Copied /srv/config/php-config/xdebug.ini        to /etc/php/7.4/mods-available/xdebug.ini"
+  cp -f "/srv/config/php-config/xdebug.ini" "/etc/php/${PHPVERSION}/mods-available/xdebug.ini"
+  echo " * Copied /srv/config/php-config/xdebug.ini        to /etc/php/${PHPVERSION}/mods-available/xdebug.ini"
 
   if [[ -e /srv/config/php-config/mailcatcher.ini ]]; then
-    cp -f "/srv/config/php-config/mailcatcher.ini" "/etc/php/7.4/mods-available/mailcatcher.ini"
-    echo " * Copied /srv/config/php-config/mailcatcher.ini   to /etc/php/7.4/mods-available/mailcatcher.ini"
+    cp -f "/srv/config/php-config/mailcatcher.ini" "/etc/php/${PHPVERSION}/mods-available/mailcatcher.ini"
+    echo " * Copied /srv/config/php-config/mailcatcher.ini   to /etc/php/${PHPVERSION}/mods-available/mailcatcher.ini"
 
   fi
   if [[ -e /srv/config/php-config/mailhog.ini ]]; then
-    cp -f "/srv/config/php-config/mailhog.ini" "/etc/php/7.4/mods-available/mailhog.ini"
-    echo " * Copied /srv/config/php-config/mailhog.ini   to /etc/php/7.4/mods-available/mailhog.ini"
+    cp -f "/srv/config/php-config/mailhog.ini" "/etc/php/${PHPVERSION}/mods-available/mailhog.ini"
+    echo " * Copied /srv/config/php-config/mailhog.ini   to /etc/php/${PHPVERSION}/mods-available/mailhog.ini"
   fi
 
-  echo " * Restarting php7.4-fpm service "
-  service php7.4-fpm restart
+  echo " * Restarting php${PHPVERSION}-fpm service "
+  service "php${PHPVERSION}-fpm" restart
 }
 
 package_install
@@ -110,4 +112,4 @@ update-alternatives --set phar.phar /usr/bin/phar.phar7.2
 update-alternatives --set phpize /usr/bin/phpize7.2
 update-alternatives --set php-config /usr/bin/php-config7.2
 
-echo " * PHP 7.4 provisioning complete"
+echo " * PHP ${PHPVERSION} provisioning complete"

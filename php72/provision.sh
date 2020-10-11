@@ -3,38 +3,41 @@ export DEBIAN_FRONTEND=noninteractive
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 # PACKAGE INSTALLATION
+
+PHPVERSION="7.2"
+
 apt_package_install_list=(
 
-  # PHP7.2
+  # PHP
   #
-  # Our base packages for php7.2. As long as php7.2-fpm and php7.2-cli are
-  # installed, there is no need to install the general php7.2 package, which
+  # Our base packages for php8.0. As long as php8.0-fpm and php8.0-cli are
+  # installed, there is no need to install the general php8.0 package, which
   # can sometimes install apache as a requirement.
-  php7.2-fpm
-  php7.2-cli
+  "php${PHPVERSION}-fpm"
+  "php${PHPVERSION}-cli"
 
   # Common and dev packages for php
-  php7.2-common
-  php7.2-dev
+  "php${PHPVERSION}-common"
+  "php${PHPVERSION}-dev"
 
   # Extra PHP modules that we find useful
-  php-imagick
-  php-memcache
-  php-memcached
+  "php${PHPVERSION}-imagick"
+  "php${PHPVERSION}-memcache"
+  "php${PHPVERSION}-memcached"
   php-pcov
   php-ssh2
   php-xdebug
-  php7.2-bcmath
-  php7.2-curl
-  php7.2-gd
-  php7.2-intl
-  php7.2-mbstring
-  php7.2-mysql
-  php7.2-imap
-  php7.2-json
-  php7.2-soap
-  php7.2-xml
-  php7.2-zip
+  "php${PHPVERSION}-bcmath"
+  "php${PHPVERSION}-curl"
+  "php${PHPVERSION}-gd"
+  "php${PHPVERSION}-intl"
+  "php${PHPVERSION}-mbstring"
+  "php${PHPVERSION}-mysql"
+  "php${PHPVERSION}-imap"
+  "php${PHPVERSION}-json"
+  "php${PHPVERSION}-soap"
+  "php${PHPVERSION}-xml"
+  "php${PHPVERSION}-zip"
 )
 
 ### FUNCTIONS
