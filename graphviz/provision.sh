@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 export DEBIAN_FRONTEND=noninteractive
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 if ! [ -x "$(command -v dot)" ]; then
 
