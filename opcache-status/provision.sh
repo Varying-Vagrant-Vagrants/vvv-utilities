@@ -2,7 +2,7 @@
 # Checkout Opcache Status to provide a dashboard for viewing statistics
 # about PHP's built in opcache.
 
-echo -e " * Opcache Status is abandoned, switch to the new VVV utility opcache-gui"
+echo -e " ! Opcache Status is abandoned, please switch to the new VVV utility opcache-gui in config.yml"
 
 if [[ ! -d "/srv/www/default/opcache-status" ]]; then
 	echo -e " * Downloading Opcache Status, see https://github.com/rlerdorf/opcache-status/"
