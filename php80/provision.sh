@@ -34,7 +34,6 @@ apt_package_install_list=(
   "php${PHPVERSION}-mbstring"
   "php${PHPVERSION}-mysql"
   "php${PHPVERSION}-imap"
-  "php${PHPVERSION}-json"
   "php${PHPVERSION}-soap"
   "php${PHPVERSION}-xml"
   "php${PHPVERSION}-zip"
