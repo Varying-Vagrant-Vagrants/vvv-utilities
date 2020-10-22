@@ -8,6 +8,6 @@ noroot composer require amnuts/opcache-gui
 
 echo " * symlinking index.php"
 
-noroot ln -s ./vendor/amnuts/opcache-gui/index.php ./index.php
+noroot ln -sf ./vendor/amnuts/opcache-gui/index.php ./index.php
 
 echo " * Opcache GUI complete"
