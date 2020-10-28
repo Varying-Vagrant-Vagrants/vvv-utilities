@@ -14,6 +14,9 @@ function fetch_tideways_repo() {
 
 function install_tideways_for_php_version() {
     version=$1
+    if [[ ! $(command -v php-config$version) ]]; then
+        return
+    fi
     echo " * Installing Tideways for PHP ${version}"
     php_modules_path=$("php-config${version}" --extension-dir)
     echo " * Copying tideways files for PHP ${version}"
