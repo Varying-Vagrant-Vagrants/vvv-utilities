@@ -71,6 +71,13 @@ function restart_php() {
 
 function install_xhgui_frontend() {
     cp -f "${DIR}/nginx.conf" "/etc/nginx/custom-utilities/xhgui.conf"
+    declare -a packages=()
+    for version in "7.0" "7.1" "7.2" "7.3" "7.4"; do
+        if [[ $(command -v php$version) ]]; then
+            packages+=("php${version}-sqlite3")
+        fi
+    done
+    apt-get -y --allow-downgrades --allow-remove-essential --allow-change-held-packages -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confnew install --fix-missing --fix-broken "${packages[@]}"
     if [[ ! -d "/srv/www/default/xhgui" ]]; then
         echo -e " * Git cloning xhgui from https://github.com/perftools/xhgui.git"
         cd /srv/www/default
@@ -88,13 +95,6 @@ function install_xhgui_frontend() {
     cp -f "${DIR}/config.php" "/srv/www/default/xhgui/config/config.php"
     if [[ ! -d "/srv/www/default/php-profiler" ]]; then
         echo -e " * Installing php-profiler for Xhgui"
-        declare -a packages=()
-        for version in "7.0" "7.1" "7.2" "7.3" "7.4"; do
-            if [[ $(command -v php$version) ]]; then
-                packages+=("php${version}-sqlite3")
-            fi
-        done
-        apt-get -y --allow-downgrades --allow-remove-essential --allow-change-held-packages -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confnew install --fix-missing --fix-broken "${packages[@]}"
         cd /srv/www/default
         noroot mkdir ./php-profiler && cd ./php-profiler
         echo " * Installing php-profiler"
