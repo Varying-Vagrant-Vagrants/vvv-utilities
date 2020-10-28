@@ -81,7 +81,7 @@ function install_xhgui_frontend() {
     if [[ ! -d "/srv/www/default/xhgui" ]]; then
         echo -e " * Git cloning xhgui from https://github.com/perftools/xhgui.git"
         cd /srv/www/default
-        noroot git clone "https://github.com/perftools/xhgui.git" xhgui
+        noroot git clone -b 0.16.0 "https://github.com/perftools/xhgui.git" xhgui
         cd xhgui
         noroot composer config platform-check false
         echo " * Installing xhgui"
