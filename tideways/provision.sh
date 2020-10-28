@@ -128,7 +128,7 @@ enable_tideways_by_site
 restart_php
 
 if [[ ! -f "/srv/www/default/xhgui/composer.lock" ]]
-    echo " * XHGUI installtion failed!"
+    echo " * XHGUI installation failed!"
 else
     echo " * Tideways and XHGui installed"
 fi
