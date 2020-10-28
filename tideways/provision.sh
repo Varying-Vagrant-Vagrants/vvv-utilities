@@ -83,7 +83,7 @@ function install_xhgui_frontend() {
         cd /srv/www/default
         noroot git clone "https://github.com/perftools/xhgui.git" xhgui
         cd xhgui
-        composer remove alcaeus/mongo-php-adapter
+        noroot composer remove alcaeus/mongo-php-adapter
         echo " * Installing xhgui"
         sudo php install.php
     else
