@@ -69,8 +69,7 @@ function restart_php() {
     service nginx restart > /dev/null 2>&1
 }
 
-function install_xhgui_frontend() {
-    cp -f "${DIR}/nginx.conf" "/etc/nginx/custom-utilities/xhgui.conf"
+function install_php_sqlite() {
     declare -a packages=()
     for version in "7.0" "7.1" "7.2" "7.3" "7.4"; do
         if [[ $(command -v php$version) ]]; then
@@ -78,6 +77,10 @@ function install_xhgui_frontend() {
         fi
     done
     apt-get -y --allow-downgrades --allow-remove-essential --allow-change-held-packages -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confnew install --fix-missing --fix-broken "${packages[@]}"
+}
+
+function install_xhgui_frontend() {
+    cp -f "${DIR}/nginx.conf" "/etc/nginx/custom-utilities/xhgui.conf"
     if [[ ! -d "/srv/www/default/xhgui" ]]; then
         echo -e " * Git cloning xhgui from https://github.com/perftools/xhgui.git"
         cd /srv/www/default
@@ -85,7 +88,7 @@ function install_xhgui_frontend() {
         cd xhgui
         noroot composer config platform-check false
         echo " * Installing xhgui"
-        sudo php install.php
+        php install.php
     else
         echo -e " * Updating xhgui..."
         cd /srv/www/default/xhgui
@@ -123,6 +126,7 @@ function enable_tideways_by_site() {
 echo " * Installing Tideways & XHGui"
 fetch_tideways_repo
 check_tideways_php
+install_php_sqlite
 install_xhgui_frontend
 enable_tideways_by_site
 restart_php
