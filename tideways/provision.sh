@@ -88,7 +88,7 @@ function install_xhgui_frontend() {
         cd xhgui
         noroot composer config platform-check false
         echo " * Installing xhgui"
-        php install.php
+        noroot php install.php
     else
         echo -e " * Updating xhgui..."
         cd /srv/www/default/xhgui
