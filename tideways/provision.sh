@@ -91,7 +91,7 @@ function install_xhgui_frontend() {
     else
         echo -e " * Updating xhgui..."
         cd /srv/www/default/xhgui
-        noroot git pull --rebase origin --onto 0.16.3 > /dev/null 2>&1
+        noroot git rebase origin --onto 0.16.3 > /dev/null 2>&1
         noroot composer update --prefer-dist > /dev/null 2>&1
     fi
     cp -f "${DIR}/config.php" "/srv/www/default/xhgui/config/config.php"
