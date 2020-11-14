@@ -14,7 +14,7 @@
  * This is needed for cookie based authentication to encrypt password in
  * cookie
  */
-$cfg['blowfish_secret'] = 'a8b7c6d'; /* YOU MUST FILL IN THIS FOR COOKIE AUTH! */
+$cfg['blowfish_secret'] = 'a8b7c6da8b7c6da8b7c6da8b7c6d7c6d'; /* YOU MUST FILL IN THIS FOR COOKIE AUTH! */
 
 /*
  * Servers configuration
@@ -26,14 +26,16 @@ $i = 0;
  */
 $i++;
 /* Authentication type */
-$cfg['Servers'][$i]['auth_type'] = 'cookie';
+$cfg[ 'Servers' ][ $i ]['auth_type'] = 'cookie';
+
 /* Server parameters */
-$cfg['Servers'][$i]['host'] = 'localhost';
-$cfg['Servers'][$i]['connect_type'] = 'tcp';
-$cfg['Servers'][$i]['compress'] = false;
+$cfg[ 'Servers' ][ $i ]['host']         = 'localhost';
+$cfg[ 'Servers' ][ $i ]['connect_type'] = 'tcp';
+$cfg[ 'Servers' ][ $i ]['compress']     = false;
+
 /* Select mysql if your server does not have mysqli */
-$cfg['Servers'][$i]['extension'] = 'mysqli';
-$cfg['Servers'][$i]['AllowNoPassword'] = false;
+$cfg[ 'Servers' ][ $i ]['extension']       = 'mysqli';
+$cfg[ 'Servers' ][ $i ]['AllowNoPassword'] = false;
 
 /*
  * phpMyAdmin configuration storage settings.
@@ -69,7 +71,7 @@ $cfg['Servers'][$i]['AllowNoPassword'] = false;
  * Directories for saving/loading files from server
  */
 $cfg['UploadDir'] = '';
-$cfg['SaveDir'] = '';
+$cfg['SaveDir']   = '';
 
 /**
  * Defines whether a user should be displayed a "show all (records)"
@@ -151,5 +153,5 @@ $cfg['CheckConfigurationPermissions'] = false;
  * Include a custom configuration file for phpMyAdmin if it exists locally.
  */
 if ( file_exists( 'config.inc.custom.php' ) ) {
-	include( 'config.inc.custom.php' );
+	include 'config.inc.custom.php';
 }
