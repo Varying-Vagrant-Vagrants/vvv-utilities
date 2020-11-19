@@ -28,15 +28,15 @@ function install_tideways_for_php_version() {
         cd "/var/local/tideways-php${version}"
 
         # switch to PHP version we're building for
-        update-alternatives --set php "/usr/bin/php${version}" > /dev/null 2>&1
-        update-alternatives --set php-config "/usr/bin/php-config${version}" > /dev/null 2>&1
-        update-alternatives --set phpize "/usr/bin/phpize${version}" > /dev/null 2>&1
-        "phpize${version}" > /dev/null 2>&1
+        update-alternatives --set php "/usr/bin/php${version}"
+        update-alternatives --set php-config "/usr/bin/php-config${version}"
+        update-alternatives --set phpize "/usr/bin/phpize${version}"
+        "phpize${version}"
         
         # configure and build
-        ./configure --enable-tideways-xhprof --with-php-config="php-config${version}" > /dev/null 2>&1
-        make > /dev/null 2>&1
-        make install > /dev/null 2>&1
+        ./configure --enable-tideways-xhprof --with-php-config="php-config${version}"
+        make
+        make install
         
         # perform cleanup
         cd "${DIR}"
@@ -62,16 +62,16 @@ function restart_php() {
     for version in "7.0" "7.1" "7.2" "7.3" "7.4"
     do
         if [[ $(command -v php$version) ]]; then
-            service "php${version}-fpm" restart > /dev/null 2>&1
+            service "php${version}-fpm" restart
         fi
     done
     echo " * Restarting Nginx"
-    service nginx restart > /dev/null 2>&1
+    service nginx restart
 }
 
 function install_php_sqlite() {
     declare -a packages=()
-    for version in "7.0" "7.1" "7.2" "7.3" "7.4"; do
+    for version in "7.0" "7.1" "7.2" "7.3" "7.4" "8.0"; do
         if [[ $(command -v php$version) ]]; then
             packages+=("php${version}-sqlite3")
         fi
@@ -91,8 +91,7 @@ function install_xhgui_frontend() {
     else
         echo -e " * Updating xhgui..."
         cd /srv/www/default/xhgui
-        noroot git rebase origin --onto 0.16.3 > /dev/null 2>&1
-        noroot composer update --prefer-dist > /dev/null 2>&1
+        noroot git checkout 0.16.3 && noroot composer install --no-dev
     fi
     cp -f "${DIR}/config.php" "/srv/www/default/xhgui/config/config.php"
     if [[ ! -d "/srv/www/default/php-profiler" ]]; then
@@ -100,9 +99,9 @@ function install_xhgui_frontend() {
         cd /srv/www/default
         noroot mkdir ./php-profiler && cd ./php-profiler
         echo " * Installing php-profiler"
-        noroot composer require --no-update perftools/php-profiler > /dev/null 2>&1
-        noroot composer require --no-update perftools/xhgui-collector > /dev/null 2>&1
-        noroot composer install > /dev/null 2>&1
+        noroot composer require --no-update perftools/php-profiler
+        noroot composer require --no-update perftools/xhgui-collector
+        noroot composer install
     else
         cd /srv/www/default/php-profiler
         noroot composer update
