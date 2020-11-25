@@ -105,11 +105,11 @@ configure() {
 package_install
 configure
 
-echo " * Restoring the default PHP CLI version"
-update-alternatives --set php /usr/bin/php7.2
-update-alternatives --set phar /usr/bin/phar7.2
-update-alternatives --set phar.phar /usr/bin/phar.phar7.2
-update-alternatives --set phpize /usr/bin/phpize7.2
-update-alternatives --set php-config /usr/bin/php-config7.2
+echo " * Restoring the default PHP CLI version ( ${DEFAULTPHP} )"
+update-alternatives --set php "/usr/bin/php${DEFAULTPHP}"
+update-alternatives --set phar "/usr/bin/phar${DEFAULTPHP}"
+update-alternatives --set phar.phar "/usr/bin/phar.phar${DEFAULTPHP}"
+update-alternatives --set phpize "/usr/bin/phpize${DEFAULTPHP}"
+update-alternatives --set php-config "/usr/bin/php-config${DEFAULTPHP}"
 
 echo "PHP 7.1 provisioning complete"
