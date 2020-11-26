@@ -3,6 +3,7 @@ export DEBIAN_FRONTEND=noninteractive
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 # PACKAGE INSTALLATION
+DEFAULTPHP=$(php -r "echo substr(phpversion(),0,3);")
 PHPVERSION="5.6"
 
 apt_package_install_list=(
@@ -102,11 +103,11 @@ configure() {
 package_install
 configure
 
-echo " * Restoring the default PHP CLI version"
-update-alternatives --set php /usr/bin/php7.2
-update-alternatives --set phar /usr/bin/phar7.2
-update-alternatives --set phar.phar /usr/bin/phar.phar7.2
-update-alternatives --set phpize /usr/bin/phpize7.2
-update-alternatives --set php-config /usr/bin/php-config7.2
+echo " * Restoring the default PHP CLI version ( ${DEFAULTPHP} )"
+update-alternatives --set php "/usr/bin/php${DEFAULTPHP}"
+update-alternatives --set phar "/usr/bin/phar${DEFAULTPHP}"
+update-alternatives --set phar.phar "/usr/bin/phar.phar${DEFAULTPHP}"
+update-alternatives --set phpize "/usr/bin/phpize${DEFAULTPHP}"
+update-alternatives --set php-config "/usr/bin/php-config${DEFAULTPHP}"
 
 echo " * PHP ${PHPVERSION} provisioning complete"
