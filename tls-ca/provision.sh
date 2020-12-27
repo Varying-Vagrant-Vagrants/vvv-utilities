@@ -1,10 +1,18 @@
 #!/usr/bin/env bash
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
-VVV_CONFIG=/vagrant/vvv-custom.yml
-if [[ -f /vagrant/config.yml ]]; then
-	VVV_CONFIG=/vagrant/config.yml
-fi
+configs=(
+  /srv/vvv/config.yml
+  /vagrant/config.yml
+  /vagrant/vvv-config.yml
+)
+VVV_CONFIG=/srv/vvv/config.yml
+for item in ${configs[*]}; do
+  if [[ -f $item ]]; then
+    VVV_CONFIG=$item
+    break
+  fi
+done
 
 codename=$(lsb_release --codename | cut -f2)
 CERTIFICATES_DIR="/srv/certificates"
