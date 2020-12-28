@@ -2,6 +2,19 @@
 # Tideways with XHGui
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
+configs=(
+  /srv/vvv/config.yml
+  /vagrant/config.yml
+  /vagrant/vvv-config.yml
+)
+VVV_CONFIG=/srv/vvv/config.yml
+for item in ${configs[*]}; do
+  if [[ -f $item ]]; then
+    VVV_CONFIG=$item
+    break
+  fi
+done
+
 function fetch_tideways_repo() {
     if [[ ! -d /var/local/tideways-php/.git ]]; then
         echo " * Cloning Tideways extension"
@@ -112,10 +125,6 @@ function install_xhgui_frontend() {
 function enable_tideways_by_site() {
     echo " * Tideways-by-site started"
 
-    VVV_CONFIG=/vagrant/vvv-custom.yml
-    if [[ -f /vagrant/config.yml ]]; then
-        VVV_CONFIG=/vagrant/config.yml
-    fi
     php "${DIR}/by-site.php" "${VVV_CONFIG}"
 
     echo " * Tideways-by-site finished"
