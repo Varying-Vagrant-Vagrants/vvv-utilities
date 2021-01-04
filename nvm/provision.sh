@@ -9,7 +9,7 @@ echo " * Checking for NVM"
 
 if [[ -d ~/.nvm && -f ~/.nvm/nvm.sh ]]
 then
-  echo " * NVM is already installed, no need to install again"
+  echo " ✓ NVM is already installed, no need to install again"
 else
   if [[ -d ~/.nvm && ! -f ~/.nvm/nvm.sh ]]
   then
@@ -20,10 +20,10 @@ else
   fi
 
   # lets install it now
-  echo " * NVM installation starting now"
-  noroot curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
+  echo " * NVM v0.37.2 installation starting now"
+  noroot curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh | bash
   noroot $HOME/.nvm/nvm.sh
-  echo " * NVM installed"
+  echo " ✓ NVM installed"
 
   # set default node to the one installed by VVV
   nvm alias default system
