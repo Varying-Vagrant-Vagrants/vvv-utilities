@@ -4,7 +4,7 @@ $is_vvv_tideways = false;
 
 if ( empty( $_SERVER['REMOTE_ADDR'] ) and !isset( $_SERVER['HTTP_USER_AGENT'] ) and count( $_SERVER['argv']) > 0 ) {
     // CLI
-    if ( isset( $_ENV['ENABLE_TIDEWAYS_CLI'] ) && $_ENV['ENABLE_TIDEWAYS_CLI'] === '1' ) {
+    if ( isset( $_SERVER['ENABLE_TIDEWAYS_CLI'] ) && $_SERVER['ENABLE_TIDEWAYS_CLI'] === '1' ) {
         $is_vvv_tideways = true;
     }
 } else {
