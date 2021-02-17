@@ -60,11 +60,14 @@ function install_tideways_for_php_version() {
 }
 
 function check_tideways_php() {
-    cp -f "${DIR}/tideways-header.php" "/srv/tideways-header.php"
+    if [[ -f "/srv/tideways-header.php" ]]; then
+        rm -f /srv/tideways-header.php
+    fi
+    noroot cp -f "${DIR}/tideways-header.php" "/srv/tideways-header.php"
     # Tideways is only for php =>7.0
     for version in "7.0" "7.1" "7.2" "7.3" "7.4"
     do
-        if [[ $(command -v php$version) ]]; then
+        if [[ $(command -v php-fpm$version) ]]; then
             install_tideways_for_php_version "${version}"
         fi
     done
@@ -74,7 +77,7 @@ function restart_php() {
     echo " * Restarting PHP-FPM server"
     for version in "7.0" "7.1" "7.2" "7.3" "7.4"
     do
-        if [[ $(command -v php$version) ]]; then
+        if [[ $(command -v php-fpm$version) ]]; then
             service "php${version}-fpm" restart
         fi
     done
@@ -106,7 +109,7 @@ function install_xhgui_frontend() {
         cd /srv/www/default/xhgui
         noroot git checkout 0.16.3 && noroot composer install --no-dev
     fi
-    cp -f "${DIR}/config.php" "/srv/www/default/xhgui/config/config.php"
+    noroot cp -f "${DIR}/config.php" "/srv/www/default/xhgui/config/config.php"
     if [[ ! -d "/srv/www/default/php-profiler" ]]; then
         echo -e " * Installing php-profiler for Xhgui"
         cd /srv/www/default
