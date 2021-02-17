@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Tideways with XHGui
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+DEFAULTPHP=$(php -r "echo substr(phpversion(),0,3);")
 
 configs=(
   /srv/vvv/config.yml
@@ -134,6 +135,14 @@ check_tideways_php
 install_php_sqlite
 install_xhgui_frontend
 enable_tideways_by_site
+
+echo " * Restoring the default PHP CLI version ( ${DEFAULTPHP} )"
+update-alternatives --set php "/usr/bin/php${DEFAULTPHP}"
+update-alternatives --set phar "/usr/bin/phar${DEFAULTPHP}"
+update-alternatives --set phar.phar "/usr/bin/phar.phar${DEFAULTPHP}"
+update-alternatives --set phpize "/usr/bin/phpize${DEFAULTPHP}"
+update-alternatives --set php-config "/usr/bin/php-config${DEFAULTPHP}"
+
 restart_php
 
 if [[ ! -f "/srv/www/default/xhgui/composer.lock" ]]; then
