@@ -42,8 +42,8 @@ $config = array(
         return true;
     },
     'profiler.replace_url' => function($uri) {
-        $uri = str_replace('?enable-tideways', '', $uri);
-        $uri = str_replace('%3Fenable-tideways', '', $uri);
+        $uri = str_replace('?enable-tideways=true', '', $uri);
+        $uri = str_replace('%3Fenable-tideways=true', '', $uri);
         return $uri;
     },
     'profiler.simple_url' => function($url) {
