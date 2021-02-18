@@ -3,12 +3,23 @@
 require_once 'vendor/autoload.php';
 
 $config = array(
-    'save.handler' => \Xhgui\Profiler\Profiler::SAVER_PDO,
-    'save.handler.pdo' => array(
-        'dsn' => 'sqlite:/tmp/xhgui.sqlite3',
-        'user' => null,
-        'pass' => null,
-        'table' => 'results'
+    'save.handler' => \Xhgui\Profiler\Profiler::SAVER_STACK,
+    'save.handler.stack' => array(
+        'savers' => array(
+            \Xhgui\Profiler\Profiler::SAVER_UPLOAD,
+            \Xhgui\Profiler\Profiler::SAVER_FILE,
+        ),
+        // if saveAll=false, break the chain on successful save
+        'saveAll' => false,
+    ),
+    // subhandler specific configs
+    'save.handler.file' => array(
+        'filename' => '/tmp/xhgui.data.jsonl',
+    ),
+    'save.handler.upload' => array(
+        'uri' => 'http://xhgui.vvv.test/run/import',
+        'timeout' => 3,
+        'token' => 'token',
     ),
     // If defined, use specific profiler
     // otherwise use any profiler that's found
