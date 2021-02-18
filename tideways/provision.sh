@@ -61,9 +61,9 @@ function install_tideways_for_php_version() {
 }
 
 function check_tideways_php() {
-    noroot cp -f "${DIR}/tideways-header.php" "/srv/tideways-header.php"
+    cp -f "${DIR}/tideways-header.php" "/srv/tideways-header.php"
     # Tideways is only for php =>7.0
-    for version in "7.0" "7.1" "7.2" "7.3" "7.4"
+    for version in "7.0" "7.1" "7.2" "7.3" "7.4" "8.0"
     do
         if [[ $(command -v php-fpm$version) ]]; then
             install_tideways_for_php_version "${version}"
@@ -73,7 +73,7 @@ function check_tideways_php() {
 
 function restart_php() {
     echo " * Restarting PHP-FPM server"
-    for version in "7.0" "7.1" "7.2" "7.3" "7.4"
+    for version in "7.0" "7.1" "7.2" "7.3" "7.4" "8.0"
     do
         if [[ $(command -v php-fpm$version) ]]; then
             service "php${version}-fpm" restart
