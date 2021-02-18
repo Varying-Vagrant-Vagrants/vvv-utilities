@@ -61,7 +61,7 @@ function install_tideways_for_php_version() {
 }
 
 function check_tideways_php() {
-    cp -f "${DIR}/tideways-header.php" "/srv/tideways-header.php"
+    noroot cp -f "${DIR}/tideways-header.php" "/srv/tideways-header.php"
     # Tideways is only for php =>7.0
     for version in "7.0" "7.1" "7.2" "7.3" "7.4"
     do
