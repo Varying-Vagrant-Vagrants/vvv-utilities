@@ -42,10 +42,16 @@ $config = array(
         return true;
     },
     'profiler.replace_url' => function($uri) {
-        $uri = str_replace('?enable-tideways=true', '', $uri);
-        $uri = str_replace('%3Fenable-tideways=true', '', $uri);
-        $uri = str_replace('?enable-tideways=1', '', $uri);
-        $uri = str_replace('%3Fenable-tideways=1', '', $uri);
+        $query = parse_url($uri, PHP_URL_QUERY);
+        if ( ! empty( $query ) ) {
+            $params = [];
+            parse_str( $query, $params );
+            if (  ! array_key_exists( 'enable-tideways', $params ) ) {
+                return $uri;
+            }
+            $uri = str_replace('?enable-tideways=' . $params['enable-tideways'], '', $uri);
+            $uri = str_replace('%3Fenable-tideways=' . $params['enable-tideways'], '', $uri);
+        }
         return $uri;
     },
     'profiler.simple_url' => function($url) {
