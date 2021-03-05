@@ -24,9 +24,6 @@ apt_package_install_list=(
   "php${PHPVERSION}-imagick"
   "php${PHPVERSION}-memcache"
   "php${PHPVERSION}-memcached"
-  php-pcov
-  php-ssh2
-  php-xdebug
   "php${PHPVERSION}-pcov"
   "php${PHPVERSION}-ssh2"
   "php${PHPVERSION}-xdebug"
