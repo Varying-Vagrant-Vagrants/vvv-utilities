@@ -27,6 +27,9 @@ apt_package_install_list=(
   php-pcov
   php-ssh2
   php-xdebug
+  "php${PHPVERSION}-pcov"
+  "php${PHPVERSION}-ssh2"
+  "php${PHPVERSION}-xdebug"
   "php${PHPVERSION}-bcmath"
   "php${PHPVERSION}-curl"
   "php${PHPVERSION}-gd"
