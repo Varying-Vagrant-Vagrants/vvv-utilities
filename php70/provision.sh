@@ -37,6 +37,9 @@ apt_package_install_list=(
   "php${PHPVERSION}-soap"
   "php${PHPVERSION}-xml"
   "php${PHPVERSION}-zip"
+  "php${PHPVERSION}-xdebug"
+  "php${PHPVERSION}-pcov"
+  "php${PHPVERSION}-ssh2"
 )
 
 ### FUNCTIONS
