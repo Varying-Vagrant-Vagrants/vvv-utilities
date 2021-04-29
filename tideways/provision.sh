@@ -93,6 +93,13 @@ function install_php_sqlite() {
     apt-get -y --allow-downgrades --allow-remove-essential --allow-change-held-packages -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confnew install --fix-missing --fix-broken "${packages[@]}"
 }
 
+function is_php73_installed() {
+	if ! command -v php73 >/dev/null; then
+		return 1
+	fi
+	return 0
+}
+
 function install_xhgui_frontend() {
     cp -f "${DIR}/nginx.conf" "/etc/nginx/custom-utilities/xhgui.conf"
     if [[ ! -d "/srv/www/default/xhgui" ]]; then
@@ -129,6 +136,9 @@ function enable_tideways_by_site() {
     echo " * Tideways-by-site finished"
 }
 
+echo " * Ensuring PHP 7.3 is installed ( needed for XHGui )"
+( cd "${DIR}/../php73/" && . provision.sh )
+
 echo " * Installing Tideways & XHGui"
 fetch_tideways_repo
 check_tideways_php
@@ -146,7 +156,7 @@ update-alternatives --set php-config "/usr/bin/php-config${DEFAULTPHP}"
 restart_php
 
 if [[ ! -f "/srv/www/default/xhgui/composer.lock" ]]; then
-    echo " * XHGUI installation failed!"
+    echo " * XHGui installation failed!"
 else
     echo " * Tideways and XHGui installed"
 fi
