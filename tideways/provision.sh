@@ -93,13 +93,6 @@ function install_php_sqlite() {
     apt-get -y --allow-downgrades --allow-remove-essential --allow-change-held-packages -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confnew install --fix-missing --fix-broken "${packages[@]}"
 }
 
-function is_php73_installed() {
-	if ! command -v php73 >/dev/null; then
-		return 1
-	fi
-	return 0
-}
-
 function install_xhgui_frontend() {
     cp -f "${DIR}/nginx.conf" "/etc/nginx/custom-utilities/xhgui.conf"
     if [[ ! -d "/srv/www/default/xhgui" ]]; then
@@ -109,12 +102,12 @@ function install_xhgui_frontend() {
     fi
     cd /srv/www/default/xhgui
     git checkout "0.18.1"
-    echo " * Installing xhgui"
-    noroot php install.php
+    echo " * Installing XHGui"
+    noroot php73 install.php
     noroot cp -f "${DIR}/config.php" "/srv/www/default/xhgui/config/config.php"
 
     if [[ ! -d "/srv/www/default/php-profiler" ]]; then
-        echo -e " * Installing php-profiler for Xhgui"
+        echo -e " * Installing php-profiler for XHGui"
         cd /srv/www/default
         noroot mkdir ./php-profiler && cd ./php-profiler
         echo " * Installing php-profiler"
@@ -122,6 +115,7 @@ function install_xhgui_frontend() {
         noroot composer require --no-update perftools/xhgui-collector
         noroot composer install
     else
+    	echo " * Updating php-profile for XHGui"
         cd /srv/www/default/php-profiler
         noroot composer update
     fi
