@@ -102,12 +102,12 @@ function install_xhgui_frontend() {
     fi
     cd /srv/www/default/xhgui
     git checkout "0.18.1"
-    echo " * Installing xhgui"
-    noroot php install.php
+    echo " * Installing XHGui"
+    noroot php73 install.php
     noroot cp -f "${DIR}/config.php" "/srv/www/default/xhgui/config/config.php"
 
     if [[ ! -d "/srv/www/default/php-profiler" ]]; then
-        echo -e " * Installing php-profiler for Xhgui"
+        echo -e " * Installing php-profiler for XHGui"
         cd /srv/www/default
         noroot mkdir ./php-profiler && cd ./php-profiler
         echo " * Installing php-profiler"
@@ -115,6 +115,7 @@ function install_xhgui_frontend() {
         noroot composer require --no-update perftools/xhgui-collector
         noroot composer install
     else
+    	echo " * Updating php-profile for XHGui"
         cd /srv/www/default/php-profiler
         noroot composer update
     fi
@@ -128,6 +129,9 @@ function enable_tideways_by_site() {
 
     echo " * Tideways-by-site finished"
 }
+
+echo " * Ensuring PHP 7.3 is installed ( needed for XHGui )"
+( cd "${DIR}/../php73/" && . provision.sh )
 
 echo " * Installing Tideways & XHGui"
 fetch_tideways_repo
@@ -146,7 +150,7 @@ update-alternatives --set php-config "/usr/bin/php-config${DEFAULTPHP}"
 restart_php
 
 if [[ ! -f "/srv/www/default/xhgui/composer.lock" ]]; then
-    echo " * XHGUI installation failed!"
+    echo " * XHGui installation failed!"
 else
     echo " * Tideways and XHGui installed"
 fi
