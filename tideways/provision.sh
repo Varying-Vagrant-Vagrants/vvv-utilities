@@ -103,7 +103,7 @@ function install_xhgui_frontend() {
     cd /srv/www/default/xhgui
     git checkout "0.18.1"
     echo " * Installing XHGui"
-    noroot php73 install.php
+    noroot php7.3 install.php
     noroot cp -f "${DIR}/config.php" "/srv/www/default/xhgui/config/config.php"
 
     if [[ ! -d "/srv/www/default/php-profiler" ]]; then
