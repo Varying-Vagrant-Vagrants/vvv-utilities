@@ -36,9 +36,6 @@ $config = array(
     ),
     // Other config
     'profiler.enable' => function() {
-        if ( isset( $_SERVER['REQUEST_URI'] ) && strpos( $_SERVER['REQUEST_URI'], 'vvv.test/' ) === 0 ) { //phpcs:ignore
-            return false;
-        }
         return true;
     },
     'profiler.replace_url' => function($uri) {
