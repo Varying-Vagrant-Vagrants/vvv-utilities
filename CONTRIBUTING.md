@@ -16,7 +16,7 @@ Comment on any GitHub issue, open or closed. The only guidelines here are to be 
 
 ## Pull Requests
 
-Pull Requests for VVV utilities can be submitted to this repository. Please consider opening an issue on the [VVV repository](https://github.com/varying-vagrant-vagrants/vvv/) first so that we can discuss goals and approach. If you feel more comfortable showing intent with code, then opening a pull request at the same time is more than welcome.
+Pull Requests for VVV extensions can be submitted to this repository. Please consider opening an issue on the [VVV repository](https://github.com/varying-vagrant-vagrants/vvv/) first so that we can discuss goals and approach. If you feel more comfortable showing intent with code, then opening a pull request at the same time is more than welcome.
 
 ## Code Style
 
