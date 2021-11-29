@@ -36,7 +36,7 @@ install_mongodb() {
         if [[ ! $( apt-key list | grep 'MongoDB 4.0') ]]; then
             apt-key add "${DIR}/server-4.0.asc"
         fi
-        echo "deb [ arch=amd64 ] https://repo.mongodb.org/apt/ubuntu ${codename}/mongodb-org/4.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.0.list
+        echo "deb [ arch=amd64 ] https://repo.mongodb.org/apt/ubuntu ${codename}/mongodb-org/4.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.4.list
     fi
 
     echo " * Running apt-get update"
