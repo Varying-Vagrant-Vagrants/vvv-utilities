@@ -7,25 +7,34 @@
 
 echo " * Checking for NVM"
 
-if [[ -d ~/.nvm && -f ~/.nvm/nvm.sh ]]
+export NVM_DIR="/home/vagrant/.nvm"
+
+if [[ -d "${NVM_DIR}" && -f "${NVM_DIR}/nvm.sh" ]]
 then
-  echo " ✓ NVM is already installed, no need to install again"
+  echo " ✓ NVM is already installed, checking for updates"
+  (
+    cd "$NVM_DIR"
+    git fetch --tags origin
+    git checkout `git describe --abbrev=0 --tags --match "v[0-9]*" $(git rev-list --tags --max-count=1)`
+  ) && \. "$NVM_DIR/nvm.sh"
 else
-  if [[ -d ~/.nvm && ! -f ~/.nvm/nvm.sh ]]
+  if [[ -d "${NVMFOLDER}" && ! -f "${NVMFOLDER}/nvm.sh" ]]
   then
     # Possible remnants or something messed
     # up NVM install making it unusable
     echo " * NVM found in an unusable state, removing it completely"
-    rm -rf ~/.nvm
+    rm -rf "${NVM_DIR}"
   fi
 
-  # lets install it now
-  echo " * NVM v0.37.2 installation starting now"
-  noroot curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh | bash
-  noroot $HOME/.nvm/nvm.sh
+  echo " * Installing NVM via git"
+  (
+    git clone https://github.com/nvm-sh/nvm.git "$NVM_DIR"
+    cd "${NVM_DIR}"
+    git checkout `git describe --abbrev=0 --tags --match "v[0-9]*" $(git rev-list --tags --max-count=1)`
+  ) && \. "$NVM_DIR/nvm.sh"
   echo " ✓ NVM installed"
 
-  # set default node to the one installed by VVV
-  nvm alias default system
-  echo " * NVM default set to system default"
+  echo 'export NVM_DIR="$HOME/.nvm"' >> /home/vagrant/.bashrc
+  echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm' >> /home/vagrant/.bashrc
+  echo '[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion' >> /home/vagrant/.bashrc
 fi
