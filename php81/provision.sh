@@ -4,14 +4,14 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 # PACKAGE INSTALLATION
 DEFAULTPHP=$(php -r "echo substr(phpversion(),0,3);")
-PHPVERSION="8.0"
+PHPVERSION="8.1"
 
 apt_package_install_list=(
 
   # PHP
   #
-  # Our base packages for php8.0. As long as php8.0-fpm and php8.0-cli are
-  # installed, there is no need to install the general php8.0 package, which
+  # Our base packages for php8.1. As long as php8.1-fpm and php8.1-cli are
+  # installed, there is no need to install the general php8.1 package, which
   # can sometimes install apache as a requirement.
   "php${PHPVERSION}-fpm"
   "php${PHPVERSION}-cli"
@@ -68,8 +68,8 @@ package_install() {
 
 configure() {
   # Copy nginx configuration from local
-  cp -f "${DIR}/upstream.conf" "/etc/nginx/upstreams/php80.conf"
-  echo " * Copied ${DIR}/upstream.conf              to /etc/nginx/upstreams/php80.conf"
+  cp -f "${DIR}/upstream.conf" "/etc/nginx/upstreams/php81.conf"
+  echo " * Copied ${DIR}/upstream.conf              to /etc/nginx/upstreams/php81.conf"
 
   # Copy php-fpm configuration from local
   cp -f "${DIR}/fpm.conf" "/etc/php/${PHPVERSION}/fpm/php-fpm.conf"
