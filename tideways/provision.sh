@@ -63,7 +63,7 @@ function install_tideways_for_php_version() {
 function check_tideways_php() {
     cp -f "${DIR}/tideways-header.php" "/srv/tideways-header.php"
     # Tideways is only for php =>7.0
-    for version in "7.0" "7.1" "7.2" "7.3" "7.4" "8.0"
+    for version in "7.0" "7.1" "7.2" "7.3" "7.4" "8.0" "8.1"
     do
         if [[ $(command -v php-fpm$version) ]]; then
             install_tideways_for_php_version "${version}"
@@ -73,7 +73,7 @@ function check_tideways_php() {
 
 function restart_php() {
     echo " * Restarting PHP-FPM server"
-    for version in "7.0" "7.1" "7.2" "7.3" "7.4" "8.0"
+    for version in "7.0" "7.1" "7.2" "7.3" "7.4" "8.0" "8.1"
     do
         if [[ $(command -v php-fpm$version) ]]; then
             service "php${version}-fpm" restart
@@ -85,7 +85,7 @@ function restart_php() {
 
 function install_php_sqlite() {
     declare -a packages=()
-    for version in "7.0" "7.1" "7.2" "7.3" "7.4" "8.0"; do
+    for version in "7.0" "7.1" "7.2" "7.3" "7.4" "8.0" "8.1"; do
         if [[ $(command -v php$version) ]]; then
             packages+=("php${version}-sqlite3")
         fi
@@ -101,9 +101,9 @@ function install_xhgui_frontend() {
         noroot git clone "https://github.com/perftools/xhgui.git" xhgui
     fi
     cd /srv/www/default/xhgui
-    git checkout "0.18.1"
+    git checkout "0.20.0"
     echo " * Installing XHGui"
-    noroot php7.3 install.php
+    noroot php7.4 install.php
     noroot cp -f "${DIR}/config.php" "/srv/www/default/xhgui/config/config.php"
 
     if [[ ! -d "/srv/www/default/php-profiler" ]]; then
@@ -130,8 +130,8 @@ function enable_tideways_by_site() {
     echo " * Tideways-by-site finished"
 }
 
-echo " * Ensuring PHP 7.3 is installed ( needed for XHGui )"
-( cd "${DIR}/../php73/" && . provision.sh )
+echo " * Ensuring PHP 7.4 is installed ( needed for XHGui )"
+( cd "${DIR}/../php74/" && . provision.sh )
 
 echo " * Installing Tideways & XHGui"
 fetch_tideways_repo
