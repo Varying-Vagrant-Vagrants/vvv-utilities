@@ -46,11 +46,11 @@ $config = array(
         } else {
             // Web requests:
             if ( !isset( $_SERVER['HTTP_HOST'] ) ) {
-                return;
+                return false;
             }
 
             if ( strpos( $_SERVER['HTTP_HOST'], 'vvv.test' ) != false ) {
-                return;
+                return false;
             }
 
             if ( file_exists( '/srv/config/tideways.json' ) && in_array( $_SERVER['HTTP_HOST'], json_decode( file_get_contents( '/srv/config/tideways.json' ) ) ) ) {
@@ -63,7 +63,7 @@ $config = array(
         }
 
         if( ! $is_vvv_tideways ) {
-            return;
+            return false;
         }
 
         return true;
