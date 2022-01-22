@@ -55,7 +55,7 @@ $config = array(
             
             if ( file_exists( '/srv/config/tideways.json' ) ) {
                 $data = json_decode( file_get_contents( '/srv/config/tideways.json' ) );
-                if ( !empty( $data ) && in_array( $_SERVER['HTTP_HOST'], $data ) {
+                if ( !empty( $data ) && in_array( $_SERVER['HTTP_HOST'], $data ) ) {
                     $is_vvv_tideways = true;
                 }
             }
