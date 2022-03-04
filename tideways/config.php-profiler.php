@@ -1,5 +1,6 @@
 <?php
 
+require_once 'vendor/perftools/php-profiler/autoload.php';
 require_once 'vendor/autoload.php';
 
 $config = array(
