@@ -94,16 +94,20 @@ function install_php_sqlite() {
 }
 
 function install_xhgui_frontend() {
-    cp -f "${DIR}/nginx.conf" "/etc/nginx/custom-utilities/xhgui.conf"
+    echo " * Installing XHGui"
     if [[ ! -d "/srv/www/default/xhgui" ]]; then
         echo -e " * Git cloning xhgui from https://github.com/perftools/xhgui.git"
         noroot git clone "https://github.com/perftools/xhgui.git" /srv/www/default/xhgui
     fi
+    
     cd /srv/www/default/xhgui
-    git checkout "0.20.0"
-    echo " * Installing XHGui"
+    noroot git fetch origin
+    noroot git checkout "0.20.4"
+    
     noroot php7.4 install.php
     noroot cp -f "${DIR}/config.php" "/srv/www/default/xhgui/config/config.php"
+    
+    cp -f "${DIR}/nginx.conf" "/etc/nginx/custom-utilities/xhgui.conf"
 
     if [[ ! -d "/srv/www/default/php-profiler" ]]; then
         echo -e " * Installing php-profiler for XHGui"
