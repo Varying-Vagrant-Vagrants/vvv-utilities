@@ -97,8 +97,7 @@ function install_xhgui_frontend() {
     cp -f "${DIR}/nginx.conf" "/etc/nginx/custom-utilities/xhgui.conf"
     if [[ ! -d "/srv/www/default/xhgui" ]]; then
         echo -e " * Git cloning xhgui from https://github.com/perftools/xhgui.git"
-        cd /srv/www/default
-        noroot git clone "https://github.com/perftools/xhgui.git" xhgui
+        noroot git clone "https://github.com/perftools/xhgui.git" /srv/www/default/xhgui
     fi
     cd /srv/www/default/xhgui
     git checkout "0.20.0"
@@ -108,9 +107,8 @@ function install_xhgui_frontend() {
 
     if [[ ! -d "/srv/www/default/php-profiler" ]]; then
         echo -e " * Installing php-profiler for XHGui"
-        cd /srv/www/default
-        noroot mkdir ./php-profiler && cd ./php-profiler
-        echo " * Installing php-profiler"
+        noroot mkdir -p /srv/www/default/php-profiler
+        cd /srv/www/default/php-profiler
         noroot composer require --no-update perftools/php-profiler
         noroot composer require --no-update perftools/xhgui-collector
         noroot composer install
@@ -119,7 +117,7 @@ function install_xhgui_frontend() {
         cd /srv/www/default/php-profiler
         noroot composer update
     fi
-    noroot cp -f "${DIR}/config.php-profiler.php" "./config.php"
+    noroot cp -f "${DIR}/config.php-profiler.php" "/srv/www/default/php-profiler/config.php"
 }
 
 function enable_tideways_by_site() {
