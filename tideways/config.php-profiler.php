@@ -1,6 +1,6 @@
 <?php
 
-if ( file_exists( 'vendor/perftools/php-profiler/autoload.php' ) {
+if ( file_exists( 'vendor/perftools/php-profiler/autoload.php' ) ) {
     require_once 'vendor/perftools/php-profiler/autoload.php';
 } else {
     error_log(
