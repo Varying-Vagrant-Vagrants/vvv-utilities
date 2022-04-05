@@ -1,6 +1,15 @@
 <?php
 
-require_once 'vendor/perftools/php-profiler/autoload.php';
+if ( file_exists( 'vendor/perftools/php-profiler/autoload.php' ) {
+    require_once 'vendor/perftools/php-profiler/autoload.php';
+} else {
+    error_log(
+        'Failed to load the PHP Profiler autoloader.php file, confirm provisioning of tideways was succesful, ' .
+        'reprovision, and if all else fails delete the php-profiler folder in /srv/www/default and report on ' .
+        'the VVV github'
+    );
+    return;
+}
 require_once 'vendor/autoload.php';
 
 $config = array(
