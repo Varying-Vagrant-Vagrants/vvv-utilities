@@ -17,7 +17,7 @@ then
   (
     cd "$NVM_DIR"
     noroot git fetch --tags origin
-    noroot git checkout `git describe --abbrev=0 --tags --match "v[0-9]*" $(git rev-list --tags --max-count=1)`
+    noroot git checkout `noroot git describe --abbrev=0 --tags --match "v[0-9]*" $(noroot git rev-list --tags --max-count=1)`
   ) && \. "$NVM_DIR/nvm.sh"
 else
   if [[ -d "${NVMFOLDER}" && ! -f "${NVMFOLDER}/nvm.sh" ]]
@@ -32,8 +32,8 @@ else
   (
     noroot git clone https://github.com/nvm-sh/nvm.git "$NVM_DIR"
     cd "${NVM_DIR}"
-    noroot git checkout `noroot git describe --abbrev=0 --tags --match "v[0-9]*" $(git rev-list --tags --max-count=1)`
-  ) && \. "$NVM_DIR/nvm.sh"
+    noroot git checkout `noroot git describe --abbrev=0 --tags --match "v[0-9]*" $(noroot git rev-list --tags --max-count=1)`
+  ) && \. "${NVM_DIR}/nvm.sh"
   echo " ✓ NVM installed"
 
   echo 'export NVM_DIR="$HOME/.nvm"' >> /home/vagrant/.bashrc
