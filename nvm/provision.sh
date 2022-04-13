@@ -9,13 +9,15 @@ echo " * Checking for NVM"
 
 export NVM_DIR="/home/vagrant/.nvm"
 
+echo " !! NVM is a part of VVV core as of v3.9, you should remove nvm from your extensions in config.yml !!"
+
 if [[ -d "${NVM_DIR}" && -f "${NVM_DIR}/nvm.sh" ]]
 then
   echo " ✓ NVM is already installed, checking for updates"
   (
     cd "$NVM_DIR"
-    git fetch --tags origin
-    git checkout `git describe --abbrev=0 --tags --match "v[0-9]*" $(git rev-list --tags --max-count=1)`
+    noroot git fetch --tags origin
+    noroot git checkout `git describe --abbrev=0 --tags --match "v[0-9]*" $(git rev-list --tags --max-count=1)`
   ) && \. "$NVM_DIR/nvm.sh"
 else
   if [[ -d "${NVMFOLDER}" && ! -f "${NVMFOLDER}/nvm.sh" ]]
@@ -28,9 +30,9 @@ else
 
   echo " * Installing NVM via git"
   (
-    git clone https://github.com/nvm-sh/nvm.git "$NVM_DIR"
+    noroot git clone https://github.com/nvm-sh/nvm.git "$NVM_DIR"
     cd "${NVM_DIR}"
-    git checkout `git describe --abbrev=0 --tags --match "v[0-9]*" $(git rev-list --tags --max-count=1)`
+    noroot git checkout `noroot git describe --abbrev=0 --tags --match "v[0-9]*" $(git rev-list --tags --max-count=1)`
   ) && \. "$NVM_DIR/nvm.sh"
   echo " ✓ NVM installed"
 
