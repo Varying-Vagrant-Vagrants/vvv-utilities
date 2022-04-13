@@ -1,7 +1,11 @@
 <?php
+// We don't install tideways for CLI so we can avoid to load this file at all
+if ( php_sapi_name() === "cli" ) {
+    return;
+}
 
-if ( file_exists( 'vendor/perftools/php-profiler/autoload.php' ) ) {
-    require_once 'vendor/perftools/php-profiler/autoload.php';
+if ( file_exists( './vendor/perftools/php-profiler/autoload.php' ) ) {
+    require_once './vendor/perftools/php-profiler/autoload.php';
 } else {
     error_log(
         'Failed to load the PHP Profiler autoloader.php file, confirm provisioning of tideways was succesful, ' .
