@@ -136,10 +136,10 @@ echo " * Ensuring PHP 7.4 is installed ( needed for XHGui )"
 ( cd "${DIR}/../php74/" && . provision.sh )
 
 echo " * Installing Tideways & XHGui"
-fetch_tideways_repo
-check_tideways_php
 install_php_sqlite
 install_xhgui_frontend
+fetch_tideways_repo
+check_tideways_php
 enable_tideways_by_site
 
 echo " * Restoring the default PHP CLI version ( ${DEFAULTPHP} )"
