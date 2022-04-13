@@ -19,7 +19,7 @@ done
 function fetch_tideways_repo() {
     if [[ ! -d /var/local/tideways-php/.git ]]; then
         echo " * Cloning Tideways extension"
-        git clone "https://github.com/tideways/php-xhprof-extension" /var/local/tideways-php
+        noroot git clone "https://github.com/tideways/php-xhprof-extension" /var/local/tideways-php
     else
         echo " * Updating Tideways extension"
         ( cd /var/local/tideways-php/ && git pull -q && git checkout -q )
