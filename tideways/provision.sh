@@ -19,6 +19,9 @@ done
 function fetch_tideways_repo() {
     if [[ ! -d /var/local/tideways-php/.git ]]; then
         echo " * Cloning Tideways extension"
+        mkdir /var/local/tideways-php
+        chmod -R 777 /var/local/tideways-php
+        chown vagrant:vagrant /var/local/tideways-php
         noroot git clone "https://github.com/tideways/php-xhprof-extension" /var/local/tideways-php
     else
         echo " * Updating Tideways extension"
