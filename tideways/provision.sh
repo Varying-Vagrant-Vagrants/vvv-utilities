@@ -4,16 +4,16 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 DEFAULTPHP=$(php -r "echo substr(phpversion(),0,3);")
 
 configs=(
-  /srv/vvv/config.yml
-  /vagrant/config.yml
-  /vagrant/vvv-config.yml
+    /srv/vvv/config.yml
+    /vagrant/config.yml
+    /vagrant/vvv-config.yml
 )
 VVV_CONFIG=/srv/vvv/config.yml
 for item in ${configs[*]}; do
-  if [[ -f $item ]]; then
-    VVV_CONFIG=$item
-    break
-  fi
+    if [[ -f $item ]]; then
+        VVV_CONFIG=$item
+        break
+    fi
 done
 
 function fetch_tideways_repo() {
@@ -49,12 +49,12 @@ function install_tideways_for_php_version() {
         update-alternatives --set php-config "/usr/bin/php-config${version}"
         update-alternatives --set phpize "/usr/bin/phpize${version}"
         "phpize${version}"
-        
+
         # configure and build
         ./configure --enable-tideways-xhprof --with-php-config="php-config${version}"
         make
         make install
-        
+
         # perform cleanup
         cd "${DIR}"
         rm -rf "/var/local/tideways-php${version}"
@@ -102,16 +102,16 @@ function install_xhgui_frontend() {
         echo -e " * Git cloning xhgui from https://github.com/perftools/xhgui.git"
         noroot git clone "https://github.com/perftools/xhgui.git" /srv/www/default/xhgui
     fi
-    
+
     cd /srv/www/default/xhgui
     noroot git fetch origin
     noroot git checkout "0.20.4"
     # Xhgui install.php will execute composer without noroot and this generate git issues
     git config --global --add safe.directory /srv/www/default/xhgui
-    
+
     noroot php7.4 install.php
     noroot cp -f "${DIR}/config.php" "/srv/www/default/xhgui/config/config.php"
-    
+
     cp -f "${DIR}/nginx.conf" "/etc/nginx/custom-utilities/xhgui.conf"
 
     if [[ ! -d "/srv/www/default/php-profiler" ]]; then
