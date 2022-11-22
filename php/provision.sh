@@ -14,5 +14,6 @@ echo " * Running all PHP provisioners"
 ( cd "${DIR}/../php74/" && . provision.sh )
 ( cd "${DIR}/../php80/" && . provision.sh )
 ( cd "${DIR}/../php81/" && . provision.sh )
+( cd "${DIR}/../php82/" && . provision.sh )
 
 echo " * Finished running PHP provisioners"
