@@ -20,13 +20,13 @@ apt_package_install_list=(
   "php${PHPVERSION}-common"
   "php${PHPVERSION}-dev"
 
-  # Extra PHP modules that we find useful
-  "php${PHPVERSION}-imagick"
-  "php${PHPVERSION}-memcache"
-  "php${PHPVERSION}-memcached"
-  "php${PHPVERSION}-pcov"
-  "php${PHPVERSION}-ssh2"
-  "php${PHPVERSION}-xdebug"
+  # Extra PHP modules that we find useful (commented out modules are not yet available)
+  # "php${PHPVERSION}-imagick"
+  # "php${PHPVERSION}-memcache"
+  # "php${PHPVERSION}-memcached"
+  # "php${PHPVERSION}-pcov"
+  # "php${PHPVERSION}-ssh2"
+  # "php${PHPVERSION}-xdebug"
   "php${PHPVERSION}-bcmath"
   "php${PHPVERSION}-curl"
   "php${PHPVERSION}-gd"
