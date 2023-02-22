@@ -3,13 +3,8 @@
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 DEFAULTPHP=$(php -r "echo substr(phpversion(),0,3);")
 
-configs=(
-    /srv/vvv/config.yml
-    /vagrant/config.yml
-    /vagrant/vvv-config.yml
-)
 VVV_CONFIG=/srv/vvv/config.yml
-for item in ${configs[*]}; do
+for item in "/srv/vvv/config.yml" "/vagrant/config.yml" "/vagrant/vvv-config.yml"; do
     if [[ -f $item ]]; then
         VVV_CONFIG=$item
         break
@@ -42,7 +37,7 @@ function install_tideways_for_php_version() {
     if [[ ! -f "${php_modules_path}/tideways_xhprof.so" ]] || [[ $(stat -c %Y "${php_modules_path}/tideways_xhprof.so") -lt $(stat -c %Y "/var/local/tideways-php/.git/info/") ]]; then
         echo " * Compiling Tideways for PHP ${version}"
         cp -rf /var/local/tideways-php "/var/local/tideways-php${version}"
-        cd "/var/local/tideways-php${version}"
+        cd "/var/local/tideways-php${version}" || return 1
 
         # switch to PHP version we're building for
         update-alternatives --set php "/usr/bin/php${version}"
@@ -56,7 +51,7 @@ function install_tideways_for_php_version() {
         make install
 
         # perform cleanup
-        cd "${DIR}"
+        cd "${DIR}" || return 1
         rm -rf "/var/local/tideways-php${version}"
     fi
     phpenmod -v "$version" tideways_xhprof
@@ -66,7 +61,7 @@ function install_tideways_for_php_version() {
 function check_tideways_php() {
     cp -f "${DIR}/tideways-header.php" "/srv/tideways-header.php"
     # Tideways is only for php =>7.0
-    for version in "7.0" "7.1" "7.2" "7.3" "7.4" "8.0" "8.1"
+    for version in "7.0" "7.1" "7.2" "7.3" "7.4" "8.0" "8.1" "8.2"
     do
         if [[ $(command -v php-fpm$version) ]]; then
             install_tideways_for_php_version "${version}"
@@ -76,7 +71,7 @@ function check_tideways_php() {
 
 function restart_php() {
     echo " * Restarting PHP-FPM server"
-    for version in "7.0" "7.1" "7.2" "7.3" "7.4" "8.0" "8.1"
+    for version in "7.0" "7.1" "7.2" "7.3" "7.4" "8.0" "8.1" "8.2"
     do
         if [[ $(command -v php-fpm$version) ]]; then
             service "php${version}-fpm" restart
@@ -88,7 +83,7 @@ function restart_php() {
 
 function install_php_sqlite() {
     declare -a packages=()
-    for version in "7.0" "7.1" "7.2" "7.3" "7.4" "8.0" "8.1"; do
+    for version in "7.0" "7.1" "7.2" "7.3" "7.4" "8.0" "8.1" "8.2"; do
         if [[ $(command -v php$version) ]]; then
             packages+=("php${version}-sqlite3")
         fi
@@ -103,7 +98,7 @@ function install_xhgui_frontend() {
         noroot git clone "https://github.com/perftools/xhgui.git" /srv/www/default/xhgui
     fi
 
-    cd /srv/www/default/xhgui
+    cd /srv/www/default/xhgui || return 1
     noroot git fetch origin
     noroot git checkout "0.20.4"
     # Xhgui install.php will execute composer without noroot and this generate git issues
@@ -117,13 +112,13 @@ function install_xhgui_frontend() {
     if [[ ! -d "/srv/www/default/php-profiler" ]]; then
         echo -e " * Installing php-profiler for XHGui"
         noroot mkdir -p /srv/www/default/php-profiler
-        cd /srv/www/default/php-profiler
+        cd /srv/www/default/php-profiler || return 1
         noroot composer require --no-update perftools/php-profiler
         noroot composer require --no-update perftools/xhgui-collector
         noroot composer install
     else
     	echo " * Updating php-profile for XHGui"
-        cd /srv/www/default/php-profiler
+        cd /srv/www/default/php-profiler || return 1
         noroot composer update
     fi
     noroot cp -f "${DIR}/config.php-profiler.php" "/srv/www/default/php-profiler/config.php"

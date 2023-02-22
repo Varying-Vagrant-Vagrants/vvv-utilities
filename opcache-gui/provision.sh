@@ -3,7 +3,7 @@
 
 noroot mkdir -p /srv/www/default/opcache-gui
 echo -e " * Provisioning Opcache GUI"
-cd /srv/www/default/opcache-gui
+cd /srv/www/default/opcache-gui || return 1
 noroot composer require amnuts/opcache-gui
 
 echo " * symlinking index.php"
