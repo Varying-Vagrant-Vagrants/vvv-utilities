@@ -2,7 +2,7 @@
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
-PHPMYADMINVERSION="4.9.7"
+PHPMYADMINVERSION="5.2.1"
 echo " * Checking for phpMyAdmin v${PHPMYADMINVERSION}"
 
 # Download phpMyAdmin
@@ -10,7 +10,7 @@ if [[ ! -f "/srv/www/default/database-admin/RELEASE-DATE-${PHPMYADMINVERSION}" ]
     echo " * Removing older phpMyAdmin install from /srv/www/default/database-admin"
     rm -rf /srv/www/default/database-admin/*
     echo " * Downloading phpMyAdmin v${PHPMYADMINVERSION}"
-    cd /tmp
+    cd /tmp || return 1
     wget -q -O phpmyadmin.zip "https://files.phpmyadmin.net/phpMyAdmin/${PHPMYADMINVERSION}/phpMyAdmin-${PHPMYADMINVERSION}-all-languages.zip"
     echo " * Extracting phpMyAdmin v${PHPMYADMINVERSION} into /tmp"
     unzip phpmyadmin.zip
