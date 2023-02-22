@@ -4,7 +4,7 @@ export DEBIAN_FRONTEND=noninteractive
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 install_mongodb_php() {
-    for version in "7.0" "7.1" "7.2" "7.3" "7.4" "8.0" "8.1"
+    for version in "7.0" "7.1" "7.2" "7.3" "7.4" "8.0" "8.1" "8.2"
     do
         if [[ $(command -v php$version) ]]; then
             echo " * Checking MongoDB for PHP ${version}"

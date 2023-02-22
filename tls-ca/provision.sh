@@ -2,17 +2,12 @@
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 IFS=$(echo -en "\n\b")
 
-configs=(
-  /srv/vvv/config.yml
-  /vagrant/config.yml
-  /vagrant/vvv-config.yml
-)
 VVV_CONFIG=/srv/vvv/config.yml
-for item in ${configs[*]}; do
-  if [[ -f $item ]]; then
-    VVV_CONFIG=$item
-    break
-  fi
+for item in "/srv/vvv/config.yml" "/vagrant/config.yml" "/vagrant/vvv-config.yml"; do
+    if [[ -f $item ]]; then
+        VVV_CONFIG=$item
+        break
+    fi
 done
 
 codename=$(lsb_release --codename | cut -f2)
@@ -34,17 +29,20 @@ if [[ ! -e ~/.rnd ]]; then
 fi
 
 get_sites() {
-    local value=$(shyaml keys sites 2> /dev/null < "${VVV_CONFIG}" )
+    local value=""
+    value=$(shyaml keys sites 2> /dev/null < "${VVV_CONFIG}" )
     echo "${value:-$@}"
 }
 
 get_host() {
-    local value=$(shyaml get-value "sites.${1}.hosts.0" 2> /dev/null < "${VVV_CONFIG}" )
+    local value=""
+    value=$(shyaml get-value "sites.${1}.hosts.0" 2> /dev/null < "${VVV_CONFIG}" )
     echo "${value:-$@}"
 }
 
 get_hosts() {
-    local value=$(shyaml get-values "sites.${1}.hosts" 2> /dev/null < "${VVV_CONFIG}" )
+    local value=""
+    value=$(shyaml get-values "sites.${1}.hosts" 2> /dev/null < "${VVV_CONFIG}" )
     echo "${value:-$@}"
 }
 

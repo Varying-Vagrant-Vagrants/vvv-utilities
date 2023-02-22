@@ -5,7 +5,7 @@
 echo " * Checking for memcached-admin"
 if [[ ! -d "/srv/www/default/memcached-admin" ]]; then
 	echo -e " * Downloading phpMemcachedAdmin, see https://github.com/elijaa/phpmemcachedadmin"
-	cd /srv/www/default
+	cd /srv/www/default || return 1
 	wget -q -O phpmemcachedadmin.tar.gz "https://github.com/wp-cloud/phpmemcacheadmin/archive/1.2.4-vvv.tar.gz"
 	tar -xf phpmemcachedadmin.tar.gz
 	mv phpmemcacheadmin* memcached-admin

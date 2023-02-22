@@ -18,7 +18,7 @@ fi
 
 # phpMyAdmin
 echo " * Installing/Updating webgrind, see https://github.com/jokkedk/webgrind ..."
-cd "${DIR}"
+cd "${DIR}" || return 1
 noroot composer update --no-autoloader
 
 echo " * Finished webgrind provisioner"
