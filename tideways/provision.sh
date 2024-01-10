@@ -61,7 +61,7 @@ function install_tideways_for_php_version() {
 function check_tideways_php() {
     cp -f "${DIR}/tideways-header.php" "/srv/tideways-header.php"
     # Tideways is only for php =>7.0
-    for version in "7.0" "7.1" "7.2" "7.3" "7.4" "8.0" "8.1" "8.2"
+    for version in "7.0" "7.1" "7.2" "7.3" "7.4" "8.0" "8.1" "8.2" "8.3"
     do
         if [[ $(command -v php-fpm$version) ]]; then
             install_tideways_for_php_version "${version}"
@@ -71,7 +71,7 @@ function check_tideways_php() {
 
 function restart_php() {
     echo " * Restarting PHP-FPM server"
-    for version in "7.0" "7.1" "7.2" "7.3" "7.4" "8.0" "8.1" "8.2"
+    for version in "7.0" "7.1" "7.2" "7.3" "7.4" "8.0" "8.1" "8.2" "8.3"
     do
         if [[ $(command -v php-fpm$version) ]]; then
             service "php${version}-fpm" restart
@@ -83,7 +83,7 @@ function restart_php() {
 
 function install_php_sqlite() {
     declare -a packages=()
-    for version in "7.0" "7.1" "7.2" "7.3" "7.4" "8.0" "8.1" "8.2"; do
+    for version in "7.0" "7.1" "7.2" "7.3" "7.4" "8.0" "8.1" "8.2" "8.3"; do
         if [[ $(command -v php$version) ]]; then
             packages+=("php${version}-sqlite3")
         fi
