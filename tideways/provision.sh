@@ -100,11 +100,11 @@ function install_xhgui_frontend() {
 
     cd /srv/www/default/xhgui || return 1
     noroot git fetch origin
-    noroot git checkout "0.20.4"
+    noroot git checkout "0.21.3"
     # Xhgui install.php will execute composer without noroot and this generate git issues
     git config --global --add safe.directory /srv/www/default/xhgui
 
-    noroot php7.4 install.php
+    noroot php install.php
     noroot cp -f "${DIR}/config.php" "/srv/www/default/xhgui/config/config.php"
 
     cp -f "${DIR}/nginx.conf" "/etc/nginx/custom-utilities/xhgui.conf"
