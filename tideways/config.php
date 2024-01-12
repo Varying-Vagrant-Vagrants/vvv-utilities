@@ -7,7 +7,8 @@ $defaults = array(
         'dsn' => 'sqlite:/tmp/xhgui.sqlite3',
         'user' => null,
         'pass' => null,
-        'table' => 'results'
+        'table' => 'results',
+        'tableWatch' => 'watches'
     ),
     'templates.path' => dirname(__DIR__) . '/src/templates',
     'date.format' => 'M jS H:i:s',
