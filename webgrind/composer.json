@@ -10,5 +10,11 @@
         "installer-paths": {
             "/srv/www/default/webgrind/": ["jokkedk/webgrind"]
         }
+    },
+    "config": {
+        "allow-plugins": {
+            "composer/installers": true,
+            "oomphinc/composer-installers-extender": true
+        }
     }
 }
