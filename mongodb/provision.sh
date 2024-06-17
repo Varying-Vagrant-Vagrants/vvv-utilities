@@ -34,10 +34,13 @@ install_mongodb() {
     else
         [ -e /etc/apt/sources.list.d/mongodb-org-3.4.list ] && rm /etc/apt/sources.list.d/mongodb-org-3.4.list
         [ -e /etc/apt/sources.list.d/mongodb-org-4.0.list ] && rm /etc/apt/sources.list.d/mongodb-org-4.0.list
+        if [[ $( apt-key list | grep '2069 1EEC 3521 6C63 CAF6  6CE1 6564 08E3 90CF B1F5') ]]; then
+            apt-key del '2069 1EEC 3521 6C63 CAF6  6CE1 6564 08E3 90CF B1F5'
+        fi
         if [[ ! $( apt-key list | grep 'MongoDB 4.4') ]]; then
             apt-key add "${DIR}/server-4.4.asc"
         fi
-        echo "deb [ arch=amd64 ] https://repo.mongodb.org/apt/ubuntu ${codename}/mongodb-org/4.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org.list
+        echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu ${codename}/mongodb-org/4.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org.list
     fi
 
     echo " * Running apt-get update"
