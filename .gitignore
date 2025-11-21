@@ -1,2 +1,3 @@
 webgrind/vendor
 webgrind/composer.lock
+.DS_Store
