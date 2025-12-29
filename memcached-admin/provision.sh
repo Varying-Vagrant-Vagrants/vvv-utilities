@@ -3,14 +3,40 @@
 # Download and extract phpMemcachedAdmin to provide a dashboard view and
 # admin interface to the goings on of memcached when running
 echo " * Checking for memcached-admin"
+
+# Clean up old versions of phpmemcachedadmin that are abandoned, and reinstall.
+if [[ -d "/srv/www/default/memcached-admin" ]]; then
+	if [[ ! -d "/srv/www/default/memcached-admin/.git" ]]; then
+		echo -e " ! Old unsupported version found, removing so that newer supported version can be installed."
+		rm -rf "/srv/www/default/memcached-admin"
+	fi
+fi
+
 if [[ ! -d "/srv/www/default/memcached-admin" ]]; then
-	echo -e " * Downloading phpMemcachedAdmin, see https://github.com/elijaa/phpmemcachedadmin"
 	cd /srv/www/default || return 1
-	wget -q -O phpmemcachedadmin.tar.gz "https://github.com/wp-cloud/phpmemcacheadmin/archive/1.2.4-vvv.tar.gz"
-	tar -xf phpmemcachedadmin.tar.gz
-	mv phpmemcacheadmin* memcached-admin
-	cp memcached-admin/Config/Memcache.sample.php memcached-admin/Config/Memcache.php
-	rm phpmemcachedadmin.tar.gz
+	echo -e " * Downloading phpMemcachedAdmin, see https://github.com/AlexeyPlodenko/phpmemcachedadmin"
+	git clone https://github.com/AlexeyPlodenko/phpmemcachedadmin.git memcached-admin
+	cd /srv/www/default/memcached-admin || return 1
+	composer install
+cat <<'EOF' > ".config.php"
+<?php
+return [
+    'servers' => [
+        'Default' => [
+            'localhost-server' => [
+                'hostname' => '127.0.0.1',
+                'port' => '11211',
+            ],
+        ],
+    ],
+];
+EOF
+cat <<'EOF' > index.php
+<?php
+require_once 'src/bootstrap.php;
+EOF
 else
-	echo " * phpMemcachedAdmin already installed."
+	cd /srv/www/default/memcachedadmin || return 1
+	git pull
+	composer install
 fi
