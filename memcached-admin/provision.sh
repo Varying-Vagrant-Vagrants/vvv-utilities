@@ -13,14 +13,16 @@ if [[ -d "/srv/www/default/memcached-admin" ]]; then
 fi
 
 if [[ ! -d "/srv/www/default/memcached-admin" ]]; then
-	cd /srv/www/default || return 1
+	cd /srv/www/default || exit 1
 	echo -e " * Downloading phpMemcachedAdmin, see https://github.com/AlexeyPlodenko/phpmemcachedadmin"
 	git clone https://github.com/AlexeyPlodenko/phpmemcachedadmin.git memcached-admin
-	cd /srv/www/default/memcached-admin || return 1
+	cd /srv/www/default/memcached-admin || exit 1
+	mkdir -p /srv/www/default/memcached-admin/tmp
 	composer install
 cat <<'EOF' > ".config.php"
 <?php
 return [
+    'temp_dir_path' => '/tmp',
     'servers' => [
         'Default' => [
             'localhost-server' => [
@@ -33,10 +35,10 @@ return [
 EOF
 cat <<'EOF' > index.php
 <?php
-require_once 'src/bootstrap.php;
+require_once 'src/bootstrap.php';
 EOF
 else
-	cd /srv/www/default/memcachedadmin || return 1
+	cd /srv/www/default/memcached-admin || exit 1
 	git pull
 	composer install
 fi
