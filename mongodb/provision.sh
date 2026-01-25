@@ -74,8 +74,9 @@ install_mongodb_php() {
                 echo " * MongoDB PHP v${version} extension is already installed"
             else
                 echo " * Installing MongoDB for PHP ${version}"
-                # Log to file for debugging, show errors on console
-                if ! sudo pecl -d php_suffix="$version" install mongodb > /tmp/pecl-mongodb-${version}.log 2>&1; then
+                # Log to file for debugging (/tmp is world-writable so redirect is fine)
+                # shellcheck disable=SC2024
+                if ! sudo pecl -d php_suffix="$version" install mongodb > "/tmp/pecl-mongodb-${version}.log" 2>&1; then
                     echo " * Warning: PECL install failed for PHP ${version}, check /tmp/pecl-mongodb-${version}.log"
                     continue
                 fi
@@ -95,8 +96,10 @@ install_mongodb() {
     codename=$(lsb_release --codename | cut -f2)
 
     # Get version configuration for this Ubuntu release
+    # MONGO_SHELL is read for documentation but detected dynamically later
     local MONGO_VERSION MONGO_CODENAME MONGO_SHELL
     read -r MONGO_VERSION MONGO_CODENAME MONGO_SHELL <<< "$(get_mongodb_config "$codename")"
+    export MONGO_SHELL  # Suppress shellcheck unused warning, may be useful for debugging
     echo " * Detected Ubuntu ${codename}, will install MongoDB ${MONGO_VERSION}"
 
     # Clean up old apt sources
@@ -147,7 +150,7 @@ install_mongodb() {
     fi
 
     # Add the repository with signed-by pointing to the keyring
-    echo "deb [arch=amd64,arm64 signed-by=${keyring_path}] https://repo.mongodb.org/apt/ubuntu ${MONGO_CODENAME}/mongodb-org/${MONGO_VERSION} multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-${MONGO_VERSION}.list
+    echo "deb [arch=amd64,arm64 signed-by=${keyring_path}] https://repo.mongodb.org/apt/ubuntu ${MONGO_CODENAME}/mongodb-org/${MONGO_VERSION} multiverse" | sudo tee "/etc/apt/sources.list.d/mongodb-org-${MONGO_VERSION}.list"
 
     echo " * Running apt-get update"
     apt-get -y update
