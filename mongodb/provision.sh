@@ -1,7 +1,17 @@
 #!/usr/bin/env bash
+# shellcheck shell=bash
 # Mongodb
+set -e
+
 export DEBIAN_FRONTEND=noninteractive
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+
+# Known GPG key fingerprints for verification
+declare -A MONGODB_KEY_FINGERPRINTS=(
+    ["3.4"]="0C49F3730359A14518585931BC711F9BA15703C6"
+    ["4.4"]="20691EEC35216C63CAF66CE1656408E390CFB1F5"
+    ["8.0"]="4B0752C1BCA238C0B4EE14DC41DE058A4E7DCA05"
+)
 
 # Get MongoDB version configuration based on Ubuntu codename
 # Returns: MONGO_VERSION MONGO_CODENAME MONGO_SHELL
@@ -36,7 +46,8 @@ install_mongodb_php() {
     if [[ -d /etc/php ]]; then
         for dir in /etc/php/*/; do
             if [[ -d "$dir" ]]; then
-                local ver=$(basename "$dir")
+                local ver
+                ver=$(basename "$dir")
                 # Check if it looks like a version number and isn't already in our list
                 if [[ "$ver" =~ ^[0-9]+\.[0-9]+$ ]]; then
                     local found=0
@@ -57,15 +68,19 @@ install_mongodb_php() {
 
     for version in "${known_versions[@]}"
     do
-        if [[ $(command -v php$version) ]]; then
+        if [[ $(command -v "php$version") ]]; then
             echo " * Checking MongoDB for PHP ${version}"
             if [ -e "/etc/php/${version}/mods-available/mongodb.ini" ]; then
                 echo " * MongoDB PHP v${version} extension is already installed"
             else
                 echo " * Installing MongoDB for PHP ${version}"
-                sudo pecl -d php_suffix="$version" install mongodb > /dev/null 2>&1
+                # Log to file for debugging, show errors on console
+                if ! sudo pecl -d php_suffix="$version" install mongodb > /tmp/pecl-mongodb-${version}.log 2>&1; then
+                    echo " * Warning: PECL install failed for PHP ${version}, check /tmp/pecl-mongodb-${version}.log"
+                    continue
+                fi
                 # do not remove files, only register the packages as not installed so we can install for other php version
-                sudo pecl uninstall -r mongodb > /dev/null 2>&1
+                sudo pecl uninstall -r mongodb > /dev/null 2>&1 || true
                 cp -f "${DIR}/mongodb.ini" "/etc/php/${version}/mods-available/mongodb.ini"
                 phpenmod -v "${version}" mongodb
                 echo " * Installed PHP v${version} MongoDB driver"
@@ -76,9 +91,11 @@ install_mongodb_php() {
 
 install_mongodb() {
     echo " * Installing MongoDB"
+    local codename
     codename=$(lsb_release --codename | cut -f2)
 
     # Get version configuration for this Ubuntu release
+    local MONGO_VERSION MONGO_CODENAME MONGO_SHELL
     read -r MONGO_VERSION MONGO_CODENAME MONGO_SHELL <<< "$(get_mongodb_config "$codename")"
     echo " * Detected Ubuntu ${codename}, will install MongoDB ${MONGO_VERSION}"
 
@@ -94,14 +111,28 @@ install_mongodb() {
         return 1
     fi
 
+    # Verify GPG key fingerprint if we have it on record
+    if [[ -n "${MONGODB_KEY_FINGERPRINTS[$MONGO_VERSION]:-}" ]]; then
+        local expected_fingerprint="${MONGODB_KEY_FINGERPRINTS[$MONGO_VERSION]}"
+        local actual_fingerprint
+        actual_fingerprint=$(gpg --with-fingerprint --with-colons "$key_file" 2>/dev/null | grep -m1 "^fpr:" | cut -d: -f10)
+        if [[ "$actual_fingerprint" != "$expected_fingerprint" ]]; then
+            echo " * Error: GPG key fingerprint mismatch!"
+            echo " *   Expected: ${expected_fingerprint}"
+            echo " *   Got: ${actual_fingerprint}"
+            return 1
+        fi
+        echo " * GPG key fingerprint verified: ${expected_fingerprint}"
+    fi
+
     # Create keyrings directory if it doesn't exist
     mkdir -p /etc/apt/keyrings
 
     # Convert ASCII armored key to binary GPG format
-    gpg --dearmor -o "$keyring_path" < "$key_file" 2>/dev/null || {
+    if ! gpg --dearmor -o "$keyring_path" < "$key_file" 2>/dev/null; then
         # If dearmor fails (key might already be binary), copy directly
         cp "$key_file" "$keyring_path"
-    }
+    fi
     chmod 644 "$keyring_path"
 
     # Also add to trusted.gpg.d for older Ubuntu compatibility
@@ -121,19 +152,19 @@ install_mongodb() {
     echo " * Running apt-get update"
     apt-get -y update
     echo " * Installing apt-get packages"
-    apt_package_install_list=(
+    local apt_package_install_list=(
         mongodb-org
         re2c
     )
-    if ! apt-get -y --allow-downgrades --allow-remove-essential --allow-change-held-packages -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confnew install --fix-missing --fix-broken ${apt_package_install_list[@]}; then
+    if ! apt-get -y --allow-downgrades --allow-remove-essential --allow-change-held-packages -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confnew install --fix-missing --fix-broken "${apt_package_install_list[@]}"; then
         echo " * Installing apt-get packages returned a failure code, cleaning up apt caches then exiting"
         apt-get clean
         return 1
     fi
 }
 
-cleanup_mongodb_entries() {
-    echo " * Auto-removing mongoDB records older than 2592000 seconds (30 days)"
+setup_mongodb_indexes() {
+    echo " * Setting up MongoDB indexes for XHGui (with 30-day TTL)"
 
     # Detect which MongoDB shell is available
     local mongo_shell=""
@@ -142,19 +173,35 @@ cleanup_mongodb_entries() {
     elif command -v mongo &>/dev/null; then
         mongo_shell="mongo"
     else
-        echo " * Warning: No MongoDB shell found, skipping cleanup"
+        echo " * Warning: No MongoDB shell found, skipping index setup"
         return 0
     fi
 
     # Use createIndex (ensureIndex is deprecated in newer MongoDB versions)
-    # Add || true to prevent failures if xhprof database doesn't exist yet
+    # These may fail if xhprof database doesn't exist yet, that's OK
     $mongo_shell xhprof --eval 'db.collection.createIndex( { "meta.request_ts" : 1 }, { expireAfterSeconds : 2592000 } )' > /dev/null 2>&1 || true
-    # indexes
-    $mongo_shell xhprof --eval  "db.collection.createIndex( { 'meta.SERVER.REQUEST_TIME' : -1 } )" > /dev/null 2>&1 || true
-    $mongo_shell xhprof --eval  "db.collection.createIndex( { 'profile.main().wt' : -1 } )" > /dev/null 2>&1 || true
-    $mongo_shell xhprof --eval  "db.collection.createIndex( { 'profile.main().mu' : -1 } )" > /dev/null 2>&1 || true
-    $mongo_shell xhprof --eval  "db.collection.createIndex( { 'profile.main().cpu' : -1 } )" > /dev/null 2>&1 || true
-    $mongo_shell xhprof --eval  "db.collection.createIndex( { 'meta.url' : 1 } )" > /dev/null 2>&1 || true
+    $mongo_shell xhprof --eval "db.collection.createIndex( { 'meta.SERVER.REQUEST_TIME' : -1 } )" > /dev/null 2>&1 || true
+    $mongo_shell xhprof --eval "db.collection.createIndex( { 'profile.main().wt' : -1 } )" > /dev/null 2>&1 || true
+    $mongo_shell xhprof --eval "db.collection.createIndex( { 'profile.main().mu' : -1 } )" > /dev/null 2>&1 || true
+    $mongo_shell xhprof --eval "db.collection.createIndex( { 'profile.main().cpu' : -1 } )" > /dev/null 2>&1 || true
+    $mongo_shell xhprof --eval "db.collection.createIndex( { 'meta.url' : 1 } )" > /dev/null 2>&1 || true
+}
+
+restart_mongod() {
+    # Check if mongod is already running correctly
+    if systemctl is-active --quiet mongod.service; then
+        echo " * MongoDB service is already running"
+    else
+        echo " * Starting MongoDB service"
+        systemctl start mongod.service
+    fi
+
+    # Verify the service started successfully
+    if ! systemctl is-active --quiet mongod.service; then
+        echo " * Warning: MongoDB service failed to start"
+        echo " * Check logs with: journalctl -u mongod.service"
+        return 1
+    fi
 }
 
 # Create the log and data directories if they don't exist already
@@ -168,13 +215,15 @@ if [[ ! $(command -v mongo) ]] && [[ ! $(command -v mongosh) ]]; then
     install_mongodb
 fi
 install_mongodb_php
-cleanup_mongodb_entries
 
 # make sure mongo can actually write to the log folder
 chown mongodb /var/log/mongodb
 
-echo " * Restarting mongod"
+echo " * Enabling mongod service"
 systemctl enable mongod.service
-systemctl start mongod.service
+restart_mongod
+
+# Set up indexes after service is running
+setup_mongodb_indexes
 
 echo " * MongoDB provisioning complete"
