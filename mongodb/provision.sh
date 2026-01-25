@@ -29,7 +29,33 @@ get_mongodb_config() {
 }
 
 install_mongodb_php() {
-    for version in "7.0" "7.1" "7.2" "7.3" "7.4" "8.0" "8.1" "8.2" "8.3"
+    # Start with known PHP versions
+    local known_versions=("7.0" "7.1" "7.2" "7.3" "7.4" "8.0" "8.1" "8.2" "8.3" "8.4" "8.5")
+
+    # Also scan /etc/php/ for any installed versions not in our list
+    if [[ -d /etc/php ]]; then
+        for dir in /etc/php/*/; do
+            if [[ -d "$dir" ]]; then
+                local ver=$(basename "$dir")
+                # Check if it looks like a version number and isn't already in our list
+                if [[ "$ver" =~ ^[0-9]+\.[0-9]+$ ]]; then
+                    local found=0
+                    for known in "${known_versions[@]}"; do
+                        if [[ "$known" == "$ver" ]]; then
+                            found=1
+                            break
+                        fi
+                    done
+                    if [[ $found -eq 0 ]]; then
+                        echo " * Discovered additional PHP version: ${ver}"
+                        known_versions+=("$ver")
+                    fi
+                fi
+            fi
+        done
+    fi
+
+    for version in "${known_versions[@]}"
     do
         if [[ $(command -v php$version) ]]; then
             echo " * Checking MongoDB for PHP ${version}"
