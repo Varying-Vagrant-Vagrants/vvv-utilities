@@ -188,18 +188,48 @@ setup_mongodb_indexes() {
 }
 
 restart_mongod() {
-    # Check if mongod is already running correctly
-    if systemctl is-active --quiet mongod.service; then
-        echo " * MongoDB service is already running"
-    else
-        echo " * Starting MongoDB service"
-        systemctl start mongod.service
+    # Check if mongod is already running
+    if pgrep -x mongod > /dev/null 2>&1; then
+        echo " * MongoDB is already running"
+        return 0
     fi
 
-    # Verify the service started successfully
-    if ! systemctl is-active --quiet mongod.service; then
-        echo " * Warning: MongoDB service failed to start"
-        echo " * Check logs with: journalctl -u mongod.service"
+    echo " * Starting MongoDB service"
+    local started=0
+
+    # Try systemd first
+    if pidof systemd > /dev/null 2>&1; then
+        echo " * Using systemd to start MongoDB"
+        if systemctl start mongod.service 2>/dev/null; then
+            started=1
+        fi
+    fi
+
+    # Try service command (SysVinit/Upstart) if systemd didn't work
+    if [[ $started -eq 0 ]] && command -v service > /dev/null 2>&1; then
+        echo " * Using service command to start MongoDB"
+        if service mongod start 2>/dev/null; then
+            started=1
+        fi
+    fi
+
+    # Fall back to starting mongod directly (common in Docker)
+    if [[ $started -eq 0 ]]; then
+        echo " * Starting mongod directly"
+        if mongod --config /etc/mongod.conf --fork 2>/dev/null; then
+            started=1
+        fi
+    fi
+
+    # Give it a moment to start
+    sleep 2
+
+    # Verify mongod is running
+    if pgrep -x mongod > /dev/null 2>&1; then
+        echo " * MongoDB started successfully"
+    else
+        echo " * Warning: MongoDB may not have started correctly"
+        echo " * Check logs at /var/log/mongodb/mongod.log"
         return 1
     fi
 }
@@ -219,8 +249,15 @@ install_mongodb_php
 # make sure mongo can actually write to the log folder
 chown mongodb /var/log/mongodb
 
-echo " * Enabling mongod service"
-systemctl enable mongod.service
+# Enable mongod service to start on boot
+if pidof systemd > /dev/null 2>&1; then
+    echo " * Enabling mongod service (systemd)"
+    systemctl enable mongod.service
+elif command -v update-rc.d > /dev/null 2>&1; then
+    echo " * Enabling mongod service (SysVinit)"
+    update-rc.d mongod defaults > /dev/null 2>&1 || true
+fi
+
 restart_mongod
 
 # Set up indexes after service is running
