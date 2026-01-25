@@ -3,6 +3,37 @@
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 DEFAULTPHP=$(php -r "echo substr(phpversion(),0,3);")
 
+# Get all available PHP versions (known + discovered)
+get_php_versions() {
+    # Start with known PHP versions
+    local known_versions=("7.0" "7.1" "7.2" "7.3" "7.4" "8.0" "8.1" "8.2" "8.3" "8.4" "8.5")
+
+    # Also scan /etc/php/ for any installed versions not in our list
+    if [[ -d /etc/php ]]; then
+        for dir in /etc/php/*/; do
+            if [[ -d "$dir" ]]; then
+                local ver=$(basename "$dir")
+                # Check if it looks like a version number and isn't already in our list
+                if [[ "$ver" =~ ^[0-9]+\.[0-9]+$ ]]; then
+                    local found=0
+                    for known in "${known_versions[@]}"; do
+                        if [[ "$known" == "$ver" ]]; then
+                            found=1
+                            break
+                        fi
+                    done
+                    if [[ $found -eq 0 ]]; then
+                        echo " * Discovered additional PHP version: ${ver}" >&2
+                        known_versions+=("$ver")
+                    fi
+                fi
+            fi
+        done
+    fi
+
+    echo "${known_versions[@]}"
+}
+
 VVV_CONFIG=/srv/vvv/config.yml
 for item in "/srv/vvv/config.yml" "/vagrant/config.yml" "/vagrant/vvv-config.yml"; do
     if [[ -f $item ]]; then
@@ -61,8 +92,7 @@ function install_tideways_for_php_version() {
 function check_tideways_php() {
     cp -f "${DIR}/tideways-header.php" "/srv/tideways-header.php"
     # Tideways is only for php =>7.0
-    for version in "7.0" "7.1" "7.2" "7.3" "7.4" "8.0" "8.1" "8.2" "8.3" "8.4" "8.5"
-    do
+    for version in $(get_php_versions); do
         if [[ $(command -v php-fpm$version) ]]; then
             install_tideways_for_php_version "${version}"
         fi
@@ -71,8 +101,7 @@ function check_tideways_php() {
 
 function restart_php() {
     echo " * Restarting PHP-FPM server"
-    for version in "7.0" "7.1" "7.2" "7.3" "7.4" "8.0" "8.1" "8.2" "8.3" "8.4" "8.5"
-    do
+    for version in $(get_php_versions); do
         if [[ $(command -v php-fpm$version) ]]; then
             service "php${version}-fpm" restart
         fi
@@ -83,7 +112,7 @@ function restart_php() {
 
 function install_php_sqlite() {
     declare -a packages=()
-    for version in "7.0" "7.1" "7.2" "7.3" "7.4" "8.0" "8.1" "8.2" "8.3" "8.4" "8.5"; do
+    for version in $(get_php_versions); do
         if [[ $(command -v php$version) ]]; then
             packages+=("php${version}-sqlite3")
         fi
