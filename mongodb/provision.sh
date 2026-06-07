@@ -26,8 +26,9 @@ get_mongodb_config() {
             # Ubuntu 16.04-22.04 - MongoDB 4.4
             echo "4.4 ${codename} mongo"
             ;;
-        noble)
-            # Ubuntu 24.04 - MongoDB 8.0 (first version with official Noble support)
+        noble|resolute)
+            # Ubuntu 24.04 (noble) and 26.04 (resolute) - MongoDB 8.0.
+            # resolute uses the noble repo until MongoDB publishes a resolute one.
             echo "8.0 noble mongosh"
             ;;
         *)
